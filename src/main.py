@@ -91,7 +91,7 @@ class DataCollector:
 
         dataframes = []
 
-        for i in filenames:
+        for i in filenames[:4]:
             activity_type_in_i = i[i.find("R") + 1 : i.find(".edf")]
 
             eeg_data = mne.io.read_raw_edf(f"{i}").get_data()
@@ -135,13 +135,13 @@ class DataCollector:
             else:
                 eeg_data["activity_type"] = "none_found_from_source_file"
 
-            eeg_data["subject_id"] = i
-            dataframes.append(eeg_data)
+            eeg_data["subject_id"] = os.path.basename(i).split(".")[0].split("R")[0]
 
+            dataframes.append(eeg_data)
         output_eeg_data = pandas.concat(dataframes, ignore_index=True)
 
         return output_eeg_data
 
 
 production_data = DataCollector.collect_offline_eeg_data()
-print(production_data)
+print(production_data[["subject_id", "activity_type"]])
