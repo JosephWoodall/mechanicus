@@ -1,7 +1,34 @@
 import pandas
+import numpy
+import glob
+import os
+import random
 
 
 class DataCollector:
+
+    def generate_offline_eeg_data(rows: int = 64, cols: int = 9759) -> pandas.DataFrame:
+        """Creates a pandas DataFrame similar to offline EEG data with random float values between -1 and 1.
+
+        Args:
+            rows (int, optional): number of rows for the ouput. Defaults to 64.
+            cols (int, optional): number of columns for the output. Defaults to 9759.
+
+        Returns:
+            pandas.DataFrame: pandas DataFrame similar to offline EEG data with random float values between -1 and 1.
+        """
+
+        data = numpy.random.uniform(low=-1, high=1, size=(rows, cols))
+
+        column_names = [f"{i+1}" for i in range(cols)]
+
+        return_data = pandas.DataFrame(data, columns=column_names)
+
+        return_data["activity_type"] = random.choice(
+            ["baseline_eyes_open", "baseline_eyes_closed"]
+        )
+
+        return return_data
 
     def collect_offline_eeg_data() -> pandas.DataFrame:
         """This method collects data from https://www.physionet.org/content/eegmmidb/1.0.0/S001/#files-panel. A summary of the data is shown below:
@@ -58,15 +85,63 @@ class DataCollector:
         """
         import mne
 
-        eeg_data = mne.io.read_raw_edf("src/data/S001R01.edf").get_data()
+        data_dir = "src/data/eeg-motor-movementimagery-dataset-1.0.0/files"
 
-        eeg_data = pandas.DataFrame(eeg_data)
+        filenames = glob.glob(os.path.join(data_dir, "**", "*.edf"), recursive=True)
 
-        eeg_data['activity_type'] = 'baseline_eyes_open'
+        dataframes = []
 
-        return eeg_data
+        for i in filenames:
+            activity_type_in_i = i[i.find("R") + 1 : i.find(".edf")]
+
+            eeg_data = mne.io.read_raw_edf(f"{i}").get_data()
+
+            eeg_data = pandas.DataFrame(eeg_data)
+
+            if activity_type_in_i == "01":
+                eeg_data["activity_type"] = "baseline_eyes_open"
+            elif activity_type_in_i == "02":
+                eeg_data["activity_type"] = "baseline_eyes_closed"
+            elif activity_type_in_i == "03":
+                eeg_data["activity_type"] = "task_1_open_and_close_left_or_right_fist"
+            elif activity_type_in_i == "04":
+                eeg_data["activity_type"] = (
+                    "task_2_imagine_opening_and_closing_left_or_right_fist"
+                )
+            elif activity_type_in_i == "05":
+                eeg_data["activity_type"] = (
+                    "task_3_open_and_close_both_fists_or_both_feet"
+                )
+            elif activity_type_in_i == "06":
+                eeg_data["activity_type"] = (
+                    "task_4_imagine_opening_and_closing_both_fists_or_feet"
+                )
+            elif activity_type_in_i == "07":
+                eeg_data["activity_type"] = "task_1"
+            elif activity_type_in_i == "08":
+                eeg_data["activity_type"] = "task_2"
+            elif activity_type_in_i == "09":
+                eeg_data["activity_type"] = "task_3"
+            elif activity_type_in_i == "10":
+                eeg_data["activity_type"] = "task_4"
+            elif activity_type_in_i == "11":
+                eeg_data["activity_type"] = "task_1"
+            elif activity_type_in_i == "12":
+                eeg_data["activity_type"] = "task_2"
+            elif activity_type_in_i == "13":
+                eeg_data["activity_type"] = "task_3"
+            elif activity_type_in_i == "14":
+                eeg_data["activity_type"] = "task_4"
+            else:
+                eeg_data["activity_type"] = "none_found_from_source_file"
+
+            eeg_data["subject_id"] = i
+            dataframes.append(eeg_data)
+
+        output_eeg_data = pandas.concat(dataframes, ignore_index=True)
+
+        return output_eeg_data
 
 
-data = DataCollector.collect_offline_eeg_data()
-
-print(data)
+production_data = DataCollector.collect_offline_eeg_data()
+print(production_data)
