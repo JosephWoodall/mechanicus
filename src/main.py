@@ -3,6 +3,27 @@ import numpy
 import glob
 import os
 import random
+from contextlib import redirect_stdout
+
+
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="mechanicus.log",
+    filemode="w",
+)
+logger = logging.getLogger(__name__)
+
+logger.info("Importing necessary libraries...")
+
+
+import warnings
+
+warnings.filterwarnings("ignore")
+
+logging.info("...Library import complete.")
 
 
 class DataCollector:
@@ -91,7 +112,7 @@ class DataCollector:
 
         dataframes = []
 
-        for i in filenames[:4]:
+        for i in filenames[:3]:
             activity_type_in_i = i[i.find("R") + 1 : i.find(".edf")]
 
             eeg_data = mne.io.read_raw_edf(f"{i}").get_data()
@@ -143,5 +164,57 @@ class DataCollector:
         return output_eeg_data
 
 
+class ExploratoryDataAnalysis:
+
+    def get_summary_statistics(
+        focus_data: pandas.DataFrame, filename: str = "eda.txt"
+    ) -> None:
+        logger.info("Performing exploratory data analysis on the focused data...")
+
+        try:
+            rel_path_filename = rf"{filename}"
+            with open(rel_path_filename, "w") as f:
+                with redirect_stdout(f):
+                    print("-" * 100)
+                    print(f"{filename}")
+                    print("-" * 100)
+                    print("-" * 25)
+                    print("Info")
+                    print("-" * 25)
+                    print(focus_data.info())
+                    print("\n")
+                    print("-" * 25)
+                    print("Describe")
+                    print("-" * 25)
+                    print(focus_data.describe())
+                    print("-" * 25)
+                    print("\n")
+                    print("-" * 25)
+                    print("Nulls per Feature")
+                    print("-" * 25)
+                    total_nulls = focus_data.isnull().sum(axis=0)
+                    percent_nulls = (focus_data.isnull().sum() / len(focus_data)) * 100
+                    null_summary = pandas.DataFrame(
+                        {
+                            "total_null_values": total_nulls,
+                            "percent_of_null_values": percent_nulls,
+                        }
+                    )
+                    print(null_summary)
+                    print("Features with more than 10% null values:")
+                    high_null_features = null_summary[
+                        null_summary["percent_of_null_values"] > 10
+                    ]
+                    print(high_null_features)
+                    print("-" * 100)
+            logging.info(
+                rf"...Exploratory data analysis completed, results saved to: {rel_path_filename}"
+            )
+        except Exception as e:
+            logging.error(
+                f"An error has occured when performing exploratory data analysis: {e}"
+            )
+
+
 production_data = DataCollector.collect_offline_eeg_data()
-print(production_data[["subject_id", "activity_type"]])
+ExploratoryDataAnalysis.get_summary_statistics(production_data)
