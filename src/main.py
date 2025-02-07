@@ -6,18 +6,14 @@ import random
 from contextlib import redirect_stdout
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import cross_val_score, RandomizedSearchCV
+from sklearn.feature_selection import SelectFromModel
 
 import xgboost
-from sklearn.ensemble import (
-    RandomForestClassifier,
-    AdaBoostClassifier,
-    ExtraTreesClassifier,
-    GradientBoostingClassifier,
-)
+from sklearn.ensemble import RandomForestClassifier
 
 import time
 import datetime
-
+import pickle
 from enum import Enum
 
 import logging
@@ -299,16 +295,12 @@ class TrainModel:
                         print("-" * 100)
 
                         models = [
-                            # ('XGBoost Classifier', xgboost.XGBClassifier(booster = "gblinear"))
-                            ("Random Forest Classifier", RandomForestClassifier()),
-                            ("Ada Boost Classifier", AdaBoostClassifier()),
-                            ("Extra Trees Classifier", ExtraTreesClassifier()),
                             (
-                                "Gradient Boosting Classifier",
-                                GradientBoostingClassifier(),
-                            ),
+                                "XGBoost Classifier",
+                                xgboost.XGBClassifier(booster="gblinear"),
+                            )("Random Forest Classifier", RandomForestClassifier())
                         ]
-
+                        
                         def generateRandomIntList(length_of_list: int = 3):
                             random_numbers = []
                             for _ in range(length_of_list):
@@ -320,25 +312,25 @@ class TrainModel:
                             return numpy.random.uniform(0, 100, size=length_of_list)
 
                         param_grid = {
-                            #'XGBoost Classifier':{
-                            #'n_estimators':generateRandomIntList()
-                            # , 'max_depth':generateRandomIntList()
-                            # , 'max_leaves':generateRandomIntList()
-                            # , 'max_bin':generateRandomIntList()
-                            #'grow_policy':['depthwise', 'lossguide']
-                            # , 'learning_rate':generateRandomIntList()
-                            # , 'gamma':generateRandomIntList()
-                            # , 'min_child_weight':generateRandomFloatList()
-                            # , 'subsample':generateRandomFloatList()
-                            # , 'sampling_method':['uniform', 'gradient_based']
-                            # , 'colsample_bytree':generateRandomFloatList()
-                            # , 'colsample_bylevel':generateRandomFloatList()
-                            # , 'colsample_bynode':generateRandomFloatList()
-                            # , 'reg_alpha':generateRandomFloatList()
-                            # , 'reg_lambda':generateRandomFloatList()
-                            # , 'scale_pos_weight':generateRandomFloatList()
-                            # , 'max_features':['auto', 'sqrt', 'log2']
-                            # }
+                            "XGBoost Classifier": {
+                                # "n_estimators": generateRandomIntList(),
+                                # "max_depth": generateRandomIntList(),
+                                # "max_leaves": generateRandomIntList(),
+                                # "max_bin": generateRandomIntList(),
+                                # "grow_policy": ["depthwise", "lossguide"],
+                                # "learning_rate": generateRandomIntList(),
+                                # "gamma": generateRandomIntList(),
+                                # "min_child_weight": generateRandomFloatList(),
+                                # "subsample": generateRandomFloatList(),
+                                "sampling_method": ["uniform", "gradient_based"],
+                                # "colsample_bytree": generateRandomFloatList(),
+                                # "colsample_bylevel": generateRandomFloatList(),
+                                # "colsample_bynode": generateRandomFloatList(),
+                                # "reg_alpha": generateRandomFloatList(),
+                                # "reg_lambda": generateRandomFloatList(),
+                                # "scale_pos_weight": generateRandomFloatList(),
+                                "max_features": ["auto", "sqrt", "log2"],
+                            },
                             "Random Forest Classifier": {
                                 #'n_estimators':generateRandomIntList()
                                 # , 'max_depth':generateRandomIntList()
@@ -346,30 +338,6 @@ class TrainModel:
                                 "max_features": ["sqrt", "log2"]
                                 # , 'max_leaf_nodes':generateRandomIntList()
                                 # , 'ccp_alpha':generateRandomFloatList()
-                            },
-                            "Ada Boost Classifier": {
-                                #'n_estimators':generateRandomIntList()
-                                # , 'learning_rate':generateRandomFloatList()
-                            },
-                            "Extra Trees Classifier": {
-                                #'n_estimators':generateRandomIntList()
-                                # , 'max_depth':generateRandomIntList()
-                                # , 'min_samples_split':generateRandomIntList()
-                                # , 'minsamples_leaf':generateRandomIntList()
-                                "max_features": ["sqrt", "log2"]
-                                # , 'max_leaf_nodes':generateRandomIntList()
-                                # , 'min_impurity_decrease':generateRandomFloatList()
-                                # , 'ccp_alpha':generateRandomFloatList()
-                            },
-                            "Gradient Boosting Classifier": {
-                                #'learning_rate':generateRandomIntList()
-                                # , 'n_estimators':generateRandomIntList()
-                                # , 'min_samples_split':generateRandomIntList()
-                                # , 'min_samples_leaf':generateRandomIntList()
-                                "max_features": ["sqrt", "log2"]
-                                # , 'max_leaf_nodes':generateRandomIntList()
-                                ,  # 'ccp_alpha':generateRandomFloatList()
-                                # , 'max_depth':generateRandomIntList()
                             },
                         }
 
@@ -620,6 +588,7 @@ if __name__ == "__main__":
     )
     x = preprocessed_data[0]
     y = preprocessed_data[1]
+
     TrainModel.evaluateModel(x=x, y=y, cv=CV, scoring_metric=SCORING_METRIC)
 
     end_time = time.time()
