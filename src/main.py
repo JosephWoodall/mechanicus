@@ -61,7 +61,7 @@ class DataCollector:
 
         return return_data
 
-    def collect_offline_eeg_data() -> pandas.DataFrame:
+    def collect_offline_eeg_data(data_dir: str = None) -> pandas.DataFrame:
         """This method collects data from https://www.physionet.org/content/eegmmidb/1.0.0/S001/#files-panel. A summary of the data is shown below:
 
         Abstract
@@ -115,8 +115,6 @@ class DataCollector:
             pandas.DataFrame: instance of the data collected offline.
         """
         import mne
-
-        data_dir = "src/data/eeg-motor-movementimagery-dataset-1.0.0/files"
 
         filenames = glob.glob(os.path.join(data_dir, "**", "*.edf"), recursive=True)
 
@@ -295,12 +293,13 @@ class TrainModel:
                         print("-" * 100)
 
                         models = [
-                            (
-                                "XGBoost Classifier",
-                                xgboost.XGBClassifier(booster="gblinear"),
-                            )("Random Forest Classifier", RandomForestClassifier())
+                            # (
+                            #    "XGBoost Classifier",
+                            #    xgboost.XGBClassifier(booster="gblinear"),
+                            # ),
+                            ("Random Forest Classifier", RandomForestClassifier()),
                         ]
-                        
+
                         def generateRandomIntList(length_of_list: int = 3):
                             random_numbers = []
                             for _ in range(length_of_list):
@@ -312,25 +311,25 @@ class TrainModel:
                             return numpy.random.uniform(0, 100, size=length_of_list)
 
                         param_grid = {
-                            "XGBoost Classifier": {
-                                # "n_estimators": generateRandomIntList(),
-                                # "max_depth": generateRandomIntList(),
-                                # "max_leaves": generateRandomIntList(),
-                                # "max_bin": generateRandomIntList(),
-                                # "grow_policy": ["depthwise", "lossguide"],
-                                # "learning_rate": generateRandomIntList(),
-                                # "gamma": generateRandomIntList(),
-                                # "min_child_weight": generateRandomFloatList(),
-                                # "subsample": generateRandomFloatList(),
-                                "sampling_method": ["uniform", "gradient_based"],
-                                # "colsample_bytree": generateRandomFloatList(),
-                                # "colsample_bylevel": generateRandomFloatList(),
-                                # "colsample_bynode": generateRandomFloatList(),
-                                # "reg_alpha": generateRandomFloatList(),
-                                # "reg_lambda": generateRandomFloatList(),
-                                # "scale_pos_weight": generateRandomFloatList(),
-                                "max_features": ["auto", "sqrt", "log2"],
-                            },
+                            # "XGBoost Classifier": {
+                            # "n_estimators": generateRandomIntList(),
+                            # "max_depth": generateRandomIntList(),
+                            # "max_leaves": generateRandomIntList(),
+                            # "max_bin": generateRandomIntList(),
+                            # "grow_policy": ["depthwise", "lossguide"],
+                            # "learning_rate": generateRandomIntList(),
+                            # "gamma": generateRandomIntList(),
+                            # "min_child_weight": generateRandomFloatList(),
+                            # "subsample": generateRandomFloatList(),
+                            # "sampling_method": ["uniform", "gradient_based"],
+                            # "colsample_bytree": generateRandomFloatList(),
+                            # "colsample_bylevel": generateRandomFloatList(),
+                            # "colsample_bynode": generateRandomFloatList(),
+                            # "reg_alpha": generateRandomFloatList(),
+                            # "reg_lambda": generateRandomFloatList(),
+                            # "scale_pos_weight": generateRandomFloatList(),
+                            # "max_features": ["auto", "sqrt", "log2"],
+                            # },
                             "Random Forest Classifier": {
                                 #'n_estimators':generateRandomIntList()
                                 # , 'max_depth':generateRandomIntList()
@@ -434,7 +433,7 @@ class TrainModel:
                         logging.info(
                             rf"...Model population has been evaluated, results saved to: {rel_path_filename}."
                         )
-
+                        relative_path = "src"
                         model_filename = r"inference_model.pkl"
                         data_to_pickle = {
                             "model": best_model_for_inference,
@@ -448,14 +447,14 @@ class TrainModel:
                         print("-" * 100)
                         print("Executing Model Comparison...")
                         print(
-                            rf"If no model is saved via Pickle to {relative_path}/{filename}, then Best Model for Inference is saved to Pickle and used for inference."
+                            rf"If no model is saved via Pickle to {relative_path}/{model_filename}, then Best Model for Inference is saved to Pickle and used for inference."
                         )
                         print(
-                            rf"If existing model is saved via Pickle to {relative_path}/{filename}, then will compare Largest Mean Score of existing model to largest mean score of Best Model for Inference."
+                            rf"If existing model is saved via Pickle to {relative_path}/{model_filename}, then will compare Largest Mean Score of existing model to largest mean score of Best Model for Inference."
                         )
                         print("-" * 100)
 
-                        if not os.path.isfile(rf"{relative_path}/{filename}"):
+                        if not os.path.isfile(rf"{relative_path}/{model_filename}"):
                             print("No saved model found...")
                             print("Saving Best Model for Inference via Pickle...")
                             try:
@@ -566,22 +565,58 @@ class TrainModel:
                         print(f"An error occured: {e}")
         except Exception as e:
             logging.error(
-                f"An error occured when evaluating te model population and returning the best performing model: {e}"
+                f"An error occured when evaluating the model population and returning the best performing model: {e}"
             )
+
+
+class Inference:
+
+    def load_model_for_inference(filename: str) -> object:
+        logging.info(f"Loading saved model {filename} for inference...")
+        try:
+            with open(rf"{filename}", "rb") as f:
+                data_from_pickle = pickle.load(f)
+                loaded_model = data_from_pickle["model"]
+            logging.info(f"...Loaded saved model {filename} for inference.")
+        except Exception as e:
+            logging.error(
+                f"An error occured when attempting to load saved model {filename} for inference: {e}"
+            )
+
+        return loaded_model
+
+    def perform_inference_using_loaded_model(
+        model: object, preprocessed_data: pandas.DataFrame
+    ) -> pandas.DataFrame:
+        logging.info("Performing inference using loaded model...")
+        try:
+            predictions = model.predict(preprocessed_data)
+            predictions_dataframe = pandas.DataFrame({"predicitons": predictions})
+            logging.info("...Inference using loaded model complete.")
+        except Exception as e:
+            logging.error(
+                f"An error occured when performing inference using loaded model: {e}"
+            )
+
+        return predictions_dataframe
 
 
 if __name__ == "__main__":
 
     logging.info("----------STARTING Mechanicus Pipeline----------")
 
-    CV = 2
+    CV = 10
     SCORING_METRIC = "accuracy"
     start_time = time.time()
 
     response_variable_production = "activity_type"
 
-    training_data = DataCollector.collect_offline_eeg_data()
-    ExploratoryDataAnalysis.get_summary_statistics(training_data)
+    training_data = DataCollector.collect_offline_eeg_data(
+        data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/training"
+    )
+    ExploratoryDataAnalysis.get_summary_statistics(
+        training_data, filename="training_data_eda.txt"
+    )
 
     preprocessed_data = PreprocessData.preprocess_data(
         training_data, response_variable_production, Phase("training")
@@ -590,6 +625,28 @@ if __name__ == "__main__":
     y = preprocessed_data[1]
 
     TrainModel.evaluateModel(x=x, y=y, cv=CV, scoring_metric=SCORING_METRIC)
+
+    inference_model = Inference.load_model_for_inference(filename="inference_model.pkl")
+    inference_data = DataCollector.collect_offline_eeg_data(
+        data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/inference"
+    )
+    ExploratoryDataAnalysis.get_summary_statistics(
+        inference_data, filename="inference_data.txt"
+    )
+
+    preprocessed_inference_data = PreprocessData.preprocess_data(
+        inference_data, response_variable_production, Phase("inference")
+    )
+    preprocessed_inference_x = preprocessed_inference_data[0]
+
+    predictions = Inference.perform_inference_using_loaded_model(
+        model=inference_model, preprocessed_data=preprocessed_inference_x
+    )
+    predictions_results_path = "predictions_output.csv"
+    logging.info(
+        f"Writing predictions results to output file: {predictions_results_path}..."
+    )
+    predictions.to_csv(predictions_results_path, mode="w", index=False)
 
     end_time = time.time()
 
