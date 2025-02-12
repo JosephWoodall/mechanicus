@@ -171,6 +171,58 @@ class DataCollector:
 
         return output_eeg_data
 
+    def generate_offline_eeg_data_with_cartesian_plane_position_of_movement(
+        rows: int = 500, cols: int = 9999
+    ) -> pandas.DataFrame:
+        """Generates synthetic eeg data which matches to a 3D cartesian plane, with mean of 0 (pointed at zenith) of prosthetic movement.
+        The idea is that upon each movement, eeg data corresponds to the angle of which the prosthetic will point. So at 0 (zenith), the
+        prosthetic will be directionally parallel to the limb it is upon. In other words, the prosthetic will be straight.
+        Ultimately, this is what the data will look like, so it is being generated here. All 3d_position values will be greater than 0 because
+        the prosthetic cannot physically invert upon itself.
+
+        The intuition is that I am able to predict what the 3D position of the prosthetic is based on the corresponding eeg data.
+
+        TODO: FIGURE OUT HOW TO CREATE A UNIQUE MAPPING OF THE prosthetic_cartesian_3d_position 3D MAPPING OUTPUT TO A SINGLE, UNIQUE NUMBER CORRESPONDING TO EACH OF THE TUPLE VALUES
+
+        Args:
+            rows (int, optional): Number of rows in the DataFrame. Defaults to 500.
+            cols (int, optional): Number of columns in the DataFrame. Defaults to 9999.
+
+        Returns:
+            pandas.DataFrame: _description_
+        """
+        # Generate features matrix with incremental values
+        base_features = numpy.arange(rows * cols).reshape(rows, cols)
+
+        # Center and normalize features to mean=0, std=1
+        features_mean = base_features.mean()
+        features_std = base_features.std(
+            ddof=1
+        )  # Using ddof=1 for sample standard deviation
+        features_normalized = (base_features - features_mean) / features_std
+
+        # Create DataFrame with features
+        df = pandas.DataFrame(
+            features_normalized, columns=[f"eeg_{i}" for i in range(cols)]
+        )
+
+        # Generate response values (3-tuples with mean=0, std=1)
+        response_base = numpy.random.normal(loc=0, scale=1, size=(rows, 3))
+        response_mean = response_base.mean(axis=1, keepdims=True)
+        response_std = response_base.std(axis=1, keepdims=True)
+        response_normalized = (response_base - response_mean) / response_std
+
+        # Ensure all values are >= 0 while preserving mean=0, std=1
+        response_positive = numpy.abs(response_normalized)
+        response_mean_final = response_positive.mean(axis=1, keepdims=True)
+        response_std_final = response_positive.std(axis=1, keepdims=True)
+        response_final = (response_positive - response_mean_final) / response_std_final
+
+        # Add response column as tuples
+        df["prosthetic_cartesian_3d_position"] = [tuple(row) for row in response_final]
+
+        return df
+
 
 class ExploratoryDataAnalysis:
 
@@ -604,16 +656,23 @@ class Inference:
 if __name__ == "__main__":
 
     logging.info("----------STARTING Mechanicus Pipeline----------")
+    generated_data = (
+        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
+    )
 
     CV = 10
     SCORING_METRIC = "accuracy"
     start_time = time.time()
 
-    response_variable_production = "activity_type"
+    response_variable_production = "prosthetic_cartesian_3d_position"
 
-    training_data = DataCollector.collect_offline_eeg_data(
-        data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/training"
+    # training_data = DataCollector.collect_offline_eeg_data(
+    #    data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/training"
+    # )
+    training_data = (
+        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
     )
+
     ExploratoryDataAnalysis.get_summary_statistics(
         training_data, filename="training_data_eda.txt"
     )
@@ -627,8 +686,11 @@ if __name__ == "__main__":
     TrainModel.evaluateModel(x=x, y=y, cv=CV, scoring_metric=SCORING_METRIC)
 
     inference_model = Inference.load_model_for_inference(filename="inference_model.pkl")
-    inference_data = DataCollector.collect_offline_eeg_data(
-        data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/inference"
+    # inference_data = DataCollector.collect_offline_eeg_data(
+    #    data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/inference"
+    # )
+    inference_data = (
+        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
     )
     ExploratoryDataAnalysis.get_summary_statistics(
         inference_data, filename="inference_data.txt"
