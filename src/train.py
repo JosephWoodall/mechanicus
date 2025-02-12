@@ -291,7 +291,7 @@ class PreprocessData:
         logging.info("Preprocessing of the focus data for model_input")
         try:
             categorical_features = focus_data.select_dtypes(
-                include=["object", "category"]
+                include=["category"]
             ).columns
             for col in categorical_features:
                 le = LabelEncoder()
@@ -302,13 +302,16 @@ class PreprocessData:
             focus_data.columns = focus_data.columns.astype(str)
 
             if phase == Phase.TRAINING:
+
                 x = focus_data.drop(response_variable, axis=1)
+                x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)
                 y = focus_data[response_variable]
             elif phase == Phase.INFERENCE:
                 x = focus_data.drop(response_variable, axis=1)
+                x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)
@@ -675,7 +678,6 @@ if __name__ == "__main__":
     training_data = (
         DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
     )
-    print(training_data)
 
     ExploratoryDataAnalysis.get_summary_statistics(
         training_data, filename="training_data_eda.txt"
