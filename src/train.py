@@ -220,6 +220,9 @@ class DataCollector:
 
         # Add response column as tuples
         df["prosthetic_cartesian_3d_position"] = [tuple(row) for row in response_final]
+        df["prosthetic_cartesian_3d_position_hash_value"] = df[
+            "prosthetic_cartesian_3d_position"
+        ].apply(lambda x: abs(hash(",".join(f"{v:.10f}" for v in x))))
 
         return df
 
@@ -655,7 +658,7 @@ class Inference:
 
 if __name__ == "__main__":
 
-    logging.info("----------STARTING Mechanicus Pipeline----------")
+    logging.info("----------STARTING Mechanicus Training Pipeline----------")
     generated_data = (
         DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
     )
@@ -664,7 +667,7 @@ if __name__ == "__main__":
     SCORING_METRIC = "accuracy"
     start_time = time.time()
 
-    response_variable_production = "prosthetic_cartesian_3d_position"
+    response_variable_production = "prosthetic_cartesian_3d_position_hash_value"
 
     # training_data = DataCollector.collect_offline_eeg_data(
     #    data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/training"
@@ -672,6 +675,7 @@ if __name__ == "__main__":
     training_data = (
         DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
     )
+    print(training_data)
 
     ExploratoryDataAnalysis.get_summary_statistics(
         training_data, filename="training_data_eda.txt"
@@ -713,5 +717,5 @@ if __name__ == "__main__":
     end_time = time.time()
 
     logging.info(
-        f"----------COMPLETED Mechanicus Pipeline in {end_time-start_time} seconds---------"
+        f"----------COMPLETED Mechanicus Training Pipeline in {end_time-start_time} seconds---------"
     )
