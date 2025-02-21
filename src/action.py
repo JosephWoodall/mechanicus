@@ -136,8 +136,15 @@ if __name__ == "__main__":
     logging.info("----------STARTING Mechanicus Action Pipeline----------")
     start_time = time.time()
 
-    Action.log_inference_value()
-    action = Action.perform_action()
+    running = True
+    while running:
+        user_input = input("Press Enter to Inference Another Action, 'q' to quit: ")
+        if user_input == "q":
+            logging.info("User has opted to End the Action Sequence.")
+            running = False
+        else:
+            Action.log_inference_value()
+            action = Action.perform_action()
     end_time = time.time()
 
     logging.info(

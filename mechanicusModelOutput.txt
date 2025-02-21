@@ -52,8 +52,8 @@ Inference Model Information
 Inference Model Type: RandomForestClassifier()
 Largest Mean Score: 1.0
 Train Data Size Used: 10000
-Date Created: 2025-02-20T19:52:53.349339
+Date Created: 2025-02-20T20:36:52.000680
 ----------------------------------------------------------------------------------------------------
 
 
-Total time to complete evaluation: 12.76 seconds
+Total time to complete evaluation: 12.38 seconds
