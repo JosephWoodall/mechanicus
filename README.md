@@ -8,7 +8,7 @@ EEG Headset captures brain waves -> ML Model interprets them -> software execute
 Initial PoC Data offered for free here: https://www.physionet.org/content/eegmmidb/1.0.0/S001/#files-panel
 You can also generate your own. 
 
-I plan to expand the binary classifier to multi-class classifier for 3D movement in a cartesian plane, where the output is a hash coorelating to spherical coordinates.
+I plan to expand the binary classifier to multi-class classifier for 3D movement in a cartesian plane, where the output is a hash value coorelating to spherical coordinates; exercised by a lookup algorithm.
 
 I am still brainstorming how to create the prosthetic apparatus. I might need help in this area.
 
