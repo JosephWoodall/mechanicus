@@ -38,7 +38,9 @@ logging.info("...Library import complete.")
 
 class DataCollector:
 
-    def generate_offline_eeg_data(rows: int = 64, cols: int = 9759) -> pandas.DataFrame:
+    def generate_offline_eeg_data(
+        rows: int = 10000, cols: int = 9759
+    ) -> pandas.DataFrame:
         """Creates a pandas DataFrame similar to offline EEG data with random float values between -1 and 1.
 
         Args:
@@ -172,7 +174,7 @@ class DataCollector:
         return output_eeg_data
 
     def generate_offline_eeg_data_with_cartesian_plane_position_of_movement(
-        rows: int = 500, cols: int = 9999
+        rows: int = 10000, cols: int = 5
     ) -> pandas.DataFrame:
         """Generates synthetic eeg data which matches to a 3D cartesian plane, with mean of 0 (pointed at zenith) of prosthetic movement.
         The idea is that upon each movement, eeg data corresponds to the angle of which the prosthetic will point. So at 0 (zenith), the
@@ -304,14 +306,14 @@ class PreprocessData:
             if phase == Phase.TRAINING:
 
                 x = focus_data.drop(response_variable, axis=1)
-                x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
+                # x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)
                 y = focus_data[response_variable]
             elif phase == Phase.INFERENCE:
                 x = focus_data.drop(response_variable, axis=1)
-                x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
+                # x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)
@@ -662,22 +664,18 @@ class Inference:
 if __name__ == "__main__":
 
     logging.info("----------STARTING Mechanicus Training Pipeline----------")
-    generated_data = (
-        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
-    )
-
     CV = 10
     SCORING_METRIC = "accuracy"
     start_time = time.time()
 
-    response_variable_production = "prosthetic_cartesian_3d_position_hash_value"
+    response_variable_production = (
+        "activity_type"  # "prosthetic_cartesian_3d_position_hash_value"
+    )
 
     # training_data = DataCollector.collect_offline_eeg_data(
     #    data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/training"
     # )
-    training_data = (
-        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
-    )
+    training_data = DataCollector.generate_offline_eeg_data()
 
     ExploratoryDataAnalysis.get_summary_statistics(
         training_data, filename="training_data_eda.txt"
@@ -695,9 +693,7 @@ if __name__ == "__main__":
     # inference_data = DataCollector.collect_offline_eeg_data(
     #    data_dir="src/data/eeg-motor-movementimagery-dataset-1.0.0/inference"
     # )
-    inference_data = (
-        DataCollector.generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
-    )
+    inference_data = DataCollector.generate_offline_eeg_data()
     ExploratoryDataAnalysis.get_summary_statistics(
         inference_data, filename="inference_data.txt"
     )
