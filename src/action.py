@@ -15,9 +15,8 @@ warnings.filterwarnings("ignore")
 
 import pickle
 import pandas
-import numpy
 import time
-
+import pyfirmata2
 
 from train import DataCollector, PreprocessData, Phase
 
@@ -83,16 +82,33 @@ class Action:
             "YOU WILL PERFORM YOUR ACTIONS HERE. PLEASE SEE BELOW LOGS FOR ACTION LIST."
         )
         logging.info("-" * 100)
-        inference_value = Action.__get_inference_value()
-        if inference_value == "baseline_eyes_closed":
-            # perform some action, like move to this position, turn the light on/off, etc... I'll use a light that is plugged into my pc as an example
+        try:
+            board = pyfirmata2.Arduino("/dev/ttyACM0")
+            logging.debug(f"Board: {board}")
+            led = board.get_pin("d:13:o")
+            logging.debug(f"LED: {led}")
+            inference_value = Action.__get_inference_value()
+            if inference_value == "baseline_eyes_open":
+                # perform some action, like move to this position, turn the light on/off, etc... I'll use a light that is plugged into my pc as an example
+                logging.debug("turn led on")
+                led.write(1)
+            elif inference_value == "baseline_eyes_closed":
+                logging.debug("turn led off")
+                led.write(0)
+
+            time.sleep(1000)
+
+            board.exit()
+        except Exception as e:
             logging.debug(
-                "Imagine there is a light in front of you, and you just turned it off by closing your eyes"
+                f"""Something went wrong when attempting to perform an action: {e}\nExiting action phase."""
             )
-        elif inference_value == "baseline_eyes_open":
-            logging.debug(
-                "Imagine there is a light in front of you, and you just turned it on by opening your eyes"
-            )
+            try:
+                if "board" in locals():
+                    board.digital[13].write(0)
+                    board.exit()
+            except:
+                pass
 
     def lookup_tuple_value_from_hash(
         inference_data: pandas.DataFrame = None, hash_value: str = None
