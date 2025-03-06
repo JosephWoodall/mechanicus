@@ -85,19 +85,17 @@ class Action:
         try:
             board = pyfirmata2.Arduino("/dev/ttyACM0")
             logging.debug(f"Board: {board}")
-            led = board.get_pin("d:13:o")
-            logging.debug(f"LED: {led}")
+            servo = board.get_pin("d:9:p")
+            logging.debug(f"servo: {servo}")
             inference_value = Action.__get_inference_value()
             if inference_value == "baseline_eyes_open":
                 # perform some action, like move to this position, turn the light on/off, etc... I'll use a light that is plugged into my pc as an example
-                logging.debug("turn led on")
-                led.write(1)
+                logging.debug("turn fan on")
+                servo.write(90)
+                time.sleep(1)
             elif inference_value == "baseline_eyes_closed":
-                logging.debug("turn led off")
-                led.write(0)
-
-            time.sleep(1000)
-
+                logging.debug("turn fan off")
+                servo.write(0)
             board.exit()
         except Exception as e:
             logging.debug(
@@ -105,10 +103,11 @@ class Action:
             )
             try:
                 if "board" in locals():
-                    board.digital[13].write(0)
+                    servo.write(0)
                     board.exit()
             except:
                 pass
+            exit()
 
     def lookup_tuple_value_from_hash(
         inference_data: pandas.DataFrame = None, hash_value: str = None
