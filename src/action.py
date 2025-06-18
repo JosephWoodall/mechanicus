@@ -90,12 +90,10 @@ class Action:
             inference_value = Action.__get_inference_value()
             if inference_value == "baseline_eyes_open":
                 # perform some action, like move to this position, turn the light on/off, etc... I'll use a light that is plugged into my pc as an example
-                logging.debug("turn fan on")
-                servo.write(90)
+                logging.debug("Move the Servo to Position 1")
                 time.sleep(1)
             elif inference_value == "baseline_eyes_closed":
-                logging.debug("turn fan off")
-                servo.write(0)
+                logging.debug("Move the Servo to Position 2")
             board.exit()
         except Exception as e:
             logging.debug(
