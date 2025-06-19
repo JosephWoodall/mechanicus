@@ -662,8 +662,9 @@ class Inference:
 
 
 if __name__ == "__main__":
-
-    logging.info("----------STARTING Mechanicus Training Pipeline----------")
+    logging.info("-" * 100)
+    logging.info("Starting Mechanicus Training Pipeline")
+    logging.info("-" * 100)
     CV = 10
     SCORING_METRIC = "accuracy"
     start_time = time.time()

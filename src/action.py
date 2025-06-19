@@ -20,6 +20,43 @@ import pyfirmata2
 
 from train import DataCollector, PreprocessData, Phase
 
+class ServoController:
+    """This class handles servo initialization and positioning"""
+    
+    def __init__(self):
+        self.board = None
+        self.servo = None
+        self.current_position = 0
+    
+    def initialize_servo(self):
+        """Initialize servo connection and move to starting position"""
+        try:
+            port = pyfirmata2.Arduino.AUTODETECT
+            self.board = pyfirmata2.Arduino(port)
+            self.servo = self.board.get_pin("d:9:s")
+            self.move_to_position(0)
+            logging.info(f"Servo initialized to starting position: {self.current_position}")
+            return True
+        except Exception as e:
+            logging.error(f"Failed to initialize servo: {e}")
+            return False
+    
+    def move_to_position(self, position):
+        """Move servo to specific position"""
+        if self.servo:
+            self.servo.write(position)
+            self.current_position = position
+            logging.debug(f"Servo moved to position: {self.current_position}")
+    
+    def reset_to_origin(self):
+        """Reset servo to position 0"""
+        self.move_to_position(0)
+        logging.info(f"Servo reset to origin position: {self.current_position}")
+    
+    def get_current_position(self):
+        """Get current servo position"""
+        return self.current_position
+                
 
 class Action:
     """This class contains functions that leverage the output of the Inference class and move the servo to the appropriate position"""
@@ -68,43 +105,42 @@ class Action:
 
     def __get_inference_value():
         inference_value = Action.__perform_inference()
+        logging.info(f"Inferenced Action from Model: {inference_value}")
         return inference_value
 
-    def log_inference_value():
-        logging.info(f"Inferenced Action from Model: {Action.__get_inference_value()}")
-
-    def perform_action() -> None:
-        """perform_action function is the location in which the machine learning algorithm interacts with hardware. Currently, I am obtaining the hardware
-        which will interact with the software. I'm thinking of using pyusb to turn a light on/off for baseline_eyes_open/baseline_eyes_closed, just as a poc.
+    def perform_action(servo_controller: ServoController) -> None:
+        """perform_action function is the location in which the machine learning algorithm interacts with hardware.
         """
         logging.info("-" * 100)
         logging.debug(
-            "YOU WILL PERFORM YOUR ACTIONS HERE. PLEASE SEE BELOW LOGS FOR ACTION LIST."
+            "NEW ACTION"
         )
         logging.info("-" * 100)
         try:
-            board = pyfirmata2.Arduino("/dev/ttyACM0")
-            logging.debug(f"Board: {board}")
-            servo = board.get_pin("d:9:p")
-            logging.debug(f"servo: {servo}")
+            
+            logging.debug(f"Current Servo Position: {servo_controller.get_current_position()}")
+
             inference_value = Action.__get_inference_value()
+            logging.info(f"Inferenced Action from Model: {inference_value}")
+            
+            movement_amount = 90
+            
             if inference_value == "baseline_eyes_open":
-                # perform some action, like move to this position, turn the light on/off, etc... I'll use a light that is plugged into my pc as an example
-                logging.debug("Move the Servo to Position 1")
-                time.sleep(1)
+                logging.debug(f"Move the Servo {movement_amount} degrees (Position 1)")
+                new_position = (servo_controller.get_current_position() + movement_amount) 
+                servo_controller.move_to_position(new_position)
+                
             elif inference_value == "baseline_eyes_closed":
-                logging.debug("Move the Servo to Position 2")
-            board.exit()
+                logging.debug(f"Move the Servo {movement_amount} degrees (Position 2)")
+                new_position = (servo_controller.get_current_position() + movement_amount)
+                servo_controller.move_to_position(new_position)
+            
+            logging.info(f"Final Servo Position: {servo_controller.get_current_position()}")
+            
         except Exception as e:
             logging.debug(
                 f"""Something went wrong when attempting to perform an action: {e}\nExiting action phase."""
             )
-            try:
-                if "board" in locals():
-                    servo.write(0)
-                    board.exit()
-            except:
-                pass
             exit()
 
     def lookup_tuple_value_from_hash(
@@ -146,7 +182,18 @@ class Action:
 
 
 if __name__ == "__main__":
-    logging.info("----------STARTING Mechanicus Action Pipeline----------")
+    logging.info("-" * 100)
+    logging.info("Starting Mechanicus Action Pipeline")
+    logging.info("-" * 100)
+    logging.info("-" * 50)
+    logging.debug("This is the Action Sequence. This is where the machine learning model interacts with the hardware.")
+    logging.info("-" * 50)
+
+    # Initialize servo controller
+    servo_controller = ServoController()
+    if not servo_controller.initialize_servo():
+        exit()
+
     start_time = time.time()
 
     running = True
@@ -156,10 +203,10 @@ if __name__ == "__main__":
             logging.info("User has opted to End the Action Sequence.")
             running = False
         else:
-            Action.log_inference_value()
-            action = Action.perform_action()
+            servo_controller.reset_to_origin()  # Reset to position 0 before each action
+            Action.perform_action(servo_controller)
+            
     end_time = time.time()
-
-    logging.info(
-        f"----------COMPLETED Mechanicus Action Pipeline in {end_time-start_time} seconds---------"
-    )
+    logging.info("-" * 100)
+    logging.info(f"Completed Mechanicus Action Pipeline in {end_time-start_time} seconds")
+    logging.info("-" * 100)

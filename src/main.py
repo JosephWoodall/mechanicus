@@ -53,8 +53,11 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.info("-" * 200)
     logging.info("----------STARTING Mechanicus----------")
+    logging.info("-" * 200)
 
     main()
-
+    logging.info("-" * 200)
     logging.info(f"----------TERMINATING Mechanicus---------")
+    logging.info("-" * 200)
