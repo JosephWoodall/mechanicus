@@ -1,6 +1,8 @@
 import numpy 
 import json
 import hashlib
+import random
+import datetime
 
 class ServoAngleGenerator:
     
@@ -116,7 +118,7 @@ class ServoAngleGenerator:
         hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]  # Use first 12 characters
         return hash_value
     
-    def generate_complete_dataset(self, n_eeg_channels, samples_per_position = 1, mean = 0.0, std = 1.0):
+    def generate_complete_dataset(self, n_eeg_channels, samples_per_position = 1, mean = 0.0, std = 1.0, is_inference_data = "n"):
         """Generate a complete dataset with eeg data, servo angles, and positions for each eeg sample.
         
 
@@ -150,11 +152,18 @@ class ServoAngleGenerator:
             std
         )
         
+        hash_to_servo_lookup = {}
+        hash_to_position_lookup = {}
+        
         position_hashes = []
         for i in range(n_total_samples):
             position_hash = self.position_to_hash(positions[i]) 
             position_hashes.append(position_hash)
+            hash_to_servo_lookup[position_hash] = servo_angles[i].tolist()
+            hash_to_position_lookup[position_hash] = positions[i].tolist()  
         
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        dataset_id = random.randint(1000,9999)
         metadata = {
             'n_servos':self.n_servos,
             'n_eeg_channels':n_eeg_channels,
@@ -165,7 +174,11 @@ class ServoAngleGenerator:
             'eeg_std': std,
             'servo_origin': self.origin.tolist(),
             'servo_ceiling': self.ceiling.tolist(),
-            'collection_method': 'simulated'
+            'collection_method': 'simulated',
+            'timestamp': timestamp,
+            'dataset_id': dataset_id,
+            'hash_to_servo_lookup': hash_to_servo_lookup,
+            'hash_to_position_lookup': hash_to_position_lookup
         }
         
         dataset = {}
@@ -181,25 +194,25 @@ class ServoAngleGenerator:
             }
         
         dataset["metadata"] = metadata
-
-        filename = "final_output_example_of_servo_eeg_dataset.json"
         
-        try:
-            with open(filename, 'w') as f:
-                json.dump(dataset, f, indent=2)
-            print(f"Dataset saved to {filename}")
-        except Exception as e:
-            print(f"Error saving dataset to file: {e}")
+        if is_inference_data == "y":
+            first_sample_key = f'sample_{0:04d}'
+            dataset = {
+                first_sample_key: dataset[first_sample_key],
+                "metadata": metadata
+            }
             
-        dataset_return = {
-        'servo_angles': servo_angles,
-        'positions': positions,
-        'position_hashes':numpy.array(position_hashes),
-        'eeg_data': eeg_data,
-        'metadata': metadata
-        }
+        return dataset 
     
-        return dataset_return
+    def save_dataset_to_json(self, dataset, filename):
+        """Save the dataset to a JSON file.
+        
+        Args:
+            dataset (dict): The dataset to save.
+            filename (str): The name of the file to save the dataset to.
+        """
+        with open(filename, 'w') as f:
+            json.dump(dataset, f, indent=2)
 
 if __name__ == "__main__":
     
@@ -210,29 +223,20 @@ if __name__ == "__main__":
     )
     
     # Generate complete dataset as dictionary
-    dataset = generator.generate_complete_dataset(
+    training_dataset = generator.generate_complete_dataset(
         n_eeg_channels=5,
         samples_per_position=5,
         mean=0.0,
-        std=1.0
+        std=1.0,
+        is_inference_data="n"
     )
-    print("\n" + "-" * 50 + "\n")
-    print("Generated complete dataset:")
-    print(f"Servo angles shape: {dataset['servo_angles'].shape}")
-    print(f"Positions shape: {dataset['positions'].shape}")
-    print(f"EEG data shape: {dataset['eeg_data'].shape}")
+    training_dataset = generator.save_dataset_to_json(training_dataset, 'training_data.json')
     
-    print("\nMetadata:")
-    for key, value in dataset['metadata'].items():
-        print(f"  {key}: {value}")
-    
-    print("\nFirst 5 servo angles:")
-    print(dataset['servo_angles'][:5])
-    
-    print("\nFirst 5 positions:")
-    print(dataset['positions'][:5])
-    
-    print("\nFirst 3 EEG samples (first 5 channels):")
-    print(dataset['eeg_data'][:3, :5])   
-    
-    print("\n" + "-" * 50 + "\n") 
+    inference_dataset = generator.generate_complete_dataset(
+        n_eeg_channels=5,
+        samples_per_position=1,
+        mean=0.0,
+        std=1.0,
+        is_inference_data="y"
+    )
+    inference_dataset = generator.save_dataset_to_json(inference_dataset, 'inference_data.json')

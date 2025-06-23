@@ -37,7 +37,7 @@ logging.info("...Library import complete.")
 class DataCollector:
     
     @staticmethod
-    def load_servo_eeg_data(json_filename: str = "final_output_example_of_servo_eeg_dataset.json") -> pandas.DataFrame:
+    def load_servo_eeg_data(json_filename: str = None) -> pandas.DataFrame:
         """Load servo EEG data from JSON file and convert to DataFrame.
         
         Args:
@@ -63,24 +63,25 @@ class DataCollector:
             rows = []
             for sample_id, sample_data in samples.items():
                 row = {
-                    'sample_id': sample_id,
                     **{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
                     **{f'position_{coord}': pos for coord, pos in zip(['x', 'y', 'z'], sample_data['position'])},
+                    'position_hash': sample_data['position_hash'],
                     **{f'eeg_{i}': eeg_val for i, eeg_val in enumerate(sample_data['eeg_data'])}
                 }
                 rows.append(row)
             
             df = pandas.DataFrame(rows)
             
-            df['servo_angle_combination'] = df.apply(
-                lambda row: f"{row['servo_angles_0']:.1f}_{row['servo_angles_1']:.1f}_{row['servo_angles_2']:.1f}", 
-                axis=1
-            )
+            #df['servo_angle_combination'] = df.apply(
+            #    lambda row: f"{row['servo_angles_0']:.1f}_{row['servo_angles_1']:.1f}_{row['servo_angles_2']:.1f}", 
+            #    axis=1
+            #)
             
             logging.info(f"Loaded {len(df)} samples with {len(df.columns)} features")
-            logging.info(f"Unique servo angle combinations: {df['servo_angle_combination'].nunique()}")
+            #logging.info(f"Unique servo angle combinations: {df['servo_angle_combination'].nunique()}")
             
-            logging.info(f"DataFrame columns: {df.columns.tolist()}")
+            logging.info("...Servo EEG data loaded successfully.")
+            logging.info(f"Dataframe: {df.head()}")
             
             return df
             
@@ -513,11 +514,11 @@ if __name__ == "__main__":
     start_time = time.time()
 
     response_variable_production = (
-        "activity_type"  
+        "position_hash"  
     )
 
 
-    training_data = DataCollector.load_servo_eeg_data()
+    training_data = DataCollector.load_servo_eeg_data("training_data.json")
 
     ExploratoryDataAnalysis.get_summary_statistics(
         training_data, filename="training_data_eda.txt"
@@ -533,9 +534,9 @@ if __name__ == "__main__":
 
     inference_model = Inference.load_model_for_inference(filename="inference_model.pkl")
 
-    inference_data = DataCollector.load_servo_eeg_data()
+    inference_data = DataCollector.load_servo_eeg_data("inference_data.json")
     ExploratoryDataAnalysis.get_summary_statistics(
-        inference_data, filename="inference_data.txt"
+        inference_data, filename="inference_data_eda.txt"
     )
 
     preprocessed_inference_data = PreprocessData.preprocess_data(

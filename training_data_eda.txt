@@ -5,40 +5,39 @@ training_data_eda.txt
 Info
 -------------------------
 <class 'pandas.core.frame.DataFrame'>
-RangeIndex: 15 entries, 0 to 14
-Data columns (total 13 columns):
- #   Column                   Non-Null Count  Dtype  
----  ------                   --------------  -----  
- 0   sample_id                15 non-null     object 
- 1   servo_angles_0           15 non-null     float64
- 2   servo_angles_1           15 non-null     float64
- 3   servo_angles_2           15 non-null     float64
- 4   position_x               15 non-null     float64
- 5   position_y               15 non-null     float64
- 6   position_z               15 non-null     float64
- 7   eeg_0                    15 non-null     float64
- 8   eeg_1                    15 non-null     float64
- 9   eeg_2                    15 non-null     float64
- 10  eeg_3                    15 non-null     float64
- 11  eeg_4                    15 non-null     float64
- 12  servo_angle_combination  15 non-null     object 
-dtypes: float64(11), object(2)
-memory usage: 1.7+ KB
+RangeIndex: 75 entries, 0 to 74
+Data columns (total 12 columns):
+ #   Column          Non-Null Count  Dtype  
+---  ------          --------------  -----  
+ 0   servo_angles_0  75 non-null     float64
+ 1   servo_angles_1  75 non-null     float64
+ 2   servo_angles_2  75 non-null     float64
+ 3   position_x      75 non-null     float64
+ 4   position_y      75 non-null     float64
+ 5   position_z      75 non-null     float64
+ 6   position_hash   75 non-null     object 
+ 7   eeg_0           75 non-null     float64
+ 8   eeg_1           75 non-null     float64
+ 9   eeg_2           75 non-null     float64
+ 10  eeg_3           75 non-null     float64
+ 11  eeg_4           75 non-null     float64
+dtypes: float64(11), object(1)
+memory usage: 7.2+ KB
 None
 
 
 -------------------------
 Describe
 -------------------------
-       servo_angles_0  servo_angles_1  servo_angles_2  ...      eeg_2      eeg_3      eeg_4
-count       15.000000       15.000000       15.000000  ...  15.000000  15.000000  15.000000
-mean        84.000000       96.000000      120.000000  ...  -0.048608   0.166067  -0.555328
-std         71.892777       79.534359       65.137218  ...   0.916243   1.016999   0.765364
-min          0.000000        0.000000        0.000000  ...  -2.291510  -1.929440  -1.485755
-25%          0.000000        0.000000       90.000000  ...  -0.524708  -0.253335  -1.316961
-50%         90.000000       90.000000       90.000000  ...  -0.033439   0.090804  -0.436849
-75%        135.000000      180.000000      180.000000  ...   0.443530   0.845295  -0.139491
-max        180.000000      180.000000      180.000000  ...   1.214550   1.474729   1.098654
+       servo_angles_0  servo_angles_1  servo_angles_2    position_x  ...      eeg_1      eeg_2      eeg_3      eeg_4
+count       75.000000       75.000000       75.000000  7.500000e+01  ...  75.000000  75.000000  75.000000  75.000000
+mean        84.000000       90.000000       90.000000 -3.333333e-02  ...   0.090469   0.186764   0.063537   0.024947
+std         69.922737       73.979544       73.979544  3.884597e-01  ...   1.036295   0.895499   0.918579   1.055579
+min          0.000000        0.000000        0.000000 -1.000000e+00  ...  -2.535251  -1.780726  -2.089431  -2.302655
+25%          0.000000        0.000000        0.000000  0.000000e+00  ...  -0.556236  -0.461719  -0.595180  -0.670498
+50%         90.000000       90.000000       90.000000  0.000000e+00  ...  -0.004982   0.210356   0.093125   0.098826
+75%        180.000000      180.000000      180.000000  3.749399e-33  ...   0.649700   0.740198   0.681194   0.722342
+max        180.000000      180.000000      180.000000  1.000000e+00  ...   2.605517   2.205779   2.238434   2.313139
 
 [8 rows x 11 columns]
 -------------------------
@@ -47,20 +46,19 @@ max        180.000000      180.000000      180.000000  ...   1.214550   1.474729
 -------------------------
 Nulls per Feature
 -------------------------
-                         total_null_values  percent_of_null_values
-sample_id                                0                     0.0
-servo_angles_0                           0                     0.0
-servo_angles_1                           0                     0.0
-servo_angles_2                           0                     0.0
-position_x                               0                     0.0
-position_y                               0                     0.0
-position_z                               0                     0.0
-eeg_0                                    0                     0.0
-eeg_1                                    0                     0.0
-eeg_2                                    0                     0.0
-eeg_3                                    0                     0.0
-eeg_4                                    0                     0.0
-servo_angle_combination                  0                     0.0
+                total_null_values  percent_of_null_values
+servo_angles_0                  0                     0.0
+servo_angles_1                  0                     0.0
+servo_angles_2                  0                     0.0
+position_x                      0                     0.0
+position_y                      0                     0.0
+position_z                      0                     0.0
+position_hash                   0                     0.0
+eeg_0                           0                     0.0
+eeg_1                           0                     0.0
+eeg_2                           0                     0.0
+eeg_3                           0                     0.0
+eeg_4                           0                     0.0
 Features with more than 10% null values:
 Empty DataFrame
 Columns: [total_null_values, percent_of_null_values]
