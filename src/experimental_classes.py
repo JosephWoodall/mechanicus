@@ -1,99 +1,213 @@
-import numpy
-import pandas
+import numpy 
+import json
 
-
-class HemisphericalGenerator:
-
-    def __init__(self, n_theta: int = 10, n_phi: int = 10, radius=1):
-        """Generates points along a flattened cartesian plane from a half-sphere.
+class ServoAngleGenerator:
+    
+    def __init__(self, n_servos = 3, origin=[0,0,0], ceiling = [180,180,180]):
+        """Generates discrete servo angle combinations that map to 3D cartesian positions.
+        
+        Each servo has an angle range from origin to ceiling. The combination of all servo angles 
+        represents a position in 3D space. This class generates a limited set of discrete position that the 
+        prostethic arm can move to.
 
         Args:
-            n_theta (int, optional): Number of samples along the theta dimension. Defaults to 10.
-            n_phi (int, optional): NUmber of samples along the phi dimension. Defaults to 10.
-            radius (int, optional): Radius of the half-sphere. Defaults to 1.
+            n_servos (int, optional): number of servos in the arm. Defaults to 3.
+            origin (list, optional): starting angles for each servo. Defaults to [0,0,0].
+            ceiling (list, optional): maximum angles for each servo. Defaults to [180,180,180].
         """
-        self.n_theta = n_theta
-        self.n_phi = n_phi
-        self.radius = radius
-
-    def generate_hemisphere_points(self):
-        theta = numpy.linspace(0, 2 * numpy.pi, self.n_theta)
-        phi = numpy.linspace(0, numpy.pi / 2, self.n_phi)
-
-        theta, phi = numpy.meshgrid(theta, phi)
-
-        x = self.radius * numpy.sin(phi) * numpy.cos(theta)
-        y = self.radius * numpy.sin(phi) * numpy.sin(theta)
-        z = self.radius * numpy.cos(phi)
-
-        points = numpy.column_stack((x.flatten(), y.flatten(), z.flatten()))
-        return points
-
-
-class CartesianPlanPositionOfMovement:
-    def __init__(self, rows: int = 10000, cols: int = 10):
-        self.rows = rows
-        self.cols = cols
-
-    def generate_offline_eeg_data_with_cartesian_plane_position_of_movement(
-        self,
-    ) -> pandas.DataFrame:
-        """Generates synthetic eeg data which matches to a 3D cartesian plane, with mean of 0 (pointed at zenith) of prosthetic movement.
-        The idea is that upon each movement, eeg data corresponds to the angle of which the prosthetic will point. So at 0 (zenith), the
-        prosthetic will be directionally parallel to the limb it is upon. In other words, the prosthetic will be straight.
-        Ultimately, this is what the data will look like, so it is being generated here. All 3d_position values will be greater than 0 because
-        the prosthetic cannot physically invert upon itself.
-
-        The intuition is that I am able to predict what the 3D position of the prosthetic is based on the corresponding eeg data.
-
+        self.n_servos = n_servos 
+        self.n_positions = 5 * n_servos
+        self.origin = numpy.array(origin if origin is not None else [0] * n_servos)
+        self.ceiling = numpy.array(ceiling if ceiling is not None else [180] * n_servos)
+        
+        self.steps_per_servo = int(numpy.ceil(self.n_positions ** (1 / n_servos)))
+        
+    def generate_servo_combinations(self):
+        """Generate discrete servo angle combinations within the specified range.
         Returns:
-            pandas.DataFrame: _description_
+            numpy.ndarray: Array of shape (n_positions, n_servos) containing the servo angles.
         """
-        # Generate features matrix with incremental values
-        base_features = numpy.arange(self.rows * self.cols).reshape(
-            self.rows, self.cols
+        
+        servo_angles = []
+        for i in range(self.n_servos):
+            angles = numpy.linspace(self.origin[i], self.ceiling[i], self.steps_per_servo)
+            servo_angles.append(angles)
+        
+        angle_grids = numpy.meshgrid(*servo_angles, indexing = 'ij')
+        
+        combinations = numpy.column_stack([grid.flatten() for grid in angle_grids])
+        
+        if len(combinations) > self.n_positions:
+            indices = numpy.random.choice(len(combinations), self.n_positions, replace=False)
+            combinations = combinations[indices]
+            
+        return combinations 
+    
+    def angles_to_cartesian_position(self, servo_angles):
+        """Convert servo angles to a 3D cartesian position.
+        
+        This is a simplified mapping - you may need to adjust based on the specific arm kinematics.
+
+        Args:
+            servo_angles (numpy.ndarray): array of servo angles.
+            
+        Returns:
+            numpy.ndarray: 3D cartesian position corresponding to the servo angles [x, y, z].
+        """
+        
+        if len(servo_angles) >= 3:
+            theta = numpy.radians(servo_angles[0]) 
+            phi = numpy.radians(servo_angles[1])
+            r = servo_angles[2] / 180.0 
+            
+            x = r * numpy.sin(phi) * numpy.cos(theta)
+            y = r * numpy.sin(phi) * numpy.sin(theta)
+            z = r * numpy.cos(phi)
+            
+            return numpy.array([x, y, z])
+        else:
+            position = numpy.zeros(3)
+            for i, angle in enumerate(servo_angles[:3]):
+                position[i] = angle / 180.0
+            return position 
+        
+    def generate_simulated_eeg_data(self, n_rows, n_eeg_channels, mean = 0.0, std = 1.0):
+        """Generate simulated EEG data for the specified number of rows and channels.
+        
+        Args:
+            n_rows (int): Number of rows (samples) to generate.
+            n_eeg_channels (int): Number of EEG channels.
+            mean (float, optional): Mean of the normal distribution. Defaults to 0.
+            std (float, optional): Standard deviation of the normal distribution. Defaults to 1.0.
+            
+        Returns:
+            numpy.ndarray: Simulated EEG data of shape (n_rows, n_eeg_channels).
+        """
+        return numpy.random.normal(mean, std, size=(n_rows, n_eeg_channels))
+        
+    def generate_position_mappings(self):
+        """Generate servo angle combinations and their corresponding 3D cartesian positions.
+        
+        Returns:
+            tuple: (servo_angles, cartesian_positions)
+                - servo_angles: array of shape (n_positions, n_servos)
+                - cartesian_positions: array of shape (n_positions, 3)
+        """
+        servo_combinations = self.generate_servo_combinations()
+        positions = numpy.array([
+            self.angles_to_cartesian_position(angles) for angles in servo_combinations
+        ])
+        
+        return servo_combinations, positions 
+    
+    def generate_complete_dataset(self, n_eeg_channels, samples_per_position = 1, mean = 0.0, std = 1.0):
+        """Generate a complete dataset with eeg data, servo angles, and positions for each eeg sample.
+        
+
+        Args:
+            n_eeg_channels (int): number of eeg channels.
+            samples_per_position (int, optional): number of eeg samples per servo position. Defaults to 1.
+            mean (float, optional): mean for eeg data generation. Defaults to 0.0.
+            std (float, optional): standard deviation for eeg data generation. Defaults to 1.0.
+            
+        Returns:
+            dict: Dictionary containing:
+                - 'servo_angles': array of shape (n_total_samples, n_servos)
+                - 'positions': array of shape (n_total_samples, 3)
+                - 'eeg_data': array of shape (n_total_samples, n_eeg_channels)
+                - 'metadata': dict with dataset information
+        """
+        
+        servo_angles, positions = self.generate_position_mappings()
+        
+        if samples_per_position < 1:
+            servo_angles = numpy.repeat(servo_angles, samples_per_position, axis = 0)
+            positions = numpy.repeat(positions, samples_per_position, axis = 0)
+            
+        n_total_samples = len(servo_angles)
+        
+        eeg_data = self.generate_simulated_eeg_data(
+            n_total_samples, 
+            n_eeg_channels,
+            mean,
+            std
         )
+        
+        metadata = {
+            'n_servos':self.n_servos,
+            'n_eeg_channels':n_eeg_channels,
+            'samples_per_position':samples_per_position,
+            'total_samples':n_total_samples,
+            'unique_positions': len(servo_angles) // samples_per_position,
+            'eeg_mean': mean,
+            'eeg_std': std,
+            'servo_origin': self.origin.tolist(),
+            'servo_ceiling': self.ceiling.tolist(),
+            'collection_method': 'simulated'
+        }
+        
+        dataset = {}
+        
+        for i in range(n_total_samples):
+            unique_id = f'sample_{i:04d}'
+            dataset[unique_id] = {
+                'servo_angles': servo_angles[i].tolist(),
+                'position': positions[i].tolist(),
+                'eeg_data': eeg_data[i].tolist()
+            }
+        
+        dataset["metadata"] = metadata
 
-        # Center and normalize features to mean=0, std=1
-        features_mean = base_features.mean()
-        features_std = base_features.std(
-            ddof=1
-        )  # Using ddof=1 for sample standard deviation
-        features_normalized = (base_features - features_mean) / features_std
-
-        # Create DataFrame with features
-        df = pandas.DataFrame(
-            features_normalized, columns=[f"eeg_{i}" for i in range(self.cols)]
-        )
-
-        # Generate response values (3-tuples with mean=0, std=1)
-        response_base = numpy.random.normal(loc=0, scale=1, size=(self.rows, 3))
-        response_mean = response_base.mean(axis=1, keepdims=True)
-        response_std = response_base.std(axis=1, keepdims=True)
-        response_normalized = (response_base - response_mean) / response_std
-
-        # Ensure all values are >= 0 while preserving mean=0, std=1
-        response_positive = numpy.abs(response_normalized)
-        response_mean_final = response_positive.mean(axis=1, keepdims=True)
-        response_std_final = response_positive.std(axis=1, keepdims=True)
-        response_final = (response_positive - response_mean_final) / response_std_final
-
-        # Add response column as tuples
-        df["prosthetic_cartesian_3d_position"] = [tuple(row) for row in response_final]
-        df["prosthetic_cartesian_3d_position_hash_value"] = df[
-            "prosthetic_cartesian_3d_position"
-        ].apply(lambda x: abs(hash(",".join(f"{v:.10f}" for v in x))))
-
-        return df
-
+        filename = "final_output_example_of_servo_eeg_dataset.json"
+        
+        try:
+            with open(filename, 'w') as f:
+                json.dump(dataset, f, indent=2)
+            print(f"Dataset saved to {filename}")
+        except Exception as e:
+            print(f"Error saving dataset to file: {e}")
+            
+        dataset_return = {
+        'servo_angles': servo_angles,
+        'positions': positions,
+        'eeg_data': eeg_data,
+        'metadata': metadata
+        }
+    
+        return dataset_return
 
 if __name__ == "__main__":
-
-    n = 100
-    points = HemisphericalGenerator(n, n, n).generate_hemisphere_points()
-    print(points)
-
-    grid = (
-        CartesianPlanPositionOfMovement().generate_offline_eeg_data_with_cartesian_plane_position_of_movement()
+    
+    generator = ServoAngleGenerator(
+        n_servos = 3,
+        origin=[0, 0, 0],
+        ceiling=[180, 180, 180]
     )
-    print(grid)
+    
+    # Generate complete dataset as dictionary
+    dataset = generator.generate_complete_dataset(
+        n_eeg_channels=5,
+        samples_per_position=5,
+        mean=0.0,
+        std=1.0
+    )
+    print("\n" + "-" * 50 + "\n")
+    print("Generated complete dataset:")
+    print(f"Servo angles shape: {dataset['servo_angles'].shape}")
+    print(f"Positions shape: {dataset['positions'].shape}")
+    print(f"EEG data shape: {dataset['eeg_data'].shape}")
+    
+    print("\nMetadata:")
+    for key, value in dataset['metadata'].items():
+        print(f"  {key}: {value}")
+    
+    print("\nFirst 5 servo angles:")
+    print(dataset['servo_angles'][:5])
+    
+    print("\nFirst 5 positions:")
+    print(dataset['positions'][:5])
+    
+    print("\nFirst 3 EEG samples (first 5 channels):")
+    print(dataset['eeg_data'][:3, :5])   
+    
+    print("\n" + "-" * 50 + "\n") 
