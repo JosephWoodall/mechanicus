@@ -175,3 +175,6 @@ cython_debug/
 
 # data used in project 
 src/data
+
+#models 
+inference_model.pkl
