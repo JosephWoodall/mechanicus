@@ -9,17 +9,17 @@ Random Forest Classifier
 Random Forest Classifier: Mean Score = 1.0000 (+/- 0.0000)
 Important Features
           features    scores
-5       position_z  0.179524
-2   servo_angles_2  0.164446
-1   servo_angles_1  0.141800
-0   servo_angles_0  0.118786
-3       position_x  0.104341
-4       position_y  0.052886
-10           eeg_4  0.049658
-8            eeg_2  0.048973
-7            eeg_1  0.047112
-9            eeg_3  0.046634
-6            eeg_0  0.045842
+5       position_z  0.193197
+2   servo_angles_2  0.154991
+0   servo_angles_0  0.130577
+3       position_x  0.126374
+1   servo_angles_1  0.119696
+4       position_y  0.082357
+7            eeg_1  0.040172
+10           eeg_4  0.039174
+8            eeg_2  0.038280
+9            eeg_3  0.038265
+6            eeg_0  0.036916
 ----------------------------------------------------------------------------------------------------
 
 
@@ -49,9 +49,9 @@ Inference Model Information
 ----------------------------------------------------------------------------------------------------
 Inference Model Type: RandomForestClassifier()
 Largest Mean Score: 1.0
-Train Data Size Used: 75
-Date Created: 2025-06-23T14:21:36.596664
+Train Data Size Used: 1000
+Date Created: 2025-06-23T16:58:00.128514
 ----------------------------------------------------------------------------------------------------
 
 
-Total time to complete evaluation: 1.38 seconds
+Total time to complete evaluation: 4.96 seconds

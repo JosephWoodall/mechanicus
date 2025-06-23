@@ -54,10 +54,7 @@ class DataCollector:
         try:
             with open(json_filename, 'r') as f:
                 data = json.load(f)
-            
-            # Extract metadata
-            metadata = data.get('metadata', {})
-            logging.info(f"Dataset metadata: {metadata}")
+            logging.info(f"Successfully loaded data from {json_filename}.")
             
             # Extract sample data (exclude metadata)
             samples = {k: v for k, v in data.items() if k != 'metadata'}
@@ -75,16 +72,11 @@ class DataCollector:
             
             df = pandas.DataFrame(rows)
             
-            #df['servo_angle_combination'] = df.apply(
-            #    lambda row: f"{row['servo_angles_0']:.1f}_{row['servo_angles_1']:.1f}_{row['servo_angles_2']:.1f}", 
-            #    axis=1
-            #)
             
             logging.info(f"Loaded {len(df)} samples with {len(df.columns)} features")
             #logging.info(f"Unique servo angle combinations: {df['servo_angle_combination'].nunique()}")
             
             logging.info("...Servo EEG data loaded successfully.")
-            logging.info(f"Dataframe: {df.head()}")
             
             return df
             
@@ -575,7 +567,8 @@ if __name__ == "__main__":
     predictions.to_csv(predictions_results_path, mode="w", index=False)
 
     end_time = time.time()
-
+    logging.info("-" * 100)
     logging.info(
-        f"----------COMPLETED Mechanicus Training Pipeline in {end_time-start_time} seconds---------"
+        f"Completed Mechanicus Training Pipeline in {end_time-start_time} seconds"
     )
+    logging.info("-" * 100)
