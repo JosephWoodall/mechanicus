@@ -6,20 +6,20 @@ Models to be tested
 -------------------------
 Random Forest Classifier
 -------------------------
-Random Forest Classifier: Mean Score = 0.9867 (+/- 0.0267)
+Random Forest Classifier: Mean Score = 1.0000 (+/- 0.0000)
 Important Features
           features    scores
-2   servo_angles_2  0.190389
-5       position_z  0.165757
-1   servo_angles_1  0.153730
-0   servo_angles_0  0.114619
-3       position_x  0.094964
-6            eeg_0  0.055362
-8            eeg_2  0.054119
-10           eeg_4  0.046207
-4       position_y  0.045973
-7            eeg_1  0.042054
-9            eeg_3  0.036827
+5       position_z  0.179524
+2   servo_angles_2  0.164446
+1   servo_angles_1  0.141800
+0   servo_angles_0  0.118786
+3       position_x  0.104341
+4       position_y  0.052886
+10           eeg_4  0.049658
+8            eeg_2  0.048973
+7            eeg_1  0.047112
+9            eeg_3  0.046634
+6            eeg_0  0.045842
 ----------------------------------------------------------------------------------------------------
 
 
@@ -27,7 +27,7 @@ Important Features
 Best Model Proposed to be Used for Inference:
 -------------------------
 Model Class: RandomForestClassifier()
-Largest Mean Score: 0.9866666666666667
+Largest Mean Score: 1.0
 Best Score Key: Random Forest Classifier
 Best Score Hyperparameters: {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'monotonic_cst': None, 'n_estimators': 100, 'n_jobs': None, 'oob_score': False, 'random_state': None, 'verbose': 0, 'warm_start': False}
 -------------------------
@@ -48,10 +48,10 @@ Saving Best Model for Inference via Pickle...
 Inference Model Information
 ----------------------------------------------------------------------------------------------------
 Inference Model Type: RandomForestClassifier()
-Largest Mean Score: 0.9866666666666667
+Largest Mean Score: 1.0
 Train Data Size Used: 75
-Date Created: 2025-06-23T14:10:06.979757
+Date Created: 2025-06-23T14:21:36.596664
 ----------------------------------------------------------------------------------------------------
 
 
-Total time to complete evaluation: 1.44 seconds
+Total time to complete evaluation: 1.38 seconds

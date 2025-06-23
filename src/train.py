@@ -3,6 +3,9 @@ import numpy
 import os
 import json
 
+from subprocess import call
+from pathlib import Path
+
 from contextlib import redirect_stdout
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import cross_val_score, RandomizedSearchCV
@@ -516,6 +519,16 @@ if __name__ == "__main__":
     response_variable_production = (
         "position_hash"  
     )
+    
+    training_data_path = Path("training_data.json")
+    
+    if not training_data_path.exists():
+        logging.info("Training data not found. Generating training data...")
+        call(["python", "src/data_collection.py"])
+        logging.info("...Training data generation complete.")
+    else:
+        logging.info("Training data found. Proceeding with training...")
+    
 
 
     training_data = DataCollector.load_servo_eeg_data("training_data.json")
@@ -532,6 +545,14 @@ if __name__ == "__main__":
 
     TrainModel.evaluateModel(x=x, y=y, cv=CV, scoring_metric=SCORING_METRIC)
 
+    inference_data_path = Path("inference_data.json")
+
+    if not inference_data_path.exists():
+        logging.info("Inference data not found. Generating inference data...")
+        call(["python", "src/data_collection.py", "--inference"])
+        logging.info("...Inference data generation complete.")
+    else:
+        logging.info("Inference data found. Proceeding with inference...")
     inference_model = Inference.load_model_for_inference(filename="inference_model.pkl")
 
     inference_data = DataCollector.load_servo_eeg_data("inference_data.json")
