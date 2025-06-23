@@ -1,4 +1,5 @@
 import logging
+import json
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -8,9 +9,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 import warnings
-
 warnings.filterwarnings("ignore")
 
 import pickle
@@ -25,41 +24,111 @@ class ServoController:
     
     def __init__(self):
         self.board = None
-        self.servo = None
-        self.current_position = 0
+        self.servos = []  
+        self.current_positions = [0, 0, 0]  
     
-    def initialize_servo(self):
-        """Initialize servo connection and move to starting position"""
+    def initialize_servos(self):
+        """Initialize servo connections and move to starting positions"""
         try:
             port = pyfirmata2.Arduino.AUTODETECT
             self.board = pyfirmata2.Arduino(port)
-            self.servo = self.board.get_pin("d:9:s")
-            self.move_to_position(0)
-            logging.info(f"Servo initialized to starting position: {self.current_position}")
+            
+            
+            servo_pins = ["d:9:s", "d:10:s", "d:11:s"]
+            for pin in servo_pins:
+                servo = self.board.get_pin(pin)
+                self.servos.append(servo)
+            
+            self.move_to_positions([0, 0, 0])
+            logging.info(f"Servos initialized to starting positions: {self.current_positions}")
             return True
         except Exception as e:
-            logging.error(f"Failed to initialize servo: {e}")
+            logging.error(f"Failed to initialize servos: {e}")
             return False
     
-    def move_to_position(self, position):
-        """Move servo to specific position"""
-        if self.servo:
-            self.servo.write(position)
-            self.current_position = position
-            logging.debug(f"Servo moved to position: {self.current_position}")
+    def move_to_positions(self, positions):
+        """Move servos to specific positions"""
+        if len(self.servos) >= len(positions):
+            for i, position in enumerate(positions):
+                if i < len(self.servos):
+                    self.servos[i].write(position)
+                    self.current_positions[i] = position
+            logging.debug(f"Servos moved to positions: {self.current_positions}")
     
     def reset_to_origin(self):
-        """Reset servo to position 0"""
-        self.move_to_position(0)
-        logging.info(f"Servo reset to origin position: {self.current_position}")
+        """Reset all servos to position 0"""
+        self.move_to_positions([0, 0, 0])
+        logging.info(f"Servos reset to origin positions: {self.current_positions}")
     
-    def get_current_position(self):
-        """Get current servo position"""
-        return self.current_position
+    def get_current_positions(self):
+        """Get current servo positions"""
+        return self.current_positions
+
+class HashToServoLookup:
+    """Class to handle hash to servo angle lookup"""
+    
+    def __init__(self, dataset_file="final_output_example_of_servo_eeg_dataset.json"):
+        """Initialize lookup tables from dataset file"""
+        self.hash_to_servo = {}
+        self.hash_to_position = {}
+        self.load_lookup_tables(dataset_file)
+    
+    def load_lookup_tables(self, dataset_file):
+        """Load lookup tables from dataset JSON file"""
+        try:
+            with open(dataset_file, 'r') as f:
+                data = json.load(f)
+            
+            metadata = data.get('metadata', {})
+            self.hash_to_servo = metadata.get('hash_to_servo_lookup', {})
+            self.hash_to_position = metadata.get('hash_to_position_lookup', {})
+            
+            if not self.hash_to_servo:
+                self._create_lookup_from_samples(data)
                 
+            logging.info(f"Loaded {len(self.hash_to_servo)} hash-to-servo mappings")
+            
+        except Exception as e:
+            logging.error(f"Error loading lookup tables from {dataset_file}: {e}")
+            self.hash_to_servo = {}
+            self.hash_to_position = {}
+    
+    def _create_lookup_from_samples(self, data):
+        """Create lookup from sample data if not in metadata"""
+        for key, sample in data.items():
+            if key != 'metadata':
+                hash_val = sample['position_hash']
+                if hash_val not in self.hash_to_servo:
+                    self.hash_to_servo[hash_val] = sample['servo_angles']
+                    self.hash_to_position[hash_val] = sample['position']
+    
+    def get_servo_angles_from_hash(self, position_hash):
+        """Convert position hash to servo angles"""
+        servo_angles = self.hash_to_servo.get(position_hash, None)
+        if servo_angles is None:
+            logging.warning(f"No servo angles found for hash: {position_hash}")
+            return [0, 0, 0]  
+        return servo_angles
+    
+    def get_position_from_hash(self, position_hash):
+        """Convert position hash to 3D coordinates"""
+        position = self.hash_to_position.get(position_hash, None)
+        if position is None:
+            logging.warning(f"No position found for hash: {position_hash}")
+            return [0, 0, 0]  
+        return position
 
 class Action:
     """This class contains functions that leverage the output of the Inference class and move the servo to the appropriate position"""
+    
+    _lookup = None
+    
+    @classmethod
+    def _get_lookup(cls):
+        """Get or create the hash lookup instance"""
+        if cls._lookup is None:
+            cls._lookup = HashToServoLookup()
+        return cls._lookup
 
     def __load_model_for_inference_from_file(
         filename: str = "inference_model.pkl",
@@ -78,22 +147,21 @@ class Action:
         return loaded_model
 
     def __collect_inference_data():
-        # collect the inference data from the device or pass generated data for experimentation purposes if none exists
-        generated_inference_data = DataCollector.generate_offline_eeg_data(1, 9759)
-        return generated_inference_data
+        inference_data = DataCollector.load_servo_eeg_data("inference_data.json")
+        return inference_data
 
     def __perform_inference():
-        reponse_variable_production = "activity_type"
+        response_variable_production = "position_hash" 
         inference_data = Action.__collect_inference_data()
         preprocessed_inference_data = PreprocessData.preprocess_data(
-            inference_data, reponse_variable_production, Phase("inference")
+            inference_data, response_variable_production, Phase.INFERENCE
         )
         preprocessed_inference_x = preprocessed_inference_data[0]
         loaded_model = Action.__load_model_for_inference_from_file()
         logging.info("Performing inference using loaded model...")
         try:
             predictions = loaded_model.predict(preprocessed_inference_x)
-            predictions_dataframe = pandas.DataFrame({"predicitons": predictions})
+            predictions_dataframe = pandas.DataFrame({"predictions": predictions}) 
             logging.info("...Inference using loaded model complete.")
             inferenced_action = predictions_dataframe.iloc[0, 0]
             return inferenced_action
@@ -101,7 +169,7 @@ class Action:
             logging.error(
                 f"An error occured when performing inference using loaded model: {e}"
             )
-            return pandas.DataFrame({"predictions: null"})
+            return None
 
     def __get_inference_value():
         inference_value = Action.__perform_inference()
@@ -112,74 +180,38 @@ class Action:
         """perform_action function is the location in which the machine learning algorithm interacts with hardware.
         """
         logging.info("-" * 100)
-        logging.debug(
-            "NEW ACTION"
-        )
+        logging.debug("NEW ACTION")
         logging.info("-" * 100)
         try:
             
-            logging.debug(f"Current Servo Position: {servo_controller.get_current_position()}")
+            logging.debug(f"Current Servo Positions: {servo_controller.get_current_positions()}")
 
-            inference_value = Action.__get_inference_value()
-            logging.info(f"Inferenced Action from Model: {inference_value}")
+           
+            predicted_hash = Action.__get_inference_value()
+            logging.info(f"Predicted Hash from Model: {predicted_hash}")
             
-            movement_amount = 90
+            if predicted_hash is None:
+                logging.error("No valid prediction received")
+                return
             
-            if inference_value == "baseline_eyes_open":
-                logging.debug(f"Move the Servo {movement_amount} degrees (Position 1)")
-                new_position = (servo_controller.get_current_position() + movement_amount) 
-                servo_controller.move_to_position(new_position)
-                
-            elif inference_value == "baseline_eyes_closed":
-                logging.debug(f"Move the Servo {movement_amount} degrees (Position 2)")
-                new_position = (servo_controller.get_current_position() + movement_amount)
-                servo_controller.move_to_position(new_position)
             
-            logging.info(f"Final Servo Position: {servo_controller.get_current_position()}")
+            lookup = Action._get_lookup()
+            
+            
+            target_servo_angles = lookup.get_servo_angles_from_hash(predicted_hash)
+            target_position = lookup.get_position_from_hash(predicted_hash)
+            
+            logging.info(f"Target servo angles: {target_servo_angles}")
+            logging.info(f"Target 3D position: {target_position}")
+            
+            
+            servo_controller.move_to_positions(target_servo_angles)
+            
+            logging.info(f"Final Servo Positions: {servo_controller.get_current_positions()}")
             
         except Exception as e:
-            logging.debug(
-                f"""Something went wrong when attempting to perform an action: {e}\nExiting action phase."""
-            )
-            exit()
-
-    def lookup_tuple_value_from_hash(
-        inference_data: pandas.DataFrame = None, hash_value: str = None
-    ):
-        """
-        Look up the move_to_position tuple value using a hash value.
-
-        Args:
-            inference_data (pd.DataFrame): DataFrame containing 'prosthetic_cartesian_3d_position' and 'prosthetic_cartesian_3d_position_hash_value' columns
-            hash_value (int): The prosthetic_cartesian_3d_position_hash_value value to look up
-
-        Returns:
-            tuple: The corresponding move_to_position tuple
-
-        Raises:
-            ValueError: If no matching hash value is found
-        """
-        # Find the matching row
-        matching_row = inference_data[
-            inference_data["prosthetic_cartesian_3d_position_hash_value"] == hash_value
-        ]
-
-        # Check if we found exactly one match
-        if len(matching_row) == 0:
-            raise ValueError(f"No tuple found for hash value {hash_value}")
-        elif len(matching_row) > 1:
-            raise ValueError(f"Multiple tuples found for hash value {hash_value}")
-
-        # Return the move_to_position tuple
-        return matching_row["move_to_position"].iloc[0]
-
-    def move_prosthetic_to_appropriate_position(prosthetic_cartesian_3d_position):
-        # ingest the tuple value found from the prediction and move the prosthetic to its position
-        # please note, the tuple value from the prediciton must be extracted using the prosthetic_cartesian_3d_position_hash_value value
-        # simply lookup the prosthetic_cartesian_3d_position_hash_value's respective tuple value, found from prosthetic_cartesian_3d_position, and pass it for the function
-        move_to_position = prosthetic_cartesian_3d_position
-        return int(move_to_position)
-
+            logging.error(f"Something went wrong when attempting to perform an action: {e}")
+            logging.error("Exiting action phase.")
 
 if __name__ == "__main__":
     logging.info("-" * 100)
@@ -189,9 +221,9 @@ if __name__ == "__main__":
     logging.debug("This is the Action Sequence. This is where the machine learning model interacts with the hardware.")
     logging.info("-" * 50)
 
-    # Initialize servo controller
+
     servo_controller = ServoController()
-    if not servo_controller.initialize_servo():
+    if not servo_controller.initialize_servos(): 
         exit()
 
     start_time = time.time()
@@ -203,7 +235,7 @@ if __name__ == "__main__":
             logging.info("User has opted to End the Action Sequence.")
             running = False
         else:
-            servo_controller.reset_to_origin()  # Reset to position 0 before each action
+            servo_controller.reset_to_origin()  
             Action.perform_action(servo_controller)
             
     end_time = time.time()

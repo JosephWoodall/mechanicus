@@ -56,15 +56,13 @@ class DataCollector:
                 data = json.load(f)
             logging.info(f"Successfully loaded data from {json_filename}.")
             
-            # Extract sample data (exclude metadata)
             samples = {k: v for k, v in data.items() if k != 'metadata'}
             
-            # Convert to DataFrame
             rows = []
             for sample_id, sample_data in samples.items():
                 row = {
-                    **{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
-                    **{f'position_{coord}': pos for coord, pos in zip(['x', 'y', 'z'], sample_data['position'])},
+                    #**{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
+                    #**{f'position_{coord}': pos for coord, pos in zip(['x', 'y', 'z'], sample_data['position'])},
                     'position_hash': sample_data['position_hash'],
                     **{f'eeg_{i}': eeg_val for i, eeg_val in enumerate(sample_data['eeg_data'])}
                 }
@@ -74,7 +72,6 @@ class DataCollector:
             
             
             logging.info(f"Loaded {len(df)} samples with {len(df.columns)} features")
-            #logging.info(f"Unique servo angle combinations: {df['servo_angle_combination'].nunique()}")
             
             logging.info("...Servo EEG data loaded successfully.")
             
@@ -164,14 +161,12 @@ class PreprocessData:
             if phase == Phase.TRAINING:
 
                 x = focus_data.drop(response_variable, axis=1)
-                # x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)
                 y = focus_data[response_variable]
             elif phase == Phase.INFERENCE:
                 x = focus_data.drop(response_variable, axis=1)
-                # x = focus_data.drop("prosthetic_cartesian_3d_position", axis=1)
                 x_feature_names = x.columns
                 x = scaler.fit_transform(x)
                 x = pandas.DataFrame(x, columns=x_feature_names)

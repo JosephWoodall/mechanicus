@@ -6,30 +6,24 @@ Models to be tested
 -------------------------
 Random Forest Classifier
 -------------------------
-Random Forest Classifier: Mean Score = 1.0000 (+/- 0.0000)
+Random Forest Classifier: Mean Score = 0.0210 (+/- 0.0143)
 Important Features
-          features    scores
-5       position_z  0.193197
-2   servo_angles_2  0.154991
-0   servo_angles_0  0.130577
-3       position_x  0.126374
-1   servo_angles_1  0.119696
-4       position_y  0.082357
-7            eeg_1  0.040172
-10           eeg_4  0.039174
-8            eeg_2  0.038280
-9            eeg_3  0.038265
-6            eeg_0  0.036916
+  features    scores
+1    eeg_1  0.203052
+2    eeg_2  0.201810
+3    eeg_3  0.200746
+0    eeg_0  0.197804
+4    eeg_4  0.196588
 ----------------------------------------------------------------------------------------------------
 
 
 -------------------------
 Best Model Proposed to be Used for Inference:
 -------------------------
-Model Class: RandomForestClassifier()
-Largest Mean Score: 1.0
+Model Class: RandomForestClassifier(max_features='log2')
+Largest Mean Score: 0.020999999999999998
 Best Score Key: Random Forest Classifier
-Best Score Hyperparameters: {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'monotonic_cst': None, 'n_estimators': 100, 'n_jobs': None, 'oob_score': False, 'random_state': None, 'verbose': 0, 'warm_start': False}
+Best Score Hyperparameters: {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': 'log2', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'monotonic_cst': None, 'n_estimators': 100, 'n_jobs': None, 'oob_score': False, 'random_state': None, 'verbose': 0, 'warm_start': False}
 -------------------------
 
 
@@ -47,11 +41,11 @@ Saving Best Model for Inference via Pickle...
 ----------------------------------------------------------------------------------------------------
 Inference Model Information
 ----------------------------------------------------------------------------------------------------
-Inference Model Type: RandomForestClassifier()
-Largest Mean Score: 1.0
+Inference Model Type: RandomForestClassifier(max_features='log2')
+Largest Mean Score: 0.020999999999999998
 Train Data Size Used: 1000
-Date Created: 2025-06-23T16:58:00.128514
+Date Created: 2025-06-23T17:18:19.076419
 ----------------------------------------------------------------------------------------------------
 
 
-Total time to complete evaluation: 4.96 seconds
+Total time to complete evaluation: 9.79 seconds

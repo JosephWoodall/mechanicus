@@ -6,57 +6,45 @@ Info
 -------------------------
 <class 'pandas.core.frame.DataFrame'>
 RangeIndex: 1000 entries, 0 to 999
-Data columns (total 12 columns):
- #   Column          Non-Null Count  Dtype  
----  ------          --------------  -----  
- 0   servo_angles_0  1000 non-null   float64
- 1   servo_angles_1  1000 non-null   float64
- 2   servo_angles_2  1000 non-null   float64
- 3   position_x      1000 non-null   float64
- 4   position_y      1000 non-null   float64
- 5   position_z      1000 non-null   float64
- 6   position_hash   1000 non-null   object 
- 7   eeg_0           1000 non-null   float64
- 8   eeg_1           1000 non-null   float64
- 9   eeg_2           1000 non-null   float64
- 10  eeg_3           1000 non-null   float64
- 11  eeg_4           1000 non-null   float64
-dtypes: float64(11), object(1)
-memory usage: 93.9+ KB
+Data columns (total 6 columns):
+ #   Column         Non-Null Count  Dtype  
+---  ------         --------------  -----  
+ 0   position_hash  1000 non-null   object 
+ 1   eeg_0          1000 non-null   float64
+ 2   eeg_1          1000 non-null   float64
+ 3   eeg_2          1000 non-null   float64
+ 4   eeg_3          1000 non-null   float64
+ 5   eeg_4          1000 non-null   float64
+dtypes: float64(5), object(1)
+memory usage: 47.0+ KB
 None
 
 
 -------------------------
 Describe
 -------------------------
-       servo_angles_0  servo_angles_1  servo_angles_2   position_x    position_y   position_z        eeg_0        eeg_1        eeg_2        eeg_3        eeg_4
-count     1000.000000     1000.000000      1000.00000  1000.000000  1.000000e+03  1000.000000  1000.000000  1000.000000  1000.000000  1000.000000  1000.000000
-mean        88.920000       91.260000        90.72000     0.001988  1.314919e-01    -0.010545     0.010209     0.000553     0.030008    -0.034363     0.037419
-std         61.008816       61.954909        62.69204     0.301779  2.186704e-01     0.468258     1.025869     0.979192     1.000823     1.021261     1.014244
-min          0.000000        0.000000         0.00000    -0.951057  0.000000e+00    -1.000000    -3.238772    -3.378050    -2.846217    -3.666071    -3.216413
-25%         36.000000       36.000000        36.00000    -0.078267  0.000000e+00    -0.309017    -0.690043    -0.638259    -0.695395    -0.714075    -0.650403
-50%         72.000000      108.000000        90.00000     0.000000  2.879317e-17     0.000000    -0.028130    -0.000660     0.022296    -0.023902     0.046477
-75%        144.000000      144.000000       144.00000     0.072654  2.236068e-01     0.247214     0.740865     0.599553     0.696591     0.616458     0.710271
-max        180.000000      180.000000       180.00000     0.951057  9.045085e-01     1.000000     3.920248     2.961048     3.768471     3.388485     3.056980
+             eeg_0        eeg_1        eeg_2        eeg_3        eeg_4
+count  1000.000000  1000.000000  1000.000000  1000.000000  1000.000000
+mean      0.010209     0.000553     0.030008    -0.034363     0.037419
+std       1.025869     0.979192     1.000823     1.021261     1.014244
+min      -3.238772    -3.378050    -2.846217    -3.666071    -3.216413
+25%      -0.690043    -0.638259    -0.695395    -0.714075    -0.650403
+50%      -0.028130    -0.000660     0.022296    -0.023902     0.046477
+75%       0.740865     0.599553     0.696591     0.616458     0.710271
+max       3.920248     2.961048     3.768471     3.388485     3.056980
 -------------------------
 
 
 -------------------------
 Nulls per Feature
 -------------------------
-                total_null_values  percent_of_null_values
-servo_angles_0                  0                     0.0
-servo_angles_1                  0                     0.0
-servo_angles_2                  0                     0.0
-position_x                      0                     0.0
-position_y                      0                     0.0
-position_z                      0                     0.0
-position_hash                   0                     0.0
-eeg_0                           0                     0.0
-eeg_1                           0                     0.0
-eeg_2                           0                     0.0
-eeg_3                           0                     0.0
-eeg_4                           0                     0.0
+               total_null_values  percent_of_null_values
+position_hash                  0                     0.0
+eeg_0                          0                     0.0
+eeg_1                          0                     0.0
+eeg_2                          0                     0.0
+eeg_3                          0                     0.0
+eeg_4                          0                     0.0
 Features with more than 10% null values:
 Empty DataFrame
 Columns: [total_null_values, percent_of_null_values]

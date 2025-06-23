@@ -24,7 +24,6 @@ class ServoAngleGenerator:
         self.origin = numpy.array(origin if origin is not None else [0] * n_servos)
         self.ceiling = numpy.array(ceiling if ceiling is not None else [180] * n_servos)
         
-        # Calculate steps per servo to generate enough combinations
         self.steps_per_servo = max(3, int(numpy.ceil(total_positions ** (1 / n_servos))))
         
     def generate_servo_combinations(self):
@@ -42,18 +41,15 @@ class ServoAngleGenerator:
         
         combinations = numpy.column_stack([grid.flatten() for grid in angle_grids])
         
-        # Always select exactly total_positions combinations
         if len(combinations) > self.total_positions:
-            numpy.random.seed(None)  # Use current time for randomness
+            numpy.random.seed(None)
             indices = numpy.random.choice(len(combinations), self.total_positions, replace=False)
             combinations = combinations[indices]
         elif len(combinations) < self.total_positions:
-            # If we don't have enough combinations, generate more with random variations
             additional_needed = self.total_positions - len(combinations)
             random_variations = []
             
             for _ in range(additional_needed):
-                # Create random variations within the servo ranges
                 random_combo = []
                 for i in range(self.n_servos):
                     random_angle = numpy.random.uniform(self.origin[i], self.ceiling[i])
@@ -104,7 +100,7 @@ class ServoAngleGenerator:
         Returns:
             numpy.ndarray: Simulated EEG data of shape (n_rows, n_eeg_channels).
         """
-        numpy.random.seed(None)  # Use current time for randomness
+        numpy.random.seed(None)
         return numpy.random.normal(mean, std, size=(n_rows, n_eeg_channels))
         
     def generate_position_mappings(self):
@@ -134,7 +130,7 @@ class ServoAngleGenerator:
         """
         rounded_position = numpy.round(position, precision)
         position_str = f"{rounded_position[0]:.{precision}f}_{rounded_position[1]:.{precision}f}_{rounded_position[2]:.{precision}f}"
-        hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]  # Use first 12 characters
+        hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]
         return hash_value
     
     def generate_complete_dataset(self, n_eeg_channels, samples_per_position=1, mean=0.0, std=1.0, 
@@ -157,15 +153,12 @@ class ServoAngleGenerator:
         servo_angles, positions = self.generate_position_mappings()
         
         if total_samples is not None:
-            # Calculate how many samples per position we need to reach total_samples
             calculated_samples_per_position = max(1, total_samples // self.total_positions)
             remaining_samples = total_samples % self.total_positions
             
-            # Repeat servo angles and positions
             servo_angles = numpy.repeat(servo_angles, calculated_samples_per_position, axis=0)
             positions = numpy.repeat(positions, calculated_samples_per_position, axis=0)
             
-            # Add remaining samples if needed
             if remaining_samples > 0:
                 extra_servo = servo_angles[:remaining_samples]
                 extra_positions = positions[:remaining_samples]
@@ -194,7 +187,7 @@ class ServoAngleGenerator:
         for i in range(n_total_samples):
             position_hash = self.position_to_hash(positions[i]) 
             position_hashes.append(position_hash)
-            if position_hash not in hash_to_servo_lookup:  # Only store unique combinations
+            if position_hash not in hash_to_servo_lookup:  
                 hash_to_servo_lookup[position_hash] = servo_angles[i].tolist()
                 hash_to_position_lookup[position_hash] = positions[i].tolist()
         
@@ -251,27 +244,24 @@ class ServoAngleGenerator:
 
 if __name__ == "__main__":
     
-    # Example 1: Specify total positions in constructor
     generator = ServoAngleGenerator(
         n_servos=3,
         origin=[0, 0, 0],
         ceiling=[180, 180, 180],
-        total_positions=200  # This will create 200 unique servo positions
+        total_positions=200 
     )
     
     print(f"Generator configured for {generator.total_positions} unique positions")
     
-    # Example 2: Generate dataset with specific total sample count
     training_dataset = generator.generate_complete_dataset(
         n_eeg_channels=5,
-        total_samples=1000,  # Exactly 1000 samples total
+        total_samples=1000,  
         mean=0.0,
         std=1.0,
         is_inference_data="n"
     )
     generator.save_dataset_to_json(training_dataset, 'training_data.json')
     
-    # Generate inference dataset (single sample)
     inference_dataset = generator.generate_complete_dataset(
         n_eeg_channels=5,
         samples_per_position=1,
