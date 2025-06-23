@@ -5,47 +5,62 @@ training_data_eda.txt
 Info
 -------------------------
 <class 'pandas.core.frame.DataFrame'>
-RangeIndex: 10000 entries, 0 to 9999
-Columns: 9760 entries, 1 to activity_type
-dtypes: float64(9759), object(1)
-memory usage: 744.6+ MB
+RangeIndex: 15 entries, 0 to 14
+Data columns (total 13 columns):
+ #   Column                   Non-Null Count  Dtype  
+---  ------                   --------------  -----  
+ 0   sample_id                15 non-null     object 
+ 1   servo_angles_0           15 non-null     float64
+ 2   servo_angles_1           15 non-null     float64
+ 3   servo_angles_2           15 non-null     float64
+ 4   position_x               15 non-null     float64
+ 5   position_y               15 non-null     float64
+ 6   position_z               15 non-null     float64
+ 7   eeg_0                    15 non-null     float64
+ 8   eeg_1                    15 non-null     float64
+ 9   eeg_2                    15 non-null     float64
+ 10  eeg_3                    15 non-null     float64
+ 11  eeg_4                    15 non-null     float64
+ 12  servo_angle_combination  15 non-null     object 
+dtypes: float64(11), object(2)
+memory usage: 1.7+ KB
 None
 
 
 -------------------------
 Describe
 -------------------------
-                  1             2             3             4             5             6  ...          9754          9755          9756          9757          9758          9759
-count  10000.000000  10000.000000  10000.000000  10000.000000  10000.000000  10000.000000  ...  10000.000000  10000.000000  10000.000000  10000.000000  10000.000000  10000.000000
-mean      -0.003193     -0.001546      0.007349      0.004031      0.002004      0.004728  ...      0.009173      0.003269      0.000528     -0.008297     -0.005465      0.009268
-std        0.582368      0.574901      0.576536      0.581128      0.574496      0.575916  ...      0.578426      0.577243      0.578839      0.574696      0.579941      0.579008
-min       -0.999736     -0.999804     -0.999362     -0.999901     -0.999808     -0.999728  ...     -0.999893     -0.999757     -0.999965     -0.999859     -0.999980     -0.999825
-25%       -0.512953     -0.494081     -0.491854     -0.503177     -0.483581     -0.493626  ...     -0.495672     -0.491641     -0.506652     -0.503148     -0.515167     -0.489450
-50%       -0.006275     -0.004729      0.010534      0.009987     -0.004156      0.010543  ...      0.025636      0.002935     -0.000501     -0.012673     -0.006741      0.013158
-75%        0.511180      0.496510      0.508509      0.518901      0.502652      0.501639  ...      0.508278      0.499994      0.501768      0.492460      0.493666      0.515666
-max        0.999921      0.999716      0.999804      0.999852      0.999644      0.999935  ...      0.999806      0.998987      0.999550      0.999962      0.999927      0.999885
+       servo_angles_0  servo_angles_1  servo_angles_2  ...      eeg_2      eeg_3      eeg_4
+count       15.000000       15.000000       15.000000  ...  15.000000  15.000000  15.000000
+mean        84.000000       96.000000      120.000000  ...  -0.048608   0.166067  -0.555328
+std         71.892777       79.534359       65.137218  ...   0.916243   1.016999   0.765364
+min          0.000000        0.000000        0.000000  ...  -2.291510  -1.929440  -1.485755
+25%          0.000000        0.000000       90.000000  ...  -0.524708  -0.253335  -1.316961
+50%         90.000000       90.000000       90.000000  ...  -0.033439   0.090804  -0.436849
+75%        135.000000      180.000000      180.000000  ...   0.443530   0.845295  -0.139491
+max        180.000000      180.000000      180.000000  ...   1.214550   1.474729   1.098654
 
-[8 rows x 9759 columns]
+[8 rows x 11 columns]
 -------------------------
 
 
 -------------------------
 Nulls per Feature
 -------------------------
-               total_null_values  percent_of_null_values
-1                              0                     0.0
-2                              0                     0.0
-3                              0                     0.0
-4                              0                     0.0
-5                              0                     0.0
-...                          ...                     ...
-9756                           0                     0.0
-9757                           0                     0.0
-9758                           0                     0.0
-9759                           0                     0.0
-activity_type                  0                     0.0
-
-[9760 rows x 2 columns]
+                         total_null_values  percent_of_null_values
+sample_id                                0                     0.0
+servo_angles_0                           0                     0.0
+servo_angles_1                           0                     0.0
+servo_angles_2                           0                     0.0
+position_x                               0                     0.0
+position_y                               0                     0.0
+position_z                               0                     0.0
+eeg_0                                    0                     0.0
+eeg_1                                    0                     0.0
+eeg_2                                    0                     0.0
+eeg_3                                    0                     0.0
+eeg_4                                    0                     0.0
+servo_angle_combination                  0                     0.0
 Features with more than 10% null values:
 Empty DataFrame
 Columns: [total_null_values, percent_of_null_values]
