@@ -16,10 +16,8 @@ warnings.filterwarnings("ignore")
 import pickle
 import pandas
 import time
-import os
 from pathlib import Path
 
-# Only import pyfirmata2 if not in test mode
 if "--test" not in sys.argv and '-t' not in sys.argv:
     try:
         import pyfirmata2
@@ -122,7 +120,6 @@ class HashToServoLookup:
                 logging.info("Attempting to generate hash lookup file...")
                 self._generate_lookup_file()
                 
-                # Try loading again after generation
                 if not lookup_path.exists():
                     logging.error("Failed to generate hash lookup file")
                     self._fallback_to_inference_data()
@@ -131,7 +128,6 @@ class HashToServoLookup:
             with open(self.lookup_file, 'r') as f:
                 data = json.load(f)
             
-            # Load from the hash lookup file structure
             self.hash_to_servo = data.get('hash_to_servo_lookup', {})
             self.hash_to_position = data.get('hash_to_position_lookup', {})
             
@@ -176,12 +172,10 @@ class HashToServoLookup:
             with open("inference_data.json", 'r') as f:
                 data = json.load(f)
             
-            # Check metadata first
             metadata = data.get('metadata', {})
             self.hash_to_servo = metadata.get('hash_to_servo_lookup', {})
             self.hash_to_position = metadata.get('hash_to_position_lookup', {})
             
-            # If not in metadata, create from samples
             if not self.hash_to_servo:
                 logging.info("No hash lookup in metadata, creating from samples...")
                 self._create_lookup_from_samples(data)
@@ -213,13 +207,11 @@ class HashToServoLookup:
         if servo_angles is None:
             logging.warning(f"Hash {position_hash} not found in lookup table")
             
-            # Try to find closest match
             closest_hash = self._find_closest_hash(position_hash)
             if closest_hash:
                 logging.info(f"Using closest match hash: {closest_hash}")
                 servo_angles = self.hash_to_servo[closest_hash]
             else:
-                # Generate fallback based on hash
                 servo_angles = self._generate_fallback_angles(position_hash)
                 logging.info(f"Generated fallback servo angles: {servo_angles}")
                 
@@ -230,7 +222,6 @@ class HashToServoLookup:
         position = self.hash_to_position.get(position_hash, None)
         if position is None:
             logging.warning(f"No position found for hash: {position_hash}")
-            # Try closest match
             closest_hash = self._find_closest_hash(position_hash)
             if closest_hash:
                 position = self.hash_to_position.get(closest_hash, [0, 0, 0])
@@ -245,31 +236,27 @@ class HashToServoLookup:
             
         available_hashes = list(self.hash_to_servo.keys())
         
-        # Simple approach: find hash with most matching characters
         best_match = None
         best_score = 0
         
         for hash_candidate in available_hashes:
-            # Count matching characters at same positions
             score = sum(1 for a, b in zip(target_hash, hash_candidate) if a == b)
             if score > best_score:
                 best_score = score
                 best_match = hash_candidate
         
-        # Only return if we have reasonable similarity (at least 50% match)
         if best_score >= len(target_hash) * 0.5:
             return best_match
         return None
     
     def _generate_fallback_angles(self, position_hash):
         """Generate servo angles from hash when no match found"""
-        # Use hash to generate deterministic but reasonable servo angles
         try:
-            hash_int = int(position_hash[:8], 16) % (2**32)  # Use first 8 chars
+            hash_int = int(position_hash[:8], 16) % (2**32)  
         except ValueError:
             hash_int = hash(position_hash) % (2**32)
         
-        # Generate angles in valid servo range using hash as seed
+
         import random
         random.seed(hash_int)
         
@@ -326,10 +313,8 @@ class Action:
         if not inference_file.exists() or not inference_file.is_file():
             logging.info("Inference data file not found. Generating inference dataset...")
             try:
-                # Import data collection module
                 from data_collection import ServoAngleGenerator
                 
-                # Generate inference data using config
                 generator = ServoAngleGenerator()
                 
                 inference_dataset = generator.generate_complete_dataset(
@@ -454,7 +439,6 @@ if __name__ == "__main__":
     logging.debug("This is the Action Sequence. This is where the machine learning model interacts with the hardware.")
     logging.info("-" * 50)
 
-    # Ensure inference data exists before initializing servo controller
     if not Action._ensure_inference_data_exists():
         logging.error("Cannot proceed without inference data. Exiting.")
         exit(1)

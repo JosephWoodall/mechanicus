@@ -3,13 +3,11 @@ import json
 import hashlib
 import datetime
 import yaml
-from pathlib import Path
 
 class HashLookupGenerator:
     """Generate comprehensive hash-to-servo lookup table using shared config"""
     
     def __init__(self, config=None):
-        # Load from config or use defaults
         if config is None:
             config = self.load_config()
         
@@ -64,17 +62,14 @@ class HashLookupGenerator:
         print(f"Servo range: {self.origin} to {self.ceiling}")
         print(f"Step size: {self.step_size} degrees")
         
-        # Generate ALL servo angle combinations with specified step size
         servo_combinations = []
         
-        # Create ranges for each servo
         servo_ranges = []
         for i in range(self.n_servos):
             servo_range = list(range(int(self.origin[i]), int(self.ceiling[i]) + 1, self.step_size))
             servo_ranges.append(servo_range)
             print(f"Servo {i+1}: {len(servo_range)} steps from {self.origin[i]} to {self.ceiling[i]}")
         
-        # Generate all combinations
         for servo1 in servo_ranges[0]:
             for servo2 in servo_ranges[1]:
                 for servo3 in servo_ranges[2]:
@@ -83,19 +78,15 @@ class HashLookupGenerator:
         total_combinations = len(servo_combinations)
         print(f"Generated {total_combinations} servo angle combinations")
         
-        # Build lookup dictionaries
         hash_to_servo_lookup = {}
         hash_to_position_lookup = {}
         
         print("Processing combinations and generating hashes...")
         for i, servo_angles in enumerate(servo_combinations):
-            # Calculate position from servo angles
             position = self.angles_to_cartesian_position(servo_angles)
             
-            # Generate hash from position
             position_hash = self.position_to_hash(position)
             
-            # Store in lookup tables (handle duplicates)
             if position_hash not in hash_to_servo_lookup:
                 hash_to_servo_lookup[position_hash] = servo_angles
                 hash_to_position_lookup[position_hash] = position.tolist()
@@ -103,7 +94,6 @@ class HashLookupGenerator:
             if (i + 1) % 1000 == 0:
                 print(f"Processed {i + 1}/{total_combinations} combinations")
         
-        # Create lookup file structure
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         lookup_data = {
             'metadata': {
@@ -126,7 +116,6 @@ class HashLookupGenerator:
             'hash_to_position_lookup': hash_to_position_lookup
         }
         
-        # Save to file
         with open(self.output_file, 'w') as f:
             json.dump(lookup_data, f, indent=2)
         
