@@ -41,3 +41,26 @@ python main.py
 
 This project utilzes pyfirmata2, which requires the upload of StandardFirmata to the Arduino board. Please follow the tutorial in the URL below in order to get started before running any of this code:
 https://github.com/berndporr/pyFirmata2?tab=readme-ov-file
+
+# Logical Flow
+
+```mermaid
+flowchart TD
+    A[main.py] --> B[Load YAML Config]
+    B --> C[Check & Generate Files]
+    C --> D[action.py]
+    D --> E[HashToServoLookup]
+    D --> F[ServoController]
+    D --> G[ML Inference]
+    G --> H[Hash to Servo Conversion]
+    H --> I[Servo Movement]
+
+    %% File Dependencies
+    J[hash_to_servo_lookup.json] --> E
+    K[inference_data.json] --> G
+    L[inference_model.pkl] --> G
+
+    style A fill:#e1f5fe
+    style D fill:#f3e5f5
+    style I fill:#e8f5e8
+```
