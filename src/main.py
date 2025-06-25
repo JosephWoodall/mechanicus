@@ -44,7 +44,7 @@ def main():
             )
         logging.info("Running Action Sequence Now...")
         try:
-            call(["python", "src/action.py"])
+            call(["python", "src/action.py", "-t"])
         except Exception as e:
             logging.error(f"Error running the Action Sequence: {e}")
         logging.info("...Action Sequence Terminated.")

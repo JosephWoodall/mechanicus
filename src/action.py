@@ -1,3 +1,4 @@
+import sys
 import logging
 import json
 
@@ -22,7 +23,8 @@ from train import DataCollector, PreprocessData, Phase
 class ServoController:
     """This class handles servo initialization and positioning"""
     
-    def __init__(self):
+    def __init__(self, test_mode = False):
+        self.test_mode = test_mode
         self.board = None
         self.servos = []  
         self.current_positions = [0, 0, 0]  
@@ -30,24 +32,38 @@ class ServoController:
     def initialize_servos(self):
         """Initialize servo connections and move to starting positions"""
         try:
-            port = pyfirmata2.Arduino.AUTODETECT
-            self.board = pyfirmata2.Arduino(port)
-            
-            
-            servo_pins = ["d:9:s", "d:10:s", "d:11:s"]
-            for pin in servo_pins:
-                servo = self.board.get_pin(pin)
-                self.servos.append(servo)
-            
-            self.move_to_positions([0, 0, 0])
-            logging.info(f"Servos initialized to starting positions: {self.current_positions}")
-            return True
+            if self.test_mode:
+                logging.info("TEST MODE: Simulating servo initialization")
+                self.servos = ["simulated_servo_1", "simulated_servo_2", "simulated_servo_3"]
+                logging.info(f"TEST MODE: Servos initialized to starting positions: {self.current_positions}")
+                return True
+            elif self.test_mode == False:
+                port = pyfirmata2.Arduino.AUTODETECT
+                self.board = pyfirmata2.Arduino(port)
+                
+                time.sleep(2) 
+                
+                servo_pins = ["d:9:s", "d:10:s", "d:11:s"]
+                for pin in servo_pins:
+                    servo = self.board.get_pin(pin)
+                    self.servos.append(servo)
+                
+                self.move_to_positions([0, 0, 0])
+                logging.info(f"Servos initialized to starting positions: {self.current_positions}")
+                return True
         except Exception as e:
             logging.error(f"Failed to initialize servos: {e}")
             return False
     
     def move_to_positions(self, positions):
         """Move servos to specific positions"""
+        if self.test_mode: 
+            logging.info(f"TEST MODE: Simulating servo movement to positions: {positions}")
+            for i, position in enumerate(positions):
+                if i < len(self.current_positions):
+                    self.current_positions[i] = position
+            logging.debug(f"TEST MODE: Current positions updated to: {self.current_positions}")
+            return
         if len(self.servos) >= len(positions):
             for i, position in enumerate(positions):
                 if i < len(self.servos):
@@ -57,17 +73,31 @@ class ServoController:
     
     def reset_to_origin(self):
         """Reset all servos to position 0"""
+        if self.test_mode:
+            logging.info("TEST MODE: Simulating reset to origin positions")
+            self.current_positions = [0, 0, 0]
+            logging.debug(f"TEST MODE: Current positions reset to: {self.current_positions}")
+            return
         self.move_to_positions([0, 0, 0])
         logging.info(f"Servos reset to origin positions: {self.current_positions}")
     
     def get_current_positions(self):
         """Get current servo positions"""
         return self.current_positions
+    
+    def cleanup(self):
+        """Clean up board connection"""
+        if self.board and not self.test_mode:
+            try:
+                self.board.exit()
+                logging.info("Board connection cleaned up successfully.")
+            except Exception as e:
+                logging.error(f"Error cleaning up board connection: {e}")
 
 class HashToServoLookup:
     """Class to handle hash to servo angle lookup"""
     
-    def __init__(self, dataset_file="final_output_example_of_servo_eeg_dataset.json"):
+    def __init__(self, dataset_file="inference_data.json"):
         """Initialize lookup tables from dataset file"""
         self.hash_to_servo = {}
         self.hash_to_position = {}
@@ -117,6 +147,31 @@ class HashToServoLookup:
             logging.warning(f"No position found for hash: {position_hash}")
             return [0, 0, 0]  
         return position
+    
+    def list_available_hashes(self):
+        """List all available hashes for debugging"""
+        available_hashes = list(self.hash_to_servo.keys())
+        logging.info(f"Available hashes ({len(available_hashes)} total): {available_hashes[:5]}...")
+        return available_hashes 
+    
+    def test_lookup(self):
+        """Test the lookup functionality"""
+        logging.info("Testing HashToServoLookup functionality...")
+        available_hashes = self.list_available_hashes()
+        
+        if not available_hashes:
+            logging.error("No hashes available for testing.")
+            return
+        
+        for i, test_hash in enumerate(available_hashes[:5]):
+            servo_angles = self.get_servo_angles_from_hash(test_hash)
+            position = self.get_position_from_hash(test_hash)
+            
+            logging.info(f"Test {i+1}: Hash '{test_hash}'")
+            logging.info(f"  -> Servo angles: {servo_angles}")
+            logging.info(f"  -> 3D position: {position}")
+        
+        return True
 
 class Action:
     """This class contains functions that leverage the output of the Inference class and move the servo to the appropriate position"""
@@ -214,29 +269,50 @@ class Action:
             logging.error("Exiting action phase.")
 
 if __name__ == "__main__":
+    test_mode = "--test" in sys.argv or '-t' in sys.argv
+    
     logging.info("-" * 100)
-    logging.info("Starting Mechanicus Action Pipeline")
+    if test_mode:
+        logging.info("Starting Mechanicus Action Pipeline (TEST MODE)")
+        print("Running in TEST MODE: Simulating servo movements without hardware.")
+    else:
+        logging.info("Starting Mechanicus Action Pipeline")
+        print("Running in NORMAL MODE: Interacting with hardware.")
     logging.info("-" * 100)
     logging.info("-" * 50)
     logging.debug("This is the Action Sequence. This is where the machine learning model interacts with the hardware.")
     logging.info("-" * 50)
 
 
-    servo_controller = ServoController()
+    servo_controller = ServoController(test_mode=test_mode)
     if not servo_controller.initialize_servos(): 
         exit()
 
     start_time = time.time()
-
-    running = True
-    while running:
-        user_input = input("Press Enter to Inference Another Action, 'q' to quit: ")
-        if user_input == "q":
-            logging.info("User has opted to End the Action Sequence.")
-            running = False
-        else:
-            servo_controller.reset_to_origin()  
-            Action.perform_action(servo_controller)
+    try:
+        running = True
+        while running:
+            if test_mode:
+                user_input = input("Press Enter to test inference, 'l' to test lookup, 'q' to quit: ")
+            else:
+                user_input = input("Press Enter to Inference Another Action, 'q' to quit: ")
+                
+            if user_input.lower() == "q":
+                logging.info("User has opted to End the Action Sequence.")
+                running = False
+            elif user_input.lower() == "l" and test_mode:
+                lookup = Action._get_lookup()
+                lookup.test_lookup()
+            else:
+                servo_controller.reset_to_origin()  
+                Action.perform_action(servo_controller)
+    except KeyboardInterrupt:
+        logging.info("KeyboardInterrupt detected. Exiting Action Sequence.")
+    except Exception as e:
+        logging.error(f"An error occurred during the action sequence: {e}")
+    finally:
+        servo_controller.cleanup()  
+        logging.info("Servo controller cleaned up successfully.")
             
     end_time = time.time()
     logging.info("-" * 100)
