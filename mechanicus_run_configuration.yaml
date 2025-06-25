@@ -1,0 +1,22 @@
+dataset:
+  eeg_mean: 0.0
+  eeg_std: 1.0
+  inference_samples_per_position: 1
+  n_eeg_channels: 5
+  training_samples: 1000
+hash_lookup:
+  output_file: hash_to_servo_lookup.json
+  precision: 6
+  step_size: 5
+servo_config:
+  ceiling:
+  - 180
+  - 180
+  - 180
+  n_servos: 3
+  origin:
+  - 0
+  - 0
+  - 0
+  total_positions: 200
+test_mode: true

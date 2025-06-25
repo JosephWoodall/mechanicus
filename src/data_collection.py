@@ -1,12 +1,26 @@
+import logging, warnings
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="mechanicus_data_collection.log",
+    filemode="w",
+)
+logger = logging.getLogger(__name__)
+
+warnings.filterwarnings("ignore")
+
 import numpy 
 import json
 import hashlib
 import random
 import datetime
+import yaml
+from pathlib import Path
 
 class ServoAngleGenerator:
     
-    def __init__(self, n_servos=3, origin=[0,0,0], ceiling=[180,180,180], total_positions=100):
+    def __init__(self, config=None):
         """Generates discrete servo angle combinations that map to 3D cartesian positions.
         
         Each servo has an angle range from origin to ceiling. The combination of all servo angles 
@@ -14,17 +28,36 @@ class ServoAngleGenerator:
         positions that the prosthetic arm can move to.
 
         Args:
-            n_servos (int, optional): number of servos in the arm. Defaults to 3.
-            origin (list, optional): starting angles for each servo. Defaults to [0,0,0].
-            ceiling (list, optional): maximum angles for each servo. Defaults to [180,180,180].
-            total_positions (int, optional): total number of unique servo positions to generate. Defaults to 100.
+            config (dict, optional): Configuration dictionary. If None, loads from mechanicus_run_configuration.yaml.
         """
-        self.n_servos = n_servos 
-        self.total_positions = total_positions
-        self.origin = numpy.array(origin if origin is not None else [0] * n_servos)
-        self.ceiling = numpy.array(ceiling if ceiling is not None else [180] * n_servos)
+        if config is None:
+            config = self.load_config()
         
-        self.steps_per_servo = max(3, int(numpy.ceil(total_positions ** (1 / n_servos))))
+        servo_config = config.get('servo_config', {})
+        self.n_servos = servo_config.get('n_servos', 3)
+        self.total_positions = servo_config.get('total_positions', 100)
+        self.origin = numpy.array(servo_config.get('origin', [0, 0, 0]))
+        self.ceiling = numpy.array(servo_config.get('ceiling', [180, 180, 180]))
+        
+        self.steps_per_servo = max(3, int(numpy.ceil(self.total_positions ** (1 / self.n_servos))))
+        
+        logging.info(f"ServoAngleGenerator initialized:")
+        logging.info(f"  - Servos: {self.n_servos}")
+        logging.info(f"  - Origin: {self.origin.tolist()}")
+        logging.info(f"  - Ceiling: {self.ceiling.tolist()}")
+        logging.info(f"  - Total positions: {self.total_positions}")
+        
+    def load_config(self):
+        """Load configuration from YAML file"""
+        try:
+            with open("mechanicus_run_configuration.yaml", 'r') as f:
+                config = yaml.safe_load(f)
+                logging.info("Loaded configuration from mechanicus_run_configuration.yaml")
+                return config
+        except Exception as e:
+            logging.info(f"Warning: Could not load mechanicus_run_configuration.yaml: {e}")
+            logging.info("Using default configuration values")
+            return {}
         
     def generate_servo_combinations(self):
         """Generate discrete servo angle combinations within the specified range.
@@ -133,12 +166,12 @@ class ServoAngleGenerator:
         hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]
         return hash_value
     
-    def generate_complete_dataset(self, n_eeg_channels, samples_per_position=1, mean=0.0, std=1.0, 
+    def generate_complete_dataset(self, n_eeg_channels=None, samples_per_position=1, mean=0.0, std=1.0, 
                                  total_samples=None, is_inference_data="n"):
         """Generate a complete dataset with eeg data, servo angles, and positions for each eeg sample.
         
         Args:
-            n_eeg_channels (int): number of eeg channels.
+            n_eeg_channels (int, optional): number of eeg channels. If None, loads from config.
             samples_per_position (int, optional): number of eeg samples per servo position. Defaults to 1.
             mean (float, optional): mean for eeg data generation. Defaults to 0.0.
             std (float, optional): standard deviation for eeg data generation. Defaults to 1.0.
@@ -147,9 +180,14 @@ class ServoAngleGenerator:
             is_inference_data (str, optional): "y" to return only first sample, "n" for all samples.
             
         Returns:
-            dict: Dataset with samples and metadata.
+            dict: Dataset with samples and metadata (WITHOUT hash lookup tables).
         """
         
+        if n_eeg_channels is None:
+            config = self.load_config()
+            dataset_config = config.get('dataset', {})
+            n_eeg_channels = dataset_config.get('n_eeg_channels', 5)
+            
         servo_angles, positions = self.generate_position_mappings()
         
         if total_samples is not None:
@@ -180,19 +218,14 @@ class ServoAngleGenerator:
             std
         )
         
-        hash_to_servo_lookup = {}
-        hash_to_position_lookup = {}
-        
         position_hashes = []
         for i in range(n_total_samples):
             position_hash = self.position_to_hash(positions[i]) 
             position_hashes.append(position_hash)
-            if position_hash not in hash_to_servo_lookup:  
-                hash_to_servo_lookup[position_hash] = servo_angles[i].tolist()
-                hash_to_position_lookup[position_hash] = positions[i].tolist()
         
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         dataset_id = random.randint(1000, 9999)
+        
         metadata = {
             'n_servos': self.n_servos,
             'n_eeg_channels': n_eeg_channels,
@@ -206,8 +239,7 @@ class ServoAngleGenerator:
             'collection_method': 'simulated',
             'timestamp': timestamp,
             'dataset_id': dataset_id,
-            'hash_to_servo_lookup': hash_to_servo_lookup,
-            'hash_to_position_lookup': hash_to_position_lookup
+            'hash_lookup_file': 'hash_to_servo_lookup.json'  
         }
         
         dataset = {}
@@ -240,33 +272,71 @@ class ServoAngleGenerator:
         """
         with open(filename, 'w') as f:
             json.dump(dataset, f, indent=2)
-        print(f"Dataset saved to {filename}")
+        logging.info(f"Dataset saved to {filename}")
 
 if __name__ == "__main__":
     
-    generator = ServoAngleGenerator(
-        n_servos=3,
-        origin=[0, 0, 0],
-        ceiling=[180, 180, 180],
-        total_positions=200 
-    )
+    logging.info("=" * 60)
+    logging.info("STEP 1: Generating comprehensive hash lookup table...")
+    logging.info("=" * 60)
     
-    print(f"Generator configured for {generator.total_positions} unique positions")
+    try:
+        import subprocess
+        result = subprocess.run(["python", "src/generate_hash_lookup.py"], 
+                              capture_output=True, text=True, check=True)
+        logging.info("Hash lookup generation completed successfully!")
+        if result.stdout:
+            logging.info(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logging.info(f"Error generating hash lookup: {e}")
+        logging.info("Stderr:", e.stderr)
+    except Exception as e:
+        logging.info(f"Could not run hash lookup generator: {e}")
+        logging.info("Please run 'python src/generate_hash_lookup.py' manually first")
     
-    training_dataset = generator.generate_complete_dataset(
-        n_eeg_channels=5,
-        total_samples=1000,  
-        mean=0.0,
-        std=1.0,
-        is_inference_data="n"
-    )
-    generator.save_dataset_to_json(training_dataset, 'training_data.json')
+    logging.info("\n" + "=" * 60)
+    logging.info("STEP 2: Generating datasets...")
+    logging.info("=" * 60)
     
-    inference_dataset = generator.generate_complete_dataset(
-        n_eeg_channels=5,
-        samples_per_position=1,
-        mean=0.0,
-        std=1.0,
-        is_inference_data="y"
-    )
-    generator.save_dataset_to_json(inference_dataset, 'inference_data.json')
+    generator = ServoAngleGenerator()
+    config = generator.load_config()
+    dataset_config = config.get('dataset', {})
+    
+    logging.info(f"Dataset configuration:")
+    logging.info(f"  - EEG channels: {dataset_config.get('n_eeg_channels', 5)}")
+    logging.info(f"  - Training samples: {dataset_config.get('training_samples', 1000)}")
+    logging.info(f"  - Inference samples per position: {dataset_config.get('inference_samples_per_position', 1)}")
+    
+    if not Path("training_data.json").exists():
+        logging.info("\nGenerating training dataset...")
+        training_dataset = generator.generate_complete_dataset(
+            n_eeg_channels=dataset_config.get('n_eeg_channels', 5),
+            total_samples=dataset_config.get('training_samples', 1000),
+            mean=dataset_config.get('eeg_mean', 0.0),
+            std=dataset_config.get('eeg_std', 1.0),
+            is_inference_data="n"
+        )
+        generator.save_dataset_to_json(training_dataset, 'training_data.json')
+    else:
+        logging.info("Training dataset already exists.")
+    
+    if not Path("inference_data.json").exists():
+        logging.info("\nGenerating inference dataset...")
+        inference_dataset = generator.generate_complete_dataset(
+            n_eeg_channels=dataset_config.get('n_eeg_channels', 5),
+            samples_per_position=dataset_config.get('inference_samples_per_position', 1),
+            mean=dataset_config.get('eeg_mean', 0.0),
+            std=dataset_config.get('eeg_std', 1.0),
+            is_inference_data="y"
+        )
+        generator.save_dataset_to_json(inference_dataset, 'inference_data.json')
+    else:
+        logging.info("Inference dataset already exists.")
+    
+    logging.info("\n" + "=" * 60)
+    logging.info("DATA COLLECTION COMPLETE!")
+    logging.info("=" * 60)
+    logging.info("Files generated:")
+    logging.info("  - hash_to_servo_lookup.json (comprehensive lookup table)")
+    logging.info("  - training_data.json (clean training data)")
+    logging.info("  - inference_data.json (clean inference data)")

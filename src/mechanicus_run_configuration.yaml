@@ -1,0 +1,19 @@
+test_mode: true
+
+servo_config:
+  n_servos: 3
+  origin: [0, 0, 0]
+  ceiling: [180, 180, 180]
+  total_positions: 200
+
+hash_lookup:
+  step_size: 5  # Smaller step = more coverage (every 5 degrees = 37^3 = 50,653 combinations)
+  precision: 6  # Hash precision for position rounding
+  output_file: "hash_to_servo_lookup.json"
+
+dataset:
+  n_eeg_channels: 5
+  training_samples: 1000
+  inference_samples_per_position: 1
+  eeg_mean: 0.0
+  eeg_std: 1.0
