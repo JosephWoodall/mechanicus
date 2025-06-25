@@ -67,7 +67,7 @@ flowchart TD
 # Desired End Result Logical Flow
 ```mermaid
 flowchart TD
-    %% End User Flow
+    %% End User Runtime Flow (Production)
     A[Device Powers On] --> B[Initialize Hardware & Load Models]
     B --> C[Monitor EEG Sensors]
     C --> D{EEG Anomaly Spike Detected?}
@@ -81,7 +81,7 @@ flowchart TD
     J --> K[Update Current Position State]
     K --> C
     
-    %% Offline Training Flow
+    %% Offline Training Pipeline (Lower Environments)
     L[START: Offline Training Phase] --> M[Acquire Training Data]
     M --> N[Generate EEG-Position Datasets]
     N --> O[Create Sample Inference Data]
@@ -97,8 +97,8 @@ flowchart TD
     T --> U
     U --> V[Deploy Models to Device]
     
-    %% New Version Deployment Flow
-    W[START: New Version Deployment] --> X[Create Test Environment]
+    %% Version Deployment Pipeline (Lower Environments Deployment to Production)
+    W[START: Version Deployment] --> X[Create Test Environment]
     X --> Y[Deploy New Models in Test Mode]
     Y --> Z[Run Mechanicus Test Pipeline]
     Z --> AA{All Tests Pass?}
@@ -200,7 +200,7 @@ flowchart TD
    - Cross-validation on test datasets
    - Performance metrics collection
    - Integration testing
-#### Deployment Pipeline (Lower Environments Deployment to Production)
+#### Version Deployment Pipeline (Lower Environments Deployment to Production)
 1. Test Environment:
    - test_mode: true in configuration
    - Simulated hardware interactions
