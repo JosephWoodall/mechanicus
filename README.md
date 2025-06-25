@@ -159,7 +159,7 @@ flowchart TD
     end
 ```
 ### Detailed Implementation Flow of Above
-#### End User Runtime Flow
+#### End User Runtime Flow (Production)
 1. Device Powers On:
    - Load mechanicus_run_configuration.yaml
    - Initialize servo controllers
@@ -176,7 +176,7 @@ flowchart TD
    - Current Position + Target Position → RL Agent
    - RL Agent → Optimal movement sequence
    - Execute servo movements
-#### Offline Training Pipeline
+#### Offline Training Pipeline (Lower Environments)
 1. Training Data Acquisition:
    - generate_hash_lookup.py → hash_to_servo_lookup.json
    - data_collection.py → training_data.json + inference_data.json
@@ -200,7 +200,7 @@ flowchart TD
    - Cross-validation on test datasets
    - Performance metrics collection
    - Integration testing
-#### Deployment Pipeline
+#### Deployment Pipeline (Lower Environments Deployment to Production)
 1. Test Environment:
    - test_mode: true in configuration
    - Simulated hardware interactions
