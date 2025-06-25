@@ -177,12 +177,12 @@ flowchart TD
    - RL Agent → Optimal movement sequence
    - Execute servo movements
 #### Offline Training Pipeline
-Training Data Acquisition:
+1. Training Data Acquisition:
    - generate_hash_lookup.py → hash_to_servo_lookup.json
    - data_collection.py → training_data.json + inference_data.json
    - Real EEG data collection (optional)
 
-Parallel Training:
+2. Parallel Training:
    ML Model Training:
       - Input: EEG data features
       - Output: Position hash predictions
@@ -196,23 +196,23 @@ Parallel Training:
       - Algorithm: Q-Learning/PPO
       - Save: rl_agent.pkl
 
-Validation:
+3. Validation:
    - Cross-validation on test datasets
    - Performance metrics collection
    - Integration testing
 #### Deployment Pipeline
-Test Environment:
+1. Test Environment:
    - test_mode: true in configuration
    - Simulated hardware interactions
    - Controlled test scenarios
 
-Test Pipeline:
+2. Test Pipeline:
    - Unit tests for each component
    - Integration tests for full pipeline
    - Performance benchmarking
    - Safety validation
 
-Production Deployment:
+3. Production Deployment:
    - Model versioning and rollback capability
    - Gradual rollout strategy
    - Monitoring and logging
