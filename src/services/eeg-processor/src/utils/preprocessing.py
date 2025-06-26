@@ -1,34 +1,47 @@
+import redis
+import json
+import logging
 import numpy as np
+from datetime import datetime
+import time
 
-def normalize_eeg_data(eeg_data):
-    """Normalize EEG data to have zero mean and unit variance."""
-    mean = np.mean(eeg_data, axis=0)
-    std = np.std(eeg_data, axis=0)
-    normalized_data = (eeg_data - mean) / std
-    return normalized_data
+class EEGMonitorService:
+    def __init__(self, redis_url="redis://localhost:6379"):
+        self.redis_client = redis.from_url(redis_url, decode_responses=True)
+        self.output_channel = "eeg_anomalies"
+        
+    def detect_anomaly(self, eeg_data):
+        """Your anomaly detection logic"""
+        threshold = 2.5  
+        return np.any(np.abs(eeg_data) > threshold)
+    
+    def publish_anomaly(self, eeg_data):
+        """Publish EEG anomaly to message broker"""
+        message = {
+            "timestamp": datetime.now().isoformat(),
+            "eeg_data": eeg_data.tolist(),
+            "source": "eeg-monitor",
+            "anomaly_detected": True
+        }
+        
+        self.redis_client.publish(
+            self.output_channel, 
+            json.dumps(message)
+        )
+        logging.info(f"Published EEG anomaly to channel: {self.output_channel}")
+    
+    def run(self):
+        """Main monitoring loop"""
+        logging.info("Starting EEG monitoring service...")
+        
+        while True:
+            eeg_data = ""  # Replace with actual EEG data collection logic
+            
+            if self.detect_anomaly(eeg_data):
+                self.publish_anomaly(eeg_data)
+            
+            time.sleep(0.01)  # 100Hz sampling
 
-def filter_eeg_data(eeg_data, low_cutoff, high_cutoff, sampling_rate):
-    """Apply a bandpass filter to the EEG data."""
-    from scipy.signal import butter, filtfilt
-
-    nyquist = 0.5 * sampling_rate
-    low = low_cutoff / nyquist
-    high = high_cutoff / nyquist
-    b, a = butter(1, [low, high], btype='band')
-    filtered_data = filtfilt(b, a, eeg_data, axis=0)
-    return filtered_data
-
-def segment_eeg_data(eeg_data, segment_length):
-    """Segment EEG data into smaller chunks."""
-    n_segments = len(eeg_data) // segment_length
-    segments = np.array_split(eeg_data[:n_segments * segment_length], n_segments)
-    return segments
-
-def extract_features(eeg_segments):
-    """Extract features from EEG segments."""
-    features = []
-    for segment in eeg_segments:
-        mean = np.mean(segment, axis=0)
-        std = np.std(segment, axis=0)
-        features.append(np.concatenate((mean, std)))
-    return np.array(features)
+if __name__ == "__main__":
+    service = EEGMonitorService()
+    service.run()

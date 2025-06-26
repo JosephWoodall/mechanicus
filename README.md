@@ -64,7 +64,9 @@ flowchart TD
     style D fill:#f3e5f5
     style I fill:#e8f5e8
 ```
+
 # Desired End Result Logical Flow
+
 ```mermaid
 flowchart TD
     %% End User Runtime Flow (Production)
@@ -80,23 +82,23 @@ flowchart TD
     I --> J[Execute Servo Movement Sequence]
     J --> K[Update Current Position State]
     K --> C
-    
+
     %% Offline Training Pipeline (Lower Environments)
     L[START: Offline Training Phase] --> M[Acquire Training Data]
     M --> N[Generate EEG-Position Datasets]
     N --> O[Create Sample Inference Data]
-    
+
     O --> P{Parallel Training}
     P --> Q[Train ML Model<br/>EEG → Position Hash]
     P --> R[Train RL Agent<br/>Path Optimization]
-    
+
     Q --> S[Save ML Model<br/>inference_model.pkl]
     R --> T[Save RL Agent<br/>rl_agent.pkl]
-    
+
     S --> U[Model Validation & Testing]
     T --> U
     U --> V[Deploy Models to Device]
-    
+
     %% Version Deployment Pipeline (Lower Environments Deployment to Production)
     W[START: Version Deployment] --> X[Create Test Environment]
     X --> Y[Deploy New Models in Test Mode]
@@ -108,7 +110,7 @@ flowchart TD
     AC --> AD[Update Device Models]
     AD --> AE[Restart Device with New Models]
     AE --> A
-    
+
     %% Styling
     style A fill:#e1f5fe
     style L fill:#f3e5f5
@@ -116,7 +118,7 @@ flowchart TD
     style D fill:#ffebee
     style P fill:#e8f5e8
     style AA fill:#ffebee
-    
+
     %% Subgraph groupings
     subgraph "End User Runtime"
         A
@@ -131,7 +133,7 @@ flowchart TD
         J
         K
     end
-    
+
     subgraph "Offline Training Pipeline"
         L
         M
@@ -145,7 +147,7 @@ flowchart TD
         U
         V
     end
-    
+
     subgraph "Deployment Pipeline"
         W
         X
@@ -158,15 +160,20 @@ flowchart TD
         AE
     end
 ```
+
 ### Detailed Implementation Flow of Above
+
 #### End User Runtime Flow (Production)
+
 1. Device Powers On:
+
    - Load mechanicus_run_configuration.yaml
    - Initialize servo controllers
    - Load inference_model.pkl & rl_agent.pkl
    - Calibrate EEG sensors
 
 2. EEG Monitoring Loop:
+
    - Continuous sensor monitoring
    - Anomaly detection algorithms
    - Trigger on significant spikes
@@ -176,37 +183,46 @@ flowchart TD
    - Current Position + Target Position → RL Agent
    - RL Agent → Optimal movement sequence
    - Execute servo movements
+
 #### Offline Training Pipeline (Lower Environments)
+
 1. Training Data Acquisition:
+
    - generate_hash_lookup.py → hash_to_servo_lookup.json
    - data_collection.py → training_data.json + inference_data.json
    - Real EEG data collection (optional)
 
 2. Parallel Training:
    ML Model Training:
-      - Input: EEG data features
-      - Output: Position hash predictions
-      - Algorithm: Random Forest/Neural Network
-      - Save: inference_model.pkl
-   
+
+   - Input: EEG data features
+   - Output: Position hash predictions
+   - Algorithm: Random Forest/Neural Network
+   - Save: inference_model.pkl
+
    RL Agent Training:
-      - State: Current servo positions
-      - Action: Servo angle adjustments
-      - Reward: Smooth movement + target achievement
-      - Algorithm: Q-Learning/PPO
-      - Save: rl_agent.pkl
+
+   - State: Current servo positions
+   - Action: Servo angle adjustments
+   - Reward: Smooth movement + target achievement
+   - Algorithm: Q-Learning/PPO
+   - Save: rl_agent.pkl
 
 3. Validation:
    - Cross-validation on test datasets
    - Performance metrics collection
    - Integration testing
+
 #### Version Deployment Pipeline (Lower Environments Deployment to Production)
+
 1. Test Environment:
+
    - test_mode: true in configuration
    - Simulated hardware interactions
    - Controlled test scenarios
 
 2. Test Pipeline:
+
    - Unit tests for each component
    - Integration tests for full pipeline
    - Performance benchmarking
@@ -219,64 +235,80 @@ flowchart TD
    - Remote update capability
 
 # Key Components Still Needed for Implementation
+
 # 1. EEG Anomaly Detection
-src/eeg_monitor.py:
-    - Real-time EEG data collection
-    - Anomaly spike detection
-    - Data preprocessing for ML model
+
+src/eeg_monitor.py: - Real-time EEG data collection - Anomaly spike detection - Data preprocessing for ML model
 
 # 2. Reinforcement Learning Agent
-src/rl_agent.py:
-    - Path planning from current to target position
-    - Servo movement optimization
-    - Training environment simulation
+
+src/rl_agent.py: - Path planning from current to target position - Servo movement optimization - Training environment simulation
 
 # 3. Device Runtime Controller
-src/device_runtime.py:
-    - Main runtime loop
-    - EEG monitoring integration
-    - Model coordination
-    - Hardware control
+
+src/device_runtime.py: - Main runtime loop - EEG monitoring integration - Model coordination - Hardware control
 
 # 4. Training Orchestrator
-src/train_rl.py:
-    - RL agent training pipeline
-    - Environment simulation
-    - Reward function definition
+
+src/train_rl.py: - RL agent training pipeline - Environment simulation - Reward function definition
 
 # 5. Deployment Manager
-src/deployment.py:
-    - Model versioning
-    - Test pipeline execution
-    - Production deployment
+
+src/deployment.py: - Model versioning - Test pipeline execution - Production deployment
 
 # OPS
-This project will follow a containerized, orchestrated microservice architecture. Summary below
-Containers	               Docker
-Local Orchestration	      docker-compose
-Production	               Kubernetes (K8s)
-Communication	            REST/gRPC/Message Broker
-Configuration Management	YAML + Environment Variables
-Model Storage	            Cloud/NFS/Object Store, Versioned
-CI/CD	                     GitHub Actions/GitLab CI + Docker
-Monitoring	               Prometheus, Grafana, ELK
-Updates	                  OTA Agent or Custom Poller
 
-# Redis Server 
+This project will follow a containerized, orchestrated microservice architecture. Summary below
+
+| Component                | Technology                        |
+| ------------------------ | --------------------------------- |
+| Containers               | Docker                            |
+| Local Orchestration      | docker-compose                    |
+| Production               | Kubernetes (K8s)                  |
+| Communication            | REST/gRPC/Message Broker          |
+| Configuration Management | YAML + Environment Variables      |
+| Model Storage            | Cloud/NFS/Object Store, Versioned |
+| CI/CD                    | GitHub Actions/GitLab CI + Docker |
+| Monitoring               | Prometheus, Grafana, ELK          |
+| Updates                  | OTA Agent or Custom Poller        |
+
+# Redis Server
+
 ```bash
 sudo apt update
 sudo apt install redis-server
 ```
+
 To start: sudo systemctl start redis OR redis-server
 To stop: sudo systemctl stop redis OR Ctl + C
 
-# Unit Testing 
-### Service Testing 
+If the redis server is running before script execution, then the docker compose up command will not execute, so run sudo lsof -i :6379 to ensure redis is not running.
+
+# Orchestration and Containers
+
+This uses docker (so ensure it's started lol) so please see the project entry points for execution section below on how to run these files.
+
+# Project Entry Point for Execution
+
+The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
+
 ```bash
-chmod +x tests/services/run_tests.sh
-./tests/services/run_tests.sh
+docker compose -f docker-compose.test.yml up
 ```
 
-# Repo to Use 
+The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
+
+```bash
+docker compose -f docker-compose.offline_training.yml up
+```
+
+The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Production) Flow.
+
+```bash
+docker compose -f docker-compose.prod.yml up
+```
+
+# Repo to Use
+
 poc_archive contains all old code, which will be only used as reference
-src contains all of the active production code
+src contains all of the active production code.
