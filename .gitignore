@@ -177,4 +177,7 @@ cython_debug/
 src/data
 
 #models 
-inference_model.pkl
+inference_model.pk
+
+#dump files 
+dump.rdb

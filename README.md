@@ -261,3 +261,18 @@ Model Storage	            Cloud/NFS/Object Store, Versioned
 CI/CD	                     GitHub Actions/GitLab CI + Docker
 Monitoring	               Prometheus, Grafana, ELK
 Updates	                  OTA Agent or Custom Poller
+
+# Redis Server 
+```bash
+sudo apt update
+sudo apt install redis-server
+```
+To start: sudo systemctl start redis OR redis-server
+To stop: sudo systemctl stop redis OR Ctl + C
+
+# Unit Testing 
+### Service Testing 
+```bash
+chmod +x tests/services/run_tests.sh
+./tests/services/run_tests.sh
+```
