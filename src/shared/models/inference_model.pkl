@@ -1,0 +1,2 @@
+# The file shared/models/inference_model.pkl is a binary file that contains the serialized machine learning model. 
+# This file is intentionally left blank.

@@ -1,0 +1,24 @@
+{
+  "n_eeg_channels": 5,
+  "training_samples": 1000,
+  "inference_samples_per_position": 1,
+  "eeg_data": [
+    {
+      "channel_1": [0.1, -0.2, 0.3, ...],
+      "channel_2": [0.0, 0.1, -0.1, ...],
+      "channel_3": [0.2, 0.0, -0.3, ...],
+      "channel_4": [0.1, 0.2, 0.1, ...],
+      "channel_5": [-0.1, 0.0, 0.2, ...],
+      "position_hash": "hash_value_1"
+    },
+    {
+      "channel_1": [0.0, 0.2, -0.1, ...],
+      "channel_2": [0.1, -0.2, 0.3, ...],
+      "channel_3": [0.0, 0.1, -0.1, ...],
+      "channel_4": [0.2, 0.0, -0.3, ...],
+      "channel_5": [0.1, 0.2, 0.1, ...],
+      "position_hash": "hash_value_2"
+    }
+    // Additional data entries would follow the same structure
+  ]
+}

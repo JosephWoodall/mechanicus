@@ -276,3 +276,7 @@ To stop: sudo systemctl stop redis OR Ctl + C
 chmod +x tests/services/run_tests.sh
 ./tests/services/run_tests.sh
 ```
+
+# Repo to Use 
+poc_archive contains all old code, which will be only used as reference
+src contains all of the active production code

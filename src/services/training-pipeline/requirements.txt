@@ -1,0 +1,9 @@
+numpy
+pandas
+scikit-learn
+tensorflow
+torch
+matplotlib
+seaborn
+pytest
+docker-compose

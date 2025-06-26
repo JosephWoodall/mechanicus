@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  eeg-processor:
+    build:
+      context: ./services/eeg-processor
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared/data:/app/shared/data
+      - ./shared/models:/app/shared/models
+      - ./shared/config:/app/shared/config
+    environment:
+      - TEST_MODE=false
+    restart: always
+
+  servo-controller:
+    build:
+      context: ./services/servo-controller
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared/data:/app/shared/data
+      - ./shared/models:/app/shared/models
+      - ./shared/config:/app/shared/config
+    environment:
+      - TEST_MODE=false
+    restart: always
+
+  data-collector:
+    build:
+      context: ./services/data-collector
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared/data:/app/shared/data
+      - ./shared/config:/app/shared/config
+    environment:
+      - TEST_MODE=false
+    restart: always
+
+  training-pipeline:
+    build:
+      context: ./services/training-pipeline
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared/data:/app/shared/data
+      - ./shared/models:/app/shared/models
+      - ./shared/config:/app/shared/config
+    environment:
+      - TEST_MODE=false
+    restart: always
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  shared-data:
+  shared-models:
+  shared-config:

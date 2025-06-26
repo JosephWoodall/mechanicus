@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  eeg-processor:
+    build:
+      context: ./services/eeg-processor
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - mechanicus-network
+
+  servo-controller:
+    build:
+      context: ./services/servo-controller
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - mechanicus-network
+
+  data-collector:
+    build:
+      context: ./services/data-collector
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - mechanicus-network
+
+  training-pipeline:
+    build:
+      context: ./services/training-pipeline
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - mechanicus-network
+
+networks:
+  mechanicus-network:
+    driver: bridge
+
+volumes:
+  shared-data:
+    driver: local
