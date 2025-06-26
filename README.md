@@ -13,34 +13,32 @@ I plan to expand the binary classifier to multi-class classifier for 3D movement
 
 I am still brainstorming how to create the prosthetic apparatus. I might need help in this area.
 
-# How to Use
+# Project Entry Point for Execution
 
-Currently, the main way to run Mechanicus is by the following:
-
-1. Activate your virtual environment, if you have one:
-   Unix/Linux/MacOS:
+The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
 
 ```bash
-source venv/bin/activate
+docker compose -f docker-compose.test.yml up
 ```
 
-Windows:
+The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
 
 ```bash
-source venv/Scripts/activate
+docker compose -f docker-compose.offline_training.yml up
 ```
 
-2. Then run the following
+The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Production) Flow.
 
 ```bash
-pip install requirements.txt
-python main.py
+docker compose -f docker-compose.prod.yml up
 ```
 
 # External Requirements
 
 This project utilzes pyfirmata2, which requires the upload of StandardFirmata to the Arduino board. Please follow the tutorial in the URL below in order to get started before running any of this code:
 https://github.com/berndporr/pyFirmata2?tab=readme-ov-file
+
+Docker
 
 # POC Logical Flow
 
@@ -287,26 +285,6 @@ If the redis server is running before script execution, then the docker compose 
 # Orchestration and Containers
 
 This uses docker (so ensure it's started lol) so please see the project entry points for execution section below on how to run these files.
-
-# Project Entry Point for Execution
-
-The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
-
-```bash
-docker compose -f docker-compose.test.yml up
-```
-
-The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
-
-```bash
-docker compose -f docker-compose.offline_training.yml up
-```
-
-The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Production) Flow.
-
-```bash
-docker compose -f docker-compose.prod.yml up
-```
 
 # Repo to Use
 
