@@ -249,3 +249,15 @@ src/deployment.py:
     - Model versioning
     - Test pipeline execution
     - Production deployment
+
+# OPS
+This project will follow a containerized, orchestrated microservice architecture. Summary below
+Containers	               Docker
+Local Orchestration	      docker-compose
+Production	               Kubernetes (K8s)
+Communication	            REST/gRPC/Message Broker
+Configuration Management	YAML + Environment Variables
+Model Storage	            Cloud/NFS/Object Store, Versioned
+CI/CD	                     GitHub Actions/GitLab CI + Docker
+Monitoring	               Prometheus, Grafana, ELK
+Updates	                  OTA Agent or Custom Poller
