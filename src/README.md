@@ -1,7 +1,3 @@
-# Mechanicus Platform
-
-The Mechanicus Platform is a modularized microservice architecture designed for EEG data processing, servo control, data collection, and machine learning model training. This project aims to provide a robust solution for real-time EEG monitoring and control through a user-facing chatbot interface and machine learning forecasting capabilities.
-
 ## Project Structure
 
 ```
