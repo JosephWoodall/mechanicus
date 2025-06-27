@@ -18,19 +18,19 @@ I am still brainstorming how to create the prosthetic apparatus. I might need he
 The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
 
 ```bash
-docker compose -f docker-compose.test.yml up
+docker compose -f docker-compose.test.yml up --builkd
 ```
 
 The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
 
 ```bash
-docker compose -f docker-compose.offline_training.yml up
+docker compose -f docker-compose.offline_training.yml up --build
 ```
 
 The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Production) Flow.
 
 ```bash
-docker compose -f docker-compose.prod.yml up
+docker compose -f docker-compose.prod.yml up --build
 ```
 
 # External Requirements

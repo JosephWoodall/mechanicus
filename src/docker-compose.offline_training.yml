@@ -1,13 +1,25 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
+  training-pipeline:
+    build: 
+      context: ./services/training-pipeline
+    volumes:
+      - ./shared/config:/app/shared/config:ro
+      - ./shared/data:/app/shared/data:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: [
+      "python", "ml_training_dataset_generator.py", 
+      "--config", "/app/shared/config/mechanicus_run_configuration.yaml",
+      "--output", "/app/shared/data/training_data.json"
+    ]
     networks:
       - mechanicus-network
 
 networks:
   mechanicus-network:
     driver: bridge
+
+volumes:
+  training_data:

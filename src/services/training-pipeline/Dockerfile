@@ -1,16 +1,18 @@
-FROM python:3.8-slim
+FROM python:3.9-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file
+# Copy requirements file
 COPY requirements.txt .
 
-# Install the dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the source code
-COPY src/ .
+# Create shared directories
+RUN mkdir -p /app/shared/config /app/shared/data
 
-# Command to run the training pipeline
-CMD ["python", "ml_training.py"]
+# Copy the training dataset generator
+COPY src/ml_training_dataset_generator.py .
+
+# Default command to generate training data
+CMD ["python", "ml_training_dataset_generator.py", "--config", "/app/shared/config/mechanicus_run_configuration.yaml"]
