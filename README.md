@@ -13,6 +13,10 @@ I plan to expand the binary classifier to multi-class classifier for 3D movement
 
 I am still brainstorming how to create the prosthetic apparatus. I might need help in this area.
 
+
+TODO:
+remove hash lookup function from offline training set generation, data_collection.py. Will transform servo_angle list to string and use it as label for ml training - no need for the hash transformation and lookup lol
+
 # Project Entry Point for Execution
 
 The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:

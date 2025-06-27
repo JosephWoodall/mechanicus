@@ -33,7 +33,7 @@ class MLTrainingDatasetGenerator:
         hash_step_size: int = 5,
         eeg_mean: float = 0.0,
         eeg_std: float = 1.0,
-        training_samples: int = 1000,
+        training_samples: int = 10000,
         inference_samples_per_position: int = 1,
         config_file: str = None,
         output_file: str = None,
