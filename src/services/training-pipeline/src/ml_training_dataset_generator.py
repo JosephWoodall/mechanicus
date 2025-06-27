@@ -4,7 +4,6 @@ import time
 import logging
 import argparse
 import random
-import hashlib
 import yaml
 import os
 from datetime import datetime
@@ -29,8 +28,6 @@ class MLTrainingDatasetGenerator:
         total_positions: int = 100,
         servo_origin: list = None,
         servo_ceiling: list = None,
-        hash_precision: int = 6,
-        hash_step_size: int = 5,
         eeg_mean: float = 0.0,
         eeg_std: float = 1.0,
         training_samples: int = 10000,
@@ -46,8 +43,6 @@ class MLTrainingDatasetGenerator:
             total_positions (int): Total number of discrete positions
             servo_origin (list): Servo angle origins
             servo_ceiling (list): Servo angle ceilings
-            hash_precision (int): Precision for position hashing
-            hash_step_size (int): Step size for hash lookup
             eeg_mean (float): Baseline EEG mean
             eeg_std (float): Baseline EEG standard deviation
             training_samples (int): Number of training samples to generate
@@ -68,10 +63,6 @@ class MLTrainingDatasetGenerator:
                 total_positions = config.get('servo_config', {}).get(
                     'total_positions', total_positions)
 
-                hash_precision = config.get('hash_lookup', {}).get(
-                    'precision', hash_precision)
-                hash_step_size = config.get('hash_lookup', {}).get(
-                    'step_size', hash_step_size)
 
                 n_channels = config.get('dataset', {}).get(
                     'n_eeg_channels', n_channels)
@@ -83,7 +74,7 @@ class MLTrainingDatasetGenerator:
                     'inference_samples_per_position', inference_samples_per_position)
 
                 if not output_file:
-                    output_file = config.get('hash_lookup', {}).get(
+                    output_file = config.get(
                         'output_file', 'training_data.json')
 
                 logger.info(f"Loaded configuration from: {config_file}")
@@ -94,8 +85,6 @@ class MLTrainingDatasetGenerator:
         self.servo_origin = numpy.array(servo_origin or [0, 0, 0])
         self.servo_ceiling = numpy.array(servo_ceiling or [180, 180, 180])
 
-        self.hash_precision = hash_precision
-        self.hash_step_size = hash_step_size
 
         self.baseline_mean = eeg_mean
         self.baseline_std = eeg_std
@@ -223,23 +212,6 @@ class MLTrainingDatasetGenerator:
                 position[i] = angle / 180.0
             return position
 
-    def _position_to_hash(self, position, precision=None):
-        """Convert a 3D position to a hash value.
-
-        Args:
-            position (numpy.ndarray): 3D position [x, y, z].
-            precision (int, optional): number of decimal places. Uses instance default if None.
-
-        Returns:
-            str: Hash value as a string.
-        """
-        if precision is None:
-            precision = self.hash_precision
-
-        rounded_position = numpy.round(position, precision)
-        position_str = f"{rounded_position[0]:.{precision}f}_{rounded_position[1]:.{precision}f}_{rounded_position[2]:.{precision}f}"
-        hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]
-        return hash_value
 
     def generate_baseline_eeg(self) -> numpy.ndarray:
         """Generate baseline EEG data (normal brain activity).
@@ -288,7 +260,7 @@ class MLTrainingDatasetGenerator:
             is_anomaly (bool): Whether to generate anomalous EEG data
 
         Returns:
-            Dict: Training sample dictionary with servo angles, position, and hash.
+            Dict: Training sample dictionary with servo angles, position.
         """
         if is_anomaly:
             eeg_data = self.generate_anomaly_eeg()
@@ -298,7 +270,6 @@ class MLTrainingDatasetGenerator:
         index = numpy.random.randint(0, len(self.servo_combinations))
         servo_angles = self.servo_combinations[index]
         position = self.positions[index]
-        position_hash = self._position_to_hash(position)
 
         sample = {
             "timestamp": datetime.now().isoformat(),
@@ -308,7 +279,6 @@ class MLTrainingDatasetGenerator:
             "is_anomaly": bool(is_anomaly),
             "servo_angles": servo_angles.tolist(),
             "position": position.tolist(),
-            "position_hash": position_hash,
             "source": "MLTrainingDatasetGenerator",
             "metadata": {
                 "baseline_mean": self.baseline_mean,
@@ -317,54 +287,12 @@ class MLTrainingDatasetGenerator:
                 "n_servos": self.n_servos,
                 "servo_origin": self.servo_origin.tolist(),
                 "servo_ceiling": self.servo_ceiling.tolist(),
-                "hash_precision": self.hash_precision,
                 "position_index": int(index),
             }
         }
 
         return sample
 
-    def generate_hash_lookup(self) -> Dict:
-        """Generate hash lookup table (same format as data_collector.py).
-
-        Returns:
-            Dict: Complete hash lookup structure
-        """
-        hash_lookup = {}
-        reverse_lookup = {}
-
-        for i, (servo_angles, position) in enumerate(zip(self.servo_combinations, self.positions)):
-            position_hash = self._position_to_hash(position)
-
-            hash_lookup[position_hash] = {
-                "index": i,
-                "servo_angles": servo_angles.tolist(),
-                "position": position.tolist(),
-                "servo_origin": self.servo_origin.tolist(),
-                "servo_ceiling": self.servo_ceiling.tolist(),
-                "n_servos": self.n_servos
-            }
-
-            position_key = f"{position[0]:.{self.hash_precision}f}_{position[1]:.{self.hash_precision}f}_{position[2]:.{self.hash_precision}f}"
-            reverse_lookup[position_key] = position_hash
-
-        lookup_data = {
-            "metadata": {
-                "total_positions": len(self.servo_combinations),
-                "n_servos": self.n_servos,
-                "servo_origin": self.servo_origin.tolist(),
-                "servo_ceiling": self.servo_ceiling.tolist(),
-                "hash_precision": self.hash_precision,
-                "hash_step_size": self.hash_step_size,
-                "generated_timestamp": datetime.now().isoformat(),
-                "source": "MLTrainingDatasetGenerator",
-                "config_file": self.config.get('hash_lookup', {}).get('output_file', 'training_data.json') if self.config else None
-            },
-            "hash_to_servo": hash_lookup,
-            "position_to_hash": reverse_lookup
-        }
-
-        return lookup_data
 
     def generate_complete_dataset(self, anomaly_rate: float = 0.05) -> Dict:
         """Generate complete training dataset.
@@ -373,7 +301,7 @@ class MLTrainingDatasetGenerator:
             anomaly_rate (float): Proportion of samples that should be anomalies
 
         Returns:
-            Dict: Complete dataset with samples and hash lookup
+            Dict: Complete dataset with samples 
         """
         logger.info(
             f"Generating {self.training_samples} training samples with {anomaly_rate*100:.1f}% anomaly rate...")
@@ -393,7 +321,6 @@ class MLTrainingDatasetGenerator:
                 logger.info(
                     f"Generated {i + 1}/{self.training_samples} samples...")
 
-        hash_lookup = self.generate_hash_lookup()
 
         dataset = {
             "dataset_metadata": {
@@ -411,7 +338,6 @@ class MLTrainingDatasetGenerator:
                 "config_used": bool(self.config)
             },
             "training_samples": samples,
-            "servo_hash_lookup": hash_lookup
         }
 
         logger.info(f"Dataset generation completed:")

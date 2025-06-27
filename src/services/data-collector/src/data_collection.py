@@ -5,7 +5,6 @@ import time
 import logging
 import argparse
 import random
-import hashlib
 import yaml
 import os
 from datetime import datetime
@@ -34,8 +33,6 @@ class EEGDataPublisherService:
         total_positions: int = 100,
         servo_origin: list = [],
         servo_ceiling: list = [],
-        hash_precision: int = 6,
-        hash_step_size: int = 5,
         eeg_mean: float = 0.0,
         eeg_std: float = 1.0,
         config_file: str = "",
@@ -52,8 +49,6 @@ class EEGDataPublisherService:
             total_positions (int, optional): total number of discrete positions. Defaults to 100.
             servo_origin (list, optional): servo angle origins. Defaults to [0, 0, 0].
             servo_ceiling (list, optional): servo angle ceilings. Defaults to [180, 180, 180].
-            hash_precision (int, optional): precision for position hashing. Defaults to 6.
-            hash_step_size (int, optional): step size for hash lookup. Defaults to 5.
             eeg_mean (float, optional): baseline EEG mean. Defaults to 0.0.
             eeg_std (float, optional): baseline EEG standard deviation. Defaults to 1.0.
             config_file (str, optional): Path to YAML configuration file.
@@ -70,11 +65,6 @@ class EEGDataPublisherService:
                     'ceiling', servo_ceiling)
                 total_positions = config.get('servo_config', {}).get(
                     'total_positions', total_positions)
-
-                hash_precision = config.get('hash_lookup', {}).get(
-                    'precision', hash_precision)
-                hash_step_size = config.get('hash_lookup', {}).get(
-                    'step_size', hash_step_size)
 
                 n_channels = config.get('dataset', {}).get(
                     'n_eeg_channels', n_channels)
@@ -95,9 +85,6 @@ class EEGDataPublisherService:
         self.servo_origin = numpy.array(servo_origin or [0, 0, 0])
         self.servo_ceiling = numpy.array(servo_ceiling or [180, 180, 180])
 
-        self.hash_precision = hash_precision
-        self.hash_step_size = hash_step_size
-
         self.baseline_mean = eeg_mean
         self.baseline_std = eeg_std
         self.anomaly_multiplier = 3.0
@@ -110,8 +97,6 @@ class EEGDataPublisherService:
 
         self._generate_servo_positions()
 
-        self._generate_and_store_hash_lookup()
-
         logger.info(f"EEGDataPublisherService Initialized:")
         logger.info(f"  Redis URL: {redis_url}")
         logger.info(f"  Channel: {self.channel}")
@@ -122,7 +107,6 @@ class EEGDataPublisherService:
         logger.info(f"  Total Positions: {len(self.servo_combinations)}")
         logger.info(
             f"  EEG Mean/Std: {self.baseline_mean:.2f}/{self.baseline_std:.2f}")
-        logger.info(f"  Hash Precision: {self.hash_precision}")
 
     def _load_config(self, config_file: str) -> Optional[Dict]:
         """Load configuration from YAML file.
@@ -206,147 +190,6 @@ class EEGDataPublisherService:
             self._angles_to_cartesian_position(angles) for angles in self.servo_combinations
         ])
 
-    def _generate_and_store_hash_lookup(self):
-        """Generate hash lookup table and store it in Redis."""
-        logger.info("Generating servo position hash lookup table...")
-
-        hash_lookup = {}
-        reverse_lookup = {}
-
-        for i, (servo_angles, position) in enumerate(zip(self.servo_combinations, self.positions)):
-            position_hash = self._position_to_hash(position)
-
-            hash_lookup[position_hash] = {
-                "index": i,
-                "servo_angles": servo_angles.tolist(),
-                "position": position.tolist(),
-                "servo_origin": self.servo_origin.tolist(),
-                "servo_ceiling": self.servo_ceiling.tolist(),
-                "n_servos": self.n_servos
-            }
-
-            position_key = f"{position[0]:.{self.hash_precision}f}_{position[1]:.{self.hash_precision}f}_{position[2]:.{self.hash_precision}f}"
-            reverse_lookup[position_key] = position_hash
-        logger.info("=" * 50)
-        logger.info("FIRST 5 HASH LOOKUP ENTRIES")
-        logger.info("=" * 50)
-        for i, (hash_key, servo_data) in enumerate(hash_lookup.items()):
-            if i >= 5:
-                break
-            logger.info(f"Entry {i + 1}:")
-            logger.info(f"  Hash: {hash_key}")
-            logger.info(f"  Index: {servo_data['index']}")
-            logger.info(f"  Servo angles: {servo_data['servo_angles']}")
-            logger.info(f"  Position: {servo_data['position']}")
-            logger.info(f"  Position key: {position_key}")
-
-            pos = servo_data['position']
-            pos_key = f"{pos[0]:.{self.hash_precision}f}_{pos[1]:.{self.hash_precision}f}_{pos[2]:.{self.hash_precision}f}"
-            logger.info(f"  Reverse lookup key: {pos_key}")
-            logger.info("")
-
-        logger.info(f"Total hash entries generated: {len(hash_lookup)}")
-        logger.info(f"Total reverse lookup entries: {len(reverse_lookup)}")
-        logger.info("=" * 50)
-
-        lookup_data = {
-            "metadata": {
-                "total_positions": len(self.servo_combinations),
-                "n_servos": self.n_servos,
-                "servo_origin": self.servo_origin.tolist(),
-                "servo_ceiling": self.servo_ceiling.tolist(),
-                "hash_precision": self.hash_precision,
-                "hash_step_size": self.hash_step_size,
-                "generated_timestamp": datetime.now().isoformat(),
-                "source": "EEGDataPublisherService",
-                "config_file": self.config.get('hash_lookup', {}).get('output_file', 'hash_to_servo_lookup.json') if self.config else None
-            },
-            "hash_to_servo": hash_lookup,
-            "position_to_hash": reverse_lookup
-        }
-
-        try:
-            redis_key = f"{self.channel}:servo_hash_lookup"
-            self.redis_client.set(redis_key, json.dumps(lookup_data))
-
-            for position_hash, servo_data in hash_lookup.items():
-                individual_key = f"{self.channel}:servo_hash:{position_hash}"
-                self.redis_client.set(individual_key, json.dumps(servo_data))
-
-            metadata_key = f"{self.channel}:servo_metadata"
-            self.redis_client.set(
-                metadata_key, json.dumps(lookup_data["metadata"]))
-
-            logger.info(f"Stored servo hash lookup in Redis:")
-            logger.info(f"  - Complete lookup key: {redis_key}")
-            logger.info(
-                f"  - Individual hash keys: {len(hash_lookup)} entries")
-            logger.info(f"  - Metadata key: {metadata_key}")
-
-        except Exception as e:
-            logger.error(f"Failed to store hash lookup in Redis: {e}")
-
-    def get_servo_data_by_hash(self, position_hash: str) -> Optional[Dict]:
-        """Retrieve servo data from Redis by position hash.
-
-        Args:
-            position_hash (str): Position hash to lookup
-
-        Returns:
-            Optional[Dict]: Servo data dictionary or None if not found
-        """
-        try:
-            key = f"{self.channel}:servo_hash:{position_hash}"
-            data = self.redis_client.get(key)
-            if data:
-                return json.loads(data)
-            return None
-        except Exception as e:
-            logger.error(
-                f"Failed to retrieve servo data for hash {position_hash}: {e}")
-            return None
-
-    def get_complete_hash_lookup(self) -> Optional[Dict]:
-        """Retrieve complete hash lookup from Redis.
-
-        Returns:
-            Optional[Dict]: Complete lookup dictionary or None if not found
-        """
-        try:
-            key = f"{self.channel}:servo_hash_lookup"
-            data = self.redis_client.get(key)
-            if data:
-                return json.loads(data)
-            return None
-        except Exception as e:
-            logger.error(f"Failed to retrieve complete hash lookup: {e}")
-            return None
-
-    def save_hash_lookup_to_file(self, filename: str = ""):
-        """Save hash lookup to JSON file.
-
-        Args:
-            filename (str, optional): Output filename. Uses config file setting or timestamp default.
-        """
-        if filename is None:
-            if self.config and 'hash_lookup' in self.config:
-                filename = self.config['hash_lookup'].get(
-                    'output_file', 'hash_to_servo_lookup.json')
-            else:
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"servo_hash_lookup_{timestamp}.json"
-
-        lookup_data = self.get_complete_hash_lookup()
-        if lookup_data:
-            try:
-                with open(filename, 'w') as f:
-                    json.dump(lookup_data, f, indent=2)
-                logger.info(f"Saved hash lookup to file: {filename}")
-            except Exception as e:
-                logger.error(f"Failed to save hash lookup to file: {e}")
-        else:
-            logger.error("No hash lookup data available to save")
-
     def _angles_to_cartesian_position(self, servo_angles):
         """Convert servo angles to a 3D cartesian position.
 
@@ -374,36 +217,17 @@ class EEGDataPublisherService:
                 position[i] = angle / 180.0
             return position
 
-    def _position_to_hash(self, position, precision=None):
-        """Convert a 3D position to a hash value.
-
-        Args:
-            position (numpy.ndarray): 3D position [x, y, z].
-            precision (int, optional): number of decimal places. Uses instance default if None.
-
-        Returns:
-            str: Hash value as a string.
-        """
-        if precision is None:
-            precision = self.hash_precision
-
-        rounded_position = numpy.round(position, precision)
-        position_str = f"{rounded_position[0]:.{precision}f}_{rounded_position[1]:.{precision}f}_{rounded_position[2]:.{precision}f}"
-        hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]
-        return hash_value
-
     def _get_random_servo_position(self):
         """Get a random servo position from the generated combinations.
 
         Returns:
-            tuple: (servo_angles, position, position_hash)
+            tuple: (servo_angles, position)
         """
         index = numpy.random.randint(0, len(self.servo_combinations))
         servo_angles = self.servo_combinations[index]
         position = self.positions[index]
-        position_hash = self._position_to_hash(position)
 
-        return servo_angles, position, position_hash
+        return servo_angles, position
 
     def generate_baseline_eeg(self) -> numpy.ndarray:
         """Generate baseline EEG data (normal brain activity).
@@ -449,7 +273,7 @@ class EEGDataPublisherService:
         """Generate a single EEG sample with servo position data.
 
         Returns:
-            Dict: EEG sample dictionary with servo angles, position, and hash.
+            Dict: EEG sample dictionary with servo angles, position.
         """
         is_anomaly = random.random() < self.anomaly_rate
 
@@ -459,7 +283,7 @@ class EEGDataPublisherService:
         else:
             eeg_data = self.generate_baseline_eeg()
 
-        servo_angles, position, position_hash = self._get_random_servo_position()
+        servo_angles, position = self._get_random_servo_position()
 
         self.total_samples += 1
 
@@ -471,7 +295,6 @@ class EEGDataPublisherService:
             "is_anomaly": bool(is_anomaly),
             "servo_angles": servo_angles.tolist(),
             "position": position.tolist(),
-            "position_hash": position_hash,
             "source": "EEGDataPublisherService",
             "metadata": {
                 "baseline_mean": self.baseline_mean,
@@ -482,7 +305,6 @@ class EEGDataPublisherService:
                 "n_servos": self.n_servos,
                 "servo_origin": self.servo_origin.tolist(),
                 "servo_ceiling": self.servo_ceiling.tolist(),
-                "hash_precision": self.hash_precision,
             }
         }
 
@@ -694,17 +516,6 @@ def main():
         help="Servo angle ceilings (overrides config)"
     )
 
-    parser.add_argument(
-        "--save-lookup",
-        help="Save hash lookup to specified JSON file (overrides config)"
-    )
-
-    parser.add_argument(
-        "--generate-lookup-only",
-        action="store_true",
-        help="Generate hash lookup and exit (don't stream data)"
-    )
-
     args = parser.parse_args()
 
     if not (0.0 <= args.anomaly_rate <= 1.0):
@@ -739,15 +550,6 @@ def main():
     except Exception as e:
         logger.error(f"Failed to connect to Redis server: {e}")
         return 1
-
-    if args.save_lookup:
-        publisher.save_hash_lookup_to_file(args.save_lookup)
-    elif args.generate_lookup_only:
-        publisher.save_hash_lookup_to_file()
-
-    if args.generate_lookup_only:
-        logger.info("Hash lookup generation completed. Exiting.")
-        return 0
 
     if args.batch_mode:
         publisher.run_batch(args.batch_size, args.batch_interval)

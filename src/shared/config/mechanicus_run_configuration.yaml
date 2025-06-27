@@ -6,11 +6,6 @@ servo_config:
   ceiling: [180, 180, 180]
   total_positions: 200
 
-hash_lookup:
-  step_size: 2
-  precision: 6
-  output_file: "hash_to_servo_lookup.json"
-
 dataset:
   n_eeg_channels: 5
   training_samples: 1000
