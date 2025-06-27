@@ -1,3 +1,10 @@
+'''
+TODO:
+label: servo_angle (transform as string and back for action phase)
+features: eeg_data features
+refactor for docker
+'''
+
 import warnings
 import pandas
 import numpy
@@ -61,9 +68,8 @@ class DataCollector:
             rows = []
             for sample_id, sample_data in samples.items():
                 row = {
-                    # **{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
+                    **{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
                     # **{f'position_{coord}': pos for coord, pos in zip(['x', 'y', 'z'], sample_data['position'])},
-                    'position_hash': sample_data['position_hash'],
                     **{f'eeg_{i}': eeg_val for i, eeg_val in enumerate(sample_data['eeg_data'])}
                 }
                 rows.append(row)
