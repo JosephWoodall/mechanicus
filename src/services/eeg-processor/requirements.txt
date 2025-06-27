@@ -1,6 +1,2 @@
-numpy
-scikit-learn
-pandas
-tensorflow
-matplotlib
-scipy
+redis==4.5.5
+numpy==1.24.3

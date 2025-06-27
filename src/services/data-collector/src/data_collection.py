@@ -23,7 +23,7 @@ class EEGDataPublisherService:
     def __init__(
         self,
         redis_url: str = "redis://localhost:6379",
-        channel: str = "eeg_anomalies",
+        channel: str = "eeg_data",
         n_channels: int = 5,
         sampling_rate: float = 100.0,
         anomaly_rate: float = 0.05,
@@ -32,7 +32,7 @@ class EEGDataPublisherService:
 
         Args:
             redis_url (str, optional): Redis connection URL. Defaults to "redis://localhost:6379".
-            channel (str, optional): Redis channel which to publish. Defaults to "eeg_anomalies".
+            channel (str, optional): Redis channel which to publish. Defaults to "eeg_data".
             n_channels (int, optional): number of eeg channels to simulate. Defaults to 5.
             sampling_rate (float, optional): sampling rate in Hz. Defaults to 100.0.
             anomaly_rate (float, optional): probability of generating anomaly spike (0-1). Defaults to 0.05.
@@ -226,7 +226,7 @@ class EEGDataPublisherService:
         except KeyboardInterrupt:
             logger.info("Streaming interrupted by user.")
 
-        self.print_statistics()
+        #self.print_statistics()
         logger.info("EEG data streaming completed.")
 
     def run_batch(self, n_samples: int, batch_interval: float = 1.0):
@@ -273,7 +273,7 @@ def main():
     )
 
     parser.add_argument(
-        "--channel", default="eeg_anomalies", help="Redis channel to publish to"
+        "--channel", default="eeg_data", help="Redis channel to publish to"
     )
 
     parser.add_argument(

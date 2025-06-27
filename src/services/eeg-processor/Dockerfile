@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the source code
-COPY src/ ./src/
+COPY src/ ./
 
 # Command to run the EEG processor service
-CMD ["python", "src/main.py"]
+CMD ["python", "utils/preprocessing.py"]
