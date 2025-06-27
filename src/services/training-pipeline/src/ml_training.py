@@ -3,6 +3,10 @@ TODO:
 label: servo_angle (transform as string and back for action phase)
 features: eeg_data features
 refactor for docker
+
+process flow:
+ingest data from ml_training_dataset_generator.py
+train model and save to pickle in src/shared/models/inference_model.pkl and save in redis 
 '''
 
 import warnings
