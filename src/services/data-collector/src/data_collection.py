@@ -5,8 +5,11 @@ import time
 import logging
 import argparse
 import random
+import hashlib
+import yaml
+import os
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -22,11 +25,20 @@ class EEGDataPublisherService:
 
     def __init__(
         self,
-        redis_url: str = "redis://localhost:6379",
+        redis_url: str = "redis://redis:6379",
         channel: str = "eeg_data",
         n_channels: int = 5,
         sampling_rate: float = 100.0,
         anomaly_rate: float = 0.05,
+        n_servos: int = 3,
+        total_positions: int = 100,
+        servo_origin: list = [],
+        servo_ceiling: list = [],
+        hash_precision: int = 6,
+        hash_step_size: int = 5,
+        eeg_mean: float = 0.0,
+        eeg_std: float = 1.0,
+        config_file: str = "",
     ):
         """Initialize simulated EEG data publisher service
 
@@ -36,7 +48,41 @@ class EEGDataPublisherService:
             n_channels (int, optional): number of eeg channels to simulate. Defaults to 5.
             sampling_rate (float, optional): sampling rate in Hz. Defaults to 100.0.
             anomaly_rate (float, optional): probability of generating anomaly spike (0-1). Defaults to 0.05.
+            n_servos (int, optional): number of servo motors. Defaults to 3.
+            total_positions (int, optional): total number of discrete positions. Defaults to 100.
+            servo_origin (list, optional): servo angle origins. Defaults to [0, 0, 0].
+            servo_ceiling (list, optional): servo angle ceilings. Defaults to [180, 180, 180].
+            hash_precision (int, optional): precision for position hashing. Defaults to 6.
+            hash_step_size (int, optional): step size for hash lookup. Defaults to 5.
+            eeg_mean (float, optional): baseline EEG mean. Defaults to 0.0.
+            eeg_std (float, optional): baseline EEG standard deviation. Defaults to 1.0.
+            config_file (str, optional): Path to YAML configuration file.
         """
+
+        if config_file:
+            config = self._load_config(config_file)
+            if config:
+                n_servos = config.get('servo_config', {}).get(
+                    'n_servos', n_servos)
+                servo_origin = config.get('servo_config', {}).get(
+                    'origin', servo_origin)
+                servo_ceiling = config.get('servo_config', {}).get(
+                    'ceiling', servo_ceiling)
+                total_positions = config.get('servo_config', {}).get(
+                    'total_positions', total_positions)
+
+                hash_precision = config.get('hash_lookup', {}).get(
+                    'precision', hash_precision)
+                hash_step_size = config.get('hash_lookup', {}).get(
+                    'step_size', hash_step_size)
+
+                n_channels = config.get('dataset', {}).get(
+                    'n_eeg_channels', n_channels)
+                eeg_mean = config.get('dataset', {}).get('eeg_mean', eeg_mean)
+                eeg_std = config.get('dataset', {}).get('eeg_std', eeg_std)
+
+                logger.info(f"Loaded configuration from: {config_file}")
+
         self.redis_client = redis.from_url(redis_url, decode_responses=True)
         self.channel = channel
         self.n_channels = n_channels
@@ -44,20 +90,320 @@ class EEGDataPublisherService:
         self.anomaly_rate = anomaly_rate
         self.sample_interval = 1.0 / self.sampling_rate
 
-        self.baseline_mean = 0.0
-        self.baseline_std = 1.0
+        self.n_servos = n_servos
+        self.total_positions = total_positions
+        self.servo_origin = numpy.array(servo_origin or [0, 0, 0])
+        self.servo_ceiling = numpy.array(servo_ceiling or [180, 180, 180])
+
+        self.hash_precision = hash_precision
+        self.hash_step_size = hash_step_size
+
+        self.baseline_mean = eeg_mean
+        self.baseline_std = eeg_std
         self.anomaly_multiplier = 3.0
 
         self.total_samples = 0
         self.anomaly_count = 0
         self.start_time = time.time()
 
+        self.config = config if config_file else None
+
+        self._generate_servo_positions()
+
+        self._generate_and_store_hash_lookup()
+
         logger.info(f"EEGDataPublisherService Initialized:")
-        logger.info(f"  Redis URL: {self.redis_client}")
+        logger.info(f"  Redis URL: {redis_url}")
         logger.info(f"  Channel: {self.channel}")
         logger.info(f"  EEG Channels: {self.n_channels}")
         logger.info(f"  Sampling Rate: {self.sampling_rate} Hz")
         logger.info(f"  Anomaly Rate: {self.anomaly_rate * 100:.2f}%")
+        logger.info(f"  Servos: {self.n_servos}")
+        logger.info(f"  Total Positions: {len(self.servo_combinations)}")
+        logger.info(
+            f"  EEG Mean/Std: {self.baseline_mean:.2f}/{self.baseline_std:.2f}")
+        logger.info(f"  Hash Precision: {self.hash_precision}")
+
+    def _load_config(self, config_file: str) -> Optional[Dict]:
+        """Load configuration from YAML file.
+
+        Args:
+            config_file (str): Path to YAML configuration file
+
+        Returns:
+            Optional[Dict]: Configuration dictionary or None if failed
+        """
+        try:
+            if not os.path.isabs(config_file):
+                possible_paths = [
+                    config_file,
+                    os.path.join(os.path.dirname(__file__), config_file),
+                    os.path.join(os.path.dirname(__file__), '..', '..', '..',
+                                 'shared', 'config', config_file),
+                    os.path.join('/app', 'shared', 'config',
+                                 config_file),
+                ]
+
+                for path in possible_paths:
+                    if os.path.exists(path):
+                        config_file = path
+                        break
+                else:
+                    logger.error(
+                        f"Configuration file not found in any of: {possible_paths}")
+                    return None
+
+            with open(config_file, 'r') as f:
+                config = yaml.safe_load(f)
+                logger.info(
+                    f"Successfully loaded configuration from: {config_file}")
+                return config
+
+        except Exception as e:
+            logger.error(
+                f"Failed to load configuration file {config_file}: {e}")
+            return None
+
+    def _generate_servo_positions(self):
+        """Generate discrete servo angle combinations and their 3D positions."""
+        steps_per_servo = max(
+            3, int(numpy.ceil(self.total_positions ** (1 / self.n_servos))))
+
+        servo_angles = []
+        for i in range(self.n_servos):
+            angles = numpy.linspace(
+                self.servo_origin[i], self.servo_ceiling[i], steps_per_servo)
+            servo_angles.append(angles)
+
+        angle_grids = numpy.meshgrid(*servo_angles, indexing='ij')
+        combinations = numpy.column_stack(
+            [grid.flatten() for grid in angle_grids])
+
+        if len(combinations) > self.total_positions:
+            numpy.random.seed(1337)
+            indices = numpy.random.choice(
+                len(combinations), self.total_positions, replace=False)
+            combinations = combinations[indices]
+        elif len(combinations) < self.total_positions:
+            additional_needed = self.total_positions - len(combinations)
+            numpy.random.seed(1337)
+            random_variations = []
+
+            for _ in range(additional_needed):
+                random_combo = []
+                for i in range(self.n_servos):
+                    random_angle = numpy.random.uniform(
+                        self.servo_origin[i], self.servo_ceiling[i])
+                    random_combo.append(random_angle)
+                random_variations.append(random_combo)
+
+            combinations = numpy.vstack(
+                [combinations, numpy.array(random_variations)])
+
+        self.servo_combinations = combinations
+
+        self.positions = numpy.array([
+            self._angles_to_cartesian_position(angles) for angles in self.servo_combinations
+        ])
+
+    def _generate_and_store_hash_lookup(self):
+        """Generate hash lookup table and store it in Redis."""
+        logger.info("Generating servo position hash lookup table...")
+
+        hash_lookup = {}
+        reverse_lookup = {}
+
+        for i, (servo_angles, position) in enumerate(zip(self.servo_combinations, self.positions)):
+            position_hash = self._position_to_hash(position)
+
+            hash_lookup[position_hash] = {
+                "index": i,
+                "servo_angles": servo_angles.tolist(),
+                "position": position.tolist(),
+                "servo_origin": self.servo_origin.tolist(),
+                "servo_ceiling": self.servo_ceiling.tolist(),
+                "n_servos": self.n_servos
+            }
+
+            position_key = f"{position[0]:.{self.hash_precision}f}_{position[1]:.{self.hash_precision}f}_{position[2]:.{self.hash_precision}f}"
+            reverse_lookup[position_key] = position_hash
+        logger.info("=" * 50)
+        logger.info("FIRST 5 HASH LOOKUP ENTRIES")
+        logger.info("=" * 50)
+        for i, (hash_key, servo_data) in enumerate(hash_lookup.items()):
+            if i >= 5:
+                break
+            logger.info(f"Entry {i + 1}:")
+            logger.info(f"  Hash: {hash_key}")
+            logger.info(f"  Index: {servo_data['index']}")
+            logger.info(f"  Servo angles: {servo_data['servo_angles']}")
+            logger.info(f"  Position: {servo_data['position']}")
+            logger.info(f"  Position key: {position_key}")
+
+            pos = servo_data['position']
+            pos_key = f"{pos[0]:.{self.hash_precision}f}_{pos[1]:.{self.hash_precision}f}_{pos[2]:.{self.hash_precision}f}"
+            logger.info(f"  Reverse lookup key: {pos_key}")
+            logger.info("")
+
+        logger.info(f"Total hash entries generated: {len(hash_lookup)}")
+        logger.info(f"Total reverse lookup entries: {len(reverse_lookup)}")
+        logger.info("=" * 50)
+
+        lookup_data = {
+            "metadata": {
+                "total_positions": len(self.servo_combinations),
+                "n_servos": self.n_servos,
+                "servo_origin": self.servo_origin.tolist(),
+                "servo_ceiling": self.servo_ceiling.tolist(),
+                "hash_precision": self.hash_precision,
+                "hash_step_size": self.hash_step_size,
+                "generated_timestamp": datetime.now().isoformat(),
+                "source": "EEGDataPublisherService",
+                "config_file": self.config.get('hash_lookup', {}).get('output_file', 'hash_to_servo_lookup.json') if self.config else None
+            },
+            "hash_to_servo": hash_lookup,
+            "position_to_hash": reverse_lookup
+        }
+
+        try:
+            redis_key = f"{self.channel}:servo_hash_lookup"
+            self.redis_client.set(redis_key, json.dumps(lookup_data))
+
+            for position_hash, servo_data in hash_lookup.items():
+                individual_key = f"{self.channel}:servo_hash:{position_hash}"
+                self.redis_client.set(individual_key, json.dumps(servo_data))
+
+            metadata_key = f"{self.channel}:servo_metadata"
+            self.redis_client.set(
+                metadata_key, json.dumps(lookup_data["metadata"]))
+
+            logger.info(f"Stored servo hash lookup in Redis:")
+            logger.info(f"  - Complete lookup key: {redis_key}")
+            logger.info(
+                f"  - Individual hash keys: {len(hash_lookup)} entries")
+            logger.info(f"  - Metadata key: {metadata_key}")
+
+        except Exception as e:
+            logger.error(f"Failed to store hash lookup in Redis: {e}")
+
+    def get_servo_data_by_hash(self, position_hash: str) -> Optional[Dict]:
+        """Retrieve servo data from Redis by position hash.
+
+        Args:
+            position_hash (str): Position hash to lookup
+
+        Returns:
+            Optional[Dict]: Servo data dictionary or None if not found
+        """
+        try:
+            key = f"{self.channel}:servo_hash:{position_hash}"
+            data = self.redis_client.get(key)
+            if data:
+                return json.loads(data)
+            return None
+        except Exception as e:
+            logger.error(
+                f"Failed to retrieve servo data for hash {position_hash}: {e}")
+            return None
+
+    def get_complete_hash_lookup(self) -> Optional[Dict]:
+        """Retrieve complete hash lookup from Redis.
+
+        Returns:
+            Optional[Dict]: Complete lookup dictionary or None if not found
+        """
+        try:
+            key = f"{self.channel}:servo_hash_lookup"
+            data = self.redis_client.get(key)
+            if data:
+                return json.loads(data)
+            return None
+        except Exception as e:
+            logger.error(f"Failed to retrieve complete hash lookup: {e}")
+            return None
+
+    def save_hash_lookup_to_file(self, filename: str = ""):
+        """Save hash lookup to JSON file.
+
+        Args:
+            filename (str, optional): Output filename. Uses config file setting or timestamp default.
+        """
+        if filename is None:
+            if self.config and 'hash_lookup' in self.config:
+                filename = self.config['hash_lookup'].get(
+                    'output_file', 'hash_to_servo_lookup.json')
+            else:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"servo_hash_lookup_{timestamp}.json"
+
+        lookup_data = self.get_complete_hash_lookup()
+        if lookup_data:
+            try:
+                with open(filename, 'w') as f:
+                    json.dump(lookup_data, f, indent=2)
+                logger.info(f"Saved hash lookup to file: {filename}")
+            except Exception as e:
+                logger.error(f"Failed to save hash lookup to file: {e}")
+        else:
+            logger.error("No hash lookup data available to save")
+
+    def _angles_to_cartesian_position(self, servo_angles):
+        """Convert servo angles to a 3D cartesian position.
+
+        Args:
+            servo_angles (numpy.ndarray): array of servo angles.
+
+        Returns:
+            numpy.ndarray: 3D cartesian position [x, y, z].
+        """
+        if len(servo_angles) >= 3:
+            azimuth_angle = numpy.radians(servo_angles[0])
+            polar_angle = numpy.radians(servo_angles[1])
+            normalized_radius = servo_angles[2] / 180.0
+
+            x = normalized_radius * \
+                numpy.sin(polar_angle) * numpy.cos(azimuth_angle)
+            y = normalized_radius * \
+                numpy.sin(polar_angle) * numpy.sin(azimuth_angle)
+            z = normalized_radius * numpy.cos(polar_angle)
+
+            return numpy.array([x, y, z])
+        else:
+            position = numpy.zeros(3)
+            for i, angle in enumerate(servo_angles[:3]):
+                position[i] = angle / 180.0
+            return position
+
+    def _position_to_hash(self, position, precision=None):
+        """Convert a 3D position to a hash value.
+
+        Args:
+            position (numpy.ndarray): 3D position [x, y, z].
+            precision (int, optional): number of decimal places. Uses instance default if None.
+
+        Returns:
+            str: Hash value as a string.
+        """
+        if precision is None:
+            precision = self.hash_precision
+
+        rounded_position = numpy.round(position, precision)
+        position_str = f"{rounded_position[0]:.{precision}f}_{rounded_position[1]:.{precision}f}_{rounded_position[2]:.{precision}f}"
+        hash_value = hashlib.md5(position_str.encode()).hexdigest()[:12]
+        return hash_value
+
+    def _get_random_servo_position(self):
+        """Get a random servo position from the generated combinations.
+
+        Returns:
+            tuple: (servo_angles, position, position_hash)
+        """
+        index = numpy.random.randint(0, len(self.servo_combinations))
+        servo_angles = self.servo_combinations[index]
+        position = self.positions[index]
+        position_hash = self._position_to_hash(position)
+
+        return servo_angles, position, position_hash
 
     def generate_baseline_eeg(self) -> numpy.ndarray:
         """Generate baseline EEG data (normal brain activity).
@@ -85,24 +431,25 @@ class EEGDataPublisherService:
         """
         baseline = self.generate_baseline_eeg()
 
-        # Create spike in random subset of channels
         spike_channels = random.sample(
-            range(self.n_channels), random.randint(1, max(1, self.n_channels // 2))
+            range(self.n_channels), random.randint(
+                1, max(1, self.n_channels // 2))
         )
 
         for channel in spike_channels:
-            # Generate anomaly spike
-            spike_magnitude = random.uniform(2.5, 5.0)  # 2.5-5x std deviation
-            spike_direction = random.choice([-1, 1])  # Positive or negative spike
-            baseline[channel] += spike_direction * spike_magnitude * self.baseline_std
+            spike_magnitude = random.uniform(2.5, 5.0)
+            spike_direction = random.choice(
+                [-1, 1])
+            baseline[channel] += spike_direction * \
+                spike_magnitude * self.baseline_std
 
         return baseline
 
     def generate_eeg_sample(self) -> Dict:
-        """Generate a single EEG sample with or without anomaly spike.
+        """Generate a single EEG sample with servo position data.
 
         Returns:
-            Dict: dictionary containing EEG data and metadata.
+            Dict: EEG sample dictionary with servo angles, position, and hash.
         """
         is_anomaly = random.random() < self.anomaly_rate
 
@@ -112,6 +459,8 @@ class EEGDataPublisherService:
         else:
             eeg_data = self.generate_baseline_eeg()
 
+        servo_angles, position, position_hash = self._get_random_servo_position()
+
         self.total_samples += 1
 
         sample = {
@@ -119,19 +468,22 @@ class EEGDataPublisherService:
             "sample_id": f"eeg_sample_{self.total_samples:06d}",
             "eeg_data": eeg_data.tolist(),
             "n_channels": self.n_channels,
-            "is_anomaly": is_anomaly,
-            "source": "test_EEGDataPublisherService",
+            "is_anomaly": bool(is_anomaly),
+            "servo_angles": servo_angles.tolist(),
+            "position": position.tolist(),
+            "position_hash": position_hash,
+            "source": "EEGDataPublisherService",
             "metadata": {
                 "baseline_mean": self.baseline_mean,
                 "baseline_std": self.baseline_std,
                 "total_samples": self.total_samples,
                 "anomaly_count": self.anomaly_count,
-                "anomaly_rate": (
-                    self.anomaly_count / self.total_samples
-                    if self.total_samples > 0
-                    else 0
-                ),
-            },
+                "anomaly_rate": self.anomaly_count / self.total_samples if self.total_samples > 0 else 0,
+                "n_servos": self.n_servos,
+                "servo_origin": self.servo_origin.tolist(),
+                "servo_ceiling": self.servo_ceiling.tolist(),
+                "hash_precision": self.hash_precision,
+            }
         }
 
         return sample
@@ -177,7 +529,8 @@ class EEGDataPublisherService:
         logger.info(f"  - Target Rate: {self.sampling_rate:.1f} Hz")
         logger.info(f"  - Actual Rate: {actual_rate:.1f} Hz")
         logger.info(f"  - Target Anomaly Rate: {self.anomaly_rate * 100:.1f}%")
-        logger.info(f"  - Actual Anomaly Rate: {actual_anomaly_rate * 100:.1f}%")
+        logger.info(
+            f"  - Actual Anomaly Rate: {actual_anomaly_rate * 100:.1f}%")
 
         self.clear_redis_data()
 
@@ -188,7 +541,8 @@ class EEGDataPublisherService:
             duration (Optional[float], optional): duration to run in seconds (none = indefinite). Defaults to None.
             verbose (bool, optional): whether to print periodic statistics. Defaults to True.
         """
-        logger.info(f"Starting EEG data streaming to channel '{self.channel}.")
+        logger.info(
+            f"Starting EEG data streaming to channel '{self.channel}'.")
         logger.info(
             f"Streaming at {self.sampling_rate} Hz with {self.anomaly_rate * 100:.1f}% anomaly rate."
         )
@@ -216,7 +570,8 @@ class EEGDataPublisherService:
                     last_stats_time = time.time()
 
                 if duration and (time.time() - start_time) >= duration:
-                    logger.info(f"Completed {duration:.1f} seconds of streaming.")
+                    logger.info(
+                        f"Completed {duration:.1f} seconds of streaming.")
                     break
 
                 elapsed = time.time() - loop_start
@@ -226,7 +581,6 @@ class EEGDataPublisherService:
         except KeyboardInterrupt:
             logger.info("Streaming interrupted by user.")
 
-        #self.print_statistics()
         logger.info("EEG data streaming completed.")
 
     def run_batch(self, n_samples: int, batch_interval: float = 1.0):
@@ -269,7 +623,12 @@ def main():
     )
 
     parser.add_argument(
-        "--redis-url", default="redis://localhost:6379", help="Redis connection URL"
+        "--config",
+        help="Path to YAML configuration file"
+    )
+
+    parser.add_argument(
+        "--redis-url", default="redis://redis:6379", help="Redis connection URL"
     )
 
     parser.add_argument(
@@ -280,7 +639,8 @@ def main():
         "--channels", type=int, default=5, help="Number of EEG channels to simulate"
     )
 
-    parser.add_argument("--rate", type=float, default=100.0, help="Sampling rate in Hz")
+    parser.add_argument("--rate", type=float, default=100.0,
+                        help="Sampling rate in Hz")
 
     parser.add_argument(
         "--anomaly-rate", type=float, default=0.05, help="Anomaly rate (0.0-1.0)"
@@ -316,21 +676,62 @@ def main():
         "--quiet", action="store_true", help="Suppress periodic statistics output"
     )
 
+    parser.add_argument(
+        "--n-servos", type=int, help="Number of servo motors (overrides config)"
+    )
+
+    parser.add_argument(
+        "--total-positions", type=int, help="Total number of discrete positions (overrides config)"
+    )
+
+    parser.add_argument(
+        "--servo-origin", type=float, nargs='+',
+        help="Servo angle origins (overrides config)"
+    )
+
+    parser.add_argument(
+        "--servo-ceiling", type=float, nargs='+',
+        help="Servo angle ceilings (overrides config)"
+    )
+
+    parser.add_argument(
+        "--save-lookup",
+        help="Save hash lookup to specified JSON file (overrides config)"
+    )
+
+    parser.add_argument(
+        "--generate-lookup-only",
+        action="store_true",
+        help="Generate hash lookup and exit (don't stream data)"
+    )
+
     args = parser.parse_args()
 
     if not (0.0 <= args.anomaly_rate <= 1.0):
-        parser.error("Anomaly rate must be betwen 0.0 and 1.0")
+        parser.error("Anomaly rate must be between 0.0 and 1.0")
 
     if args.rate <= 0.0:
         parser.error("Sampling rate must be positive")
 
-    publisher = EEGDataPublisherService(
-        redis_url=args.redis_url,
-        channel=args.channel,
-        n_channels=args.channels,
-        sampling_rate=args.rate,
-        anomaly_rate=args.anomaly_rate,
-    )
+    publisher_kwargs = {
+        'redis_url': args.redis_url,
+        'channel': args.channel,
+        'n_channels': args.channels,
+        'sampling_rate': args.rate,
+        'anomaly_rate': args.anomaly_rate,
+        'config_file': args.config,
+    }
+
+    if args.n_servos is not None:
+        publisher_kwargs['n_servos'] = args.n_servos
+    if args.total_positions is not None:
+        publisher_kwargs['total_positions'] = args.total_positions
+    if args.servo_origin is not None:
+        publisher_kwargs['servo_origin'] = args.servo_origin
+    if args.servo_ceiling is not None:
+        publisher_kwargs['servo_ceiling'] = args.servo_ceiling
+
+    publisher = EEGDataPublisherService(**publisher_kwargs)
 
     try:
         publisher.redis_client.ping()
@@ -338,6 +739,15 @@ def main():
     except Exception as e:
         logger.error(f"Failed to connect to Redis server: {e}")
         return 1
+
+    if args.save_lookup:
+        publisher.save_hash_lookup_to_file(args.save_lookup)
+    elif args.generate_lookup_only:
+        publisher.save_hash_lookup_to_file()
+
+    if args.generate_lookup_only:
+        logger.info("Hash lookup generation completed. Exiting.")
+        return 0
 
     if args.batch_mode:
         publisher.run_batch(args.batch_size, args.batch_interval)
