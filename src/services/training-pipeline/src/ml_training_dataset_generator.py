@@ -7,7 +7,7 @@ import random
 import yaml
 import os
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -30,7 +30,7 @@ class MLTrainingDatasetGenerator:
         servo_ceiling: list = None,
         eeg_mean: float = 0.0,
         eeg_std: float = 1.0,
-        training_samples: int = 10000,
+        training_samples: int = 1000,
         inference_samples_per_position: int = 1,
         config_file: str = None,
         output_file: str = None,
@@ -73,10 +73,6 @@ class MLTrainingDatasetGenerator:
                 inference_samples_per_position = config.get('dataset', {}).get(
                     'inference_samples_per_position', inference_samples_per_position)
 
-                if not output_file:
-                    output_file = config.get(
-                        'output_file', 'training_data.json')
-
                 logger.info(f"Loaded configuration from: {config_file}")
 
         self.n_channels = n_channels
@@ -84,6 +80,7 @@ class MLTrainingDatasetGenerator:
         self.total_positions = total_positions
         self.servo_origin = numpy.array(servo_origin or [0, 0, 0])
         self.servo_ceiling = numpy.array(servo_ceiling or [180, 180, 180])
+
 
 
         self.baseline_mean = eeg_mean
@@ -119,10 +116,10 @@ class MLTrainingDatasetGenerator:
                 possible_paths = [
                     config_file,  
                     os.path.join(os.path.dirname(__file__), config_file),
-                    os.path.join(os.path.dirname(__file__), 'shared',
-                                 'config', config_file), 
-                    os.path.join(os.path.dirname(__file__), 'src', 'shared',
-                                 'config', config_file),   
+                    os.path.join('/app', 'shared', 'config',
+                                 config_file),  
+                    os.path.join(os.path.dirname(__file__), '..', '..', '..',
+                                 'shared', 'config', config_file),
                 ]
 
                 for path in possible_paths:
@@ -199,7 +196,7 @@ class MLTrainingDatasetGenerator:
         if len(servo_angles) >= 3:
             azimuth_angle = numpy.radians(servo_angles[0])  
             polar_angle = numpy.radians(servo_angles[1])    
-            normalized_radius = servo_angles[2] / 180.0            
+            normalized_radius = servo_angles[2] / 180.0             
 
             x = normalized_radius * numpy.sin(polar_angle) * numpy.cos(azimuth_angle)
             y = normalized_radius * numpy.sin(polar_angle) * numpy.sin(azimuth_angle)
@@ -212,6 +209,7 @@ class MLTrainingDatasetGenerator:
                 position[i] = angle / 180.0
             return position
 
+    
 
     def generate_baseline_eeg(self) -> numpy.ndarray:
         """Generate baseline EEG data (normal brain activity).
@@ -246,7 +244,7 @@ class MLTrainingDatasetGenerator:
         for channel in spike_channels:
             spike_magnitude = random.uniform(2.5, 5.0)  
             spike_direction = random.choice(
-                [-1, 1])   
+                [-1, 1])  
             baseline[channel] += spike_direction * \
                 spike_magnitude * self.baseline_std
 
@@ -293,6 +291,7 @@ class MLTrainingDatasetGenerator:
 
         return sample
 
+    
 
     def generate_complete_dataset(self, anomaly_rate: float = 0.05) -> Dict:
         """Generate complete training dataset.
@@ -301,7 +300,7 @@ class MLTrainingDatasetGenerator:
             anomaly_rate (float): Proportion of samples that should be anomalies
 
         Returns:
-            Dict: Complete dataset with samples 
+            Dict: Complete dataset with samples
         """
         logger.info(
             f"Generating {self.training_samples} training samples with {anomaly_rate*100:.1f}% anomaly rate...")
@@ -335,7 +334,8 @@ class MLTrainingDatasetGenerator:
                 "inference_samples_per_position": self.inference_samples_per_position,
                 "generated_timestamp": datetime.now().isoformat(),
                 "source": "MLTrainingDatasetGenerator",
-                "config_used": bool(self.config)
+                "config_used": bool(self.config),
+                "dataset_type": "training"
             },
             "training_samples": samples,
         }
@@ -348,6 +348,110 @@ class MLTrainingDatasetGenerator:
             f"  Actual anomaly rate: {anomaly_count / len(samples) * 100:.2f}%")
 
         return dataset
+
+    def generate_inference_dataset(self, anomaly_rate: float = 0.0) -> Dict:
+        """Generate inference dataset with one sample per position.
+
+        Args:
+            anomaly_rate (float): Proportion of samples that should be anomalies
+
+        Returns:
+            Dict: Complete inference dataset with samples 
+        """
+        logger.info(
+            f"Generating inference dataset with {self.inference_samples_per_position} sample(s) per position...")
+
+        samples = []
+        anomaly_count = 0
+        sample_counter = 0
+
+        for position_idx in range(len(self.servo_combinations)):
+            for sample_per_pos in range(self.inference_samples_per_position):
+                sample_counter += 1
+
+                is_anomaly = random.random() < anomaly_rate
+                if is_anomaly:
+                    anomaly_count += 1
+
+                if is_anomaly:
+                    eeg_data = self.generate_anomaly_eeg()
+                else:
+                    eeg_data = self.generate_baseline_eeg()
+
+                servo_angles = self.servo_combinations[position_idx]
+                position = self.positions[position_idx]
+
+                sample = {
+                    "timestamp": datetime.now().isoformat(),
+                    "sample_id": f"inference_sample_{sample_counter:06d}",
+                    "eeg_data": eeg_data.tolist(),
+                    "n_channels": self.n_channels,
+                    "is_anomaly": bool(is_anomaly),
+                    "servo_angles": servo_angles.tolist(),
+                    "position": position.tolist(),
+                    "source": "MLTrainingDatasetGenerator",
+                    "metadata": {
+                        "baseline_mean": self.baseline_mean,
+                        "baseline_std": self.baseline_std,
+                        "sample_id": sample_counter,
+                        "n_servos": self.n_servos,
+                        "servo_origin": self.servo_origin.tolist(),
+                        "servo_ceiling": self.servo_ceiling.tolist(),
+                        "position_index": int(position_idx),
+                        "sample_per_position": sample_per_pos + 1,
+                    }
+                }
+
+                samples.append(sample)
+
+        dataset = {
+            "dataset_metadata": {
+                "total_samples": len(samples),
+                "anomaly_samples": anomaly_count,
+                "normal_samples": len(samples) - anomaly_count,
+                "anomaly_rate": anomaly_count / len(samples) if len(samples) > 0 else 0,
+                "n_channels": self.n_channels,
+                "n_servos": self.n_servos,
+                "total_positions": self.total_positions,
+                "training_samples": 0,  
+                "inference_samples_per_position": self.inference_samples_per_position,
+                "generated_timestamp": datetime.now().isoformat(),
+                "source": "MLTrainingDatasetGenerator",
+                "config_used": bool(self.config),
+                "dataset_type": "inference"
+            },
+            "training_samples": samples,  
+        }
+
+        logger.info(f"Inference dataset generation completed:")
+        logger.info(f"  Total samples: {len(samples)}")
+        logger.info(f"  Normal samples: {len(samples) - anomaly_count}")
+        logger.info(f"  Anomaly samples: {anomaly_count}")
+        logger.info(
+            f"  Samples per position: {self.inference_samples_per_position}")
+        logger.info(
+            f"  Actual anomaly rate: {anomaly_count / len(samples) * 100:.2f}%")
+
+        return dataset
+
+    def generate_both_datasets(self, training_anomaly_rate: float = 0.05, inference_anomaly_rate: float = 0.0) -> tuple:
+        """Generate both training and inference datasets.
+
+        Args:
+            training_anomaly_rate (float): Anomaly rate for training data
+            inference_anomaly_rate (float): Anomaly rate for inference data
+
+        Returns:
+            tuple: (training_dataset, inference_dataset)
+        """
+        logger.info("Generating both training and inference datasets...")
+
+        training_dataset = self.generate_complete_dataset(
+            anomaly_rate=training_anomaly_rate)
+        inference_dataset = self.generate_inference_dataset(
+            anomaly_rate=inference_anomaly_rate)
+
+        return training_dataset, inference_dataset
 
     def save_dataset(self, dataset: Dict, output_file: str = None):
         """Save dataset to JSON file.
@@ -371,6 +475,36 @@ class MLTrainingDatasetGenerator:
         except Exception as e:
             logger.error(f"Failed to save dataset to {output_file}: {e}")
             raise
+
+    def save_both_datasets(self, training_dataset: Dict, inference_dataset: Dict,
+                           training_file: str = None, inference_file: str = None):
+        """Save both training and inference datasets to JSON files.
+
+        Args:
+            training_dataset (Dict): Training dataset dictionary
+            inference_dataset (Dict): Inference dataset dictionary
+            training_file (str, optional): Training file path
+            inference_file (str, optional): Inference file path
+        """
+        if training_file is None:
+            training_file = self.output_file
+
+        if inference_file is None:
+            base_name = os.path.splitext(training_file)[0]
+            extension = os.path.splitext(training_file)[1]
+            inference_file = f"{base_name.replace('training', 'inference')}{extension}"
+
+            if 'training' not in base_name:
+                inference_file = f"{base_name}_inference{extension}"
+
+        self.save_dataset(training_dataset, training_file)
+
+        logger.info(f"Saving inference dataset...")
+        self.save_dataset(inference_dataset, inference_file)
+
+        logger.info(f"Both datasets saved:")
+        logger.info(f"  Training: {training_file}")
+        logger.info(f"  Inference: {inference_file}")
 
 
 def main():
@@ -398,12 +532,34 @@ def main():
 
     parser.add_argument(
         "--anomaly-rate", type=float, default=0.05,
-        help="Anomaly rate (0.0-1.0)"
+        help="Anomaly rate for training data (0.0-1.0)"
+    )
+
+    parser.add_argument(
+        "--inference-anomaly-rate", type=float, default=0.0,
+        help="Anomaly rate for inference data (0.0-1.0)"
     )
 
     parser.add_argument(
         "--channels", type=int, default=5,
         help="Number of EEG channels to simulate"
+    )
+
+    parser.add_argument(
+        "--generate-inference",
+        action="store_true",
+        help="Generate inference dataset in addition to training dataset"
+    )
+
+    parser.add_argument(
+        "--inference-only",
+        action="store_true",
+        help="Generate only inference dataset"
+    )
+
+    parser.add_argument(
+        "--inference-output",
+        help="Output path for inference dataset (auto-generated if not specified)"
     )
 
     parser.add_argument(
@@ -429,7 +585,10 @@ def main():
     args = parser.parse_args()
 
     if not (0.0 <= args.anomaly_rate <= 1.0):
-        parser.error("Anomaly rate must be between 0.0 and 1.0")
+        parser.error("Training anomaly rate must be between 0.0 and 1.0")
+
+    if not (0.0 <= args.inference_anomaly_rate <= 1.0):
+        parser.error("Inference anomaly rate must be between 0.0 and 1.0")
 
     generator_kwargs = {
         'n_channels': args.channels,
@@ -449,11 +608,39 @@ def main():
 
     try:
         generator = MLTrainingDatasetGenerator(**generator_kwargs)
-        dataset = generator.generate_complete_dataset(
-            anomaly_rate=args.anomaly_rate)
-        generator.save_dataset(dataset)
-        logger.info("Training dataset generation completed successfully!")
+
+        if args.inference_only:
+            logger.info("Generating inference dataset only...")
+            inference_dataset = generator.generate_inference_dataset(
+                anomaly_rate=args.inference_anomaly_rate)
+
+            inference_file = args.inference_output or args.output.replace(
+                'training', 'inference')
+            generator.save_dataset(inference_dataset, inference_file)
+
+        elif args.generate_inference:
+            logger.info("Generating both training and inference datasets...")
+            training_dataset, inference_dataset = generator.generate_both_datasets(
+                training_anomaly_rate=args.anomaly_rate,
+                inference_anomaly_rate=args.inference_anomaly_rate
+            )
+
+            generator.save_both_datasets(
+                training_dataset,
+                inference_dataset,
+                training_file=args.output,
+                inference_file=args.inference_output
+            )
+
+        else:
+            logger.info("Generating training dataset only...")
+            dataset = generator.generate_complete_dataset(
+                anomaly_rate=args.anomaly_rate)
+            generator.save_dataset(dataset)
+
+        logger.info("Dataset generation completed successfully!")
         return 0
+
     except Exception as e:
         logger.error(f"Failed to generate training dataset: {e}")
         return 1

@@ -1,19 +1,39 @@
 version: '3.8'
 
 services:
-  training-pipeline:
+  dataset-generator:
     build: 
       context: ./services/training-pipeline
     volumes:
       - ./shared/config:/app/shared/config:ro
       - ./shared/data:/app/shared/data:rw
+      - ./shared/models:/app/shared/models:rw
     environment:
       - PYTHONUNBUFFERED=1
     command: [
       "python", "ml_training_dataset_generator.py", 
       "--config", "/app/shared/config/mechanicus_run_configuration.yaml",
-      "--output", "/app/shared/data/training_data.json"
+      "--output", "/app/shared/data/training_data.json",
+      "--generate-inference"
     ]
+    networks:
+      - mechanicus-network
+
+  model-trainer:
+    build: 
+      context: ./services/training-pipeline
+    volumes:
+      - ./shared/config:/app/shared/config:ro
+      - ./shared/data:/app/shared/data:rw
+      - ./shared/models:/app/shared/models:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /app
+    command: [
+      "python", "ml_training.py"
+    ]
+    depends_on:
+      - dataset-generator
     networks:
       - mechanicus-network
 
@@ -23,3 +43,4 @@ networks:
 
 volumes:
   training_data:
+  models:

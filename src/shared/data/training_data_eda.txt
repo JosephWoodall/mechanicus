@@ -1,0 +1,52 @@
+----------------------------------------------------------------------------------------------------
+/app/shared/data/training_data_eda.txt
+----------------------------------------------------------------------------------------------------
+-------------------------
+Info
+-------------------------
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1000 entries, 0 to 999
+Data columns (total 6 columns):
+ #   Column              Non-Null Count  Dtype  
+---  ------              --------------  -----  
+ 0   eeg_0               1000 non-null   float64
+ 1   eeg_1               1000 non-null   float64
+ 2   eeg_2               1000 non-null   float64
+ 3   eeg_3               1000 non-null   float64
+ 4   eeg_4               1000 non-null   float64
+ 5   servo_angles_label  1000 non-null   object 
+dtypes: float64(5), object(1)
+memory usage: 47.0+ KB
+None
+
+
+-------------------------
+Describe
+-------------------------
+             eeg_0        eeg_1        eeg_2        eeg_3        eeg_4
+count  1000.000000  1000.000000  1000.000000  1000.000000  1000.000000
+mean      0.371900    -0.274263     0.313332    -0.246337     0.213108
+std       1.178922     1.104724     1.099810     1.119053     1.142888
+min      -5.934608    -5.432480    -5.230170    -6.091277    -5.252629
+25%      -0.250205    -0.934058    -0.357674    -0.884844    -0.503383
+50%       0.359483    -0.270769     0.283810    -0.224814     0.249237
+75%       1.056414     0.391868     1.016454     0.396137     0.914955
+max       6.654374     5.069237     6.904231     5.285450     6.861313
+-------------------------
+
+
+-------------------------
+Nulls per Feature
+-------------------------
+                    total_null_values  percent_of_null_values
+eeg_0                               0                     0.0
+eeg_1                               0                     0.0
+eeg_2                               0                     0.0
+eeg_3                               0                     0.0
+eeg_4                               0                     0.0
+servo_angles_label                  0                     0.0
+Features with more than 10% null values:
+Empty DataFrame
+Columns: [total_null_values, percent_of_null_values]
+Index: []
+----------------------------------------------------------------------------------------------------

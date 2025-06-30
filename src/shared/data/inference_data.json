@@ -1,0 +1,8419 @@
+{
+  "dataset_metadata": {
+    "total_samples": 200,
+    "anomaly_samples": 0,
+    "normal_samples": 200,
+    "anomaly_rate": 0.0,
+    "n_channels": 5,
+    "n_servos": 3,
+    "total_positions": 200,
+    "training_samples": 0,
+    "inference_samples_per_position": 1,
+    "generated_timestamp": "2025-06-30T15:35:55.175168",
+    "source": "MLTrainingDatasetGenerator",
+    "config_used": true,
+    "dataset_type": "inference"
+  },
+  "training_samples": [
+    {
+      "timestamp": "2025-06-30T15:35:55.171763",
+      "sample_id": "inference_sample_000001",
+      "eeg_data": [
+        -0.9738302835405948,
+        0.7499117750625255,
+        0.10449428270710727,
+        -1.0780614081992619,
+        0.4594781747864768
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        -0.10898137920080413,
+        0.3354101966249685,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 1,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 0,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171779",
+      "sample_id": "inference_sample_000002",
+      "eeg_data": [
+        -0.46440848032110255,
+        -0.7840683566121491,
+        -0.046079307500306005,
+        1.8710855063588538,
+        -0.6933198949052205
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        144.0
+      ],
+      "position": [
+        0.3804226065180614,
+        0.27639320225002106,
+        0.647213595499958
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 2,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 1,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171807",
+      "sample_id": "inference_sample_000003",
+      "eeg_data": [
+        0.8751515445406157,
+        0.5034759670939322,
+        1.0397291621770177,
+        -0.49052476714412313,
+        1.130263930288661
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 3,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 2,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171820",
+      "sample_id": "inference_sample_000004",
+      "eeg_data": [
+        -0.23484264766903118,
+        -0.538079539691237,
+        0.8831310035156502,
+        -0.6173628216705932,
+        0.11921564273707277
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 4,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 3,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171831",
+      "sample_id": "inference_sample_000005",
+      "eeg_data": [
+        0.5439129813173721,
+        -1.5483483427298907,
+        0.5445285488077782,
+        -0.3443803818889616,
+        -0.004785106540989251
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        3.0274933843473203e-17,
+        9.317666547912739e-17,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 5,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 4,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171849",
+      "sample_id": "inference_sample_000006",
+      "eeg_data": [
+        -1.093541720674787,
+        -1.9598924894177945,
+        0.5677228094848722,
+        1.574475917250413,
+        0.09287909205926465
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        0.11755705045849466,
+        0.0,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 6,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 5,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171861",
+      "sample_id": "inference_sample_000007",
+      "eeg_data": [
+        -1.7515983497461995,
+        -0.372980122584596,
+        0.5201361681830065,
+        -0.777234017007367,
+        1.4036569157973224
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        36.0,
+        72.0
+      ],
+      "position": [
+        -0.23511410091698925,
+        2.879317311223987e-17,
+        0.323606797749979
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 7,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 6,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171872",
+      "sample_id": "inference_sample_000008",
+      "eeg_data": [
+        -0.07560383851124419,
+        0.8063459564430706,
+        -2.057095109645483,
+        1.0018014544773888,
+        -1.5872475957990944
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 8,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 7,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171891",
+      "sample_id": "inference_sample_000009",
+      "eeg_data": [
+        0.14231048511693073,
+        -1.1376167023495363,
+        -1.6980596668576493,
+        -1.4958096801939198,
+        -0.32698532758809307
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        0.28531695488854614,
+        0.2072949016875158,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 9,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 8,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171904",
+      "sample_id": "inference_sample_000010",
+      "eeg_data": [
+        -0.16405363111906412,
+        -1.0995164801236976,
+        -0.8101390324742345,
+        0.055925603767852966,
+        1.5173784710366858
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        -0.3077683537175253,
+        0.22360679774997902,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 10,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 9,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171932",
+      "sample_id": "inference_sample_000011",
+      "eeg_data": [
+        0.9604406316529359,
+        -1.1511143355918563,
+        -1.0029555164317232,
+        0.7709299915027996,
+        0.6941263167404581
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        0.14530850560107222,
+        0.44721359549995804,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 11,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 10,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171960",
+      "sample_id": "inference_sample_000012",
+      "eeg_data": [
+        -0.28316073147693804,
+        1.0270304211986518,
+        0.5503837302028853,
+        0.337807148268122,
+        0.7094929148018888
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 12,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 11,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.171988",
+      "sample_id": "inference_sample_000013",
+      "eeg_data": [
+        -1.323316606650507,
+        -0.5637382924840519,
+        1.9833960826373542,
+        -0.38327220854981403,
+        -0.9477785218875874
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        0.15388417685876268,
+        0.1118033988749895,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 13,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 12,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172006",
+      "sample_id": "inference_sample_000014",
+      "eeg_data": [
+        -0.44908567284744927,
+        0.6857924051276589,
+        1.4578855056646214,
+        -1.2306572017713453,
+        0.29505562042225153
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        36.0,
+        36.0
+      ],
+      "position": [
+        -0.11755705045849463,
+        1.4396586556119935e-17,
+        0.1618033988749895
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 14,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 13,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172027",
+      "sample_id": "inference_sample_000015",
+      "eeg_data": [
+        0.505287689141831,
+        0.11326119177095481,
+        -0.024270293271950072,
+        -0.2676457493111637,
+        0.004327892720777979
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        36.0
+      ],
+      "position": [
+        0.09510565162951536,
+        0.06909830056250527,
+        0.1618033988749895
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 15,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 14,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172056",
+      "sample_id": "inference_sample_000016",
+      "eeg_data": [
+        -1.4377559690994872,
+        -1.221707796779452,
+        2.3114536034562687,
+        -0.5975817474014945,
+        -0.8491364245367248
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        -9.797174393178826e-17,
+        1.1998078261294862e-32,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 16,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 15,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172086",
+      "sample_id": "inference_sample_000017",
+      "eeg_data": [
+        0.005217642875616324,
+        -0.43678463417059565,
+        -1.0820019027519736,
+        1.1114701575784722,
+        0.8562408647357604
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        0.4702282018339786,
+        0.0,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 17,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 16,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172097",
+      "sample_id": "inference_sample_000018",
+      "eeg_data": [
+        -2.2519617178238676,
+        -0.6470686608749707,
+        -0.2819315244252365,
+        0.10629518059375437,
+        0.45968760280885523
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        36.0,
+        72.0
+      ],
+      "position": [
+        0.0726542528005361,
+        0.22360679774997896,
+        0.323606797749979
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 18,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 17,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172141",
+      "sample_id": "inference_sample_000019",
+      "eeg_data": [
+        0.42201375722044776,
+        1.489295691310832,
+        -0.2312544503341505,
+        0.27087824755059775,
+        0.7288428095892617
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 19,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 18,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172161",
+      "sample_id": "inference_sample_000020",
+      "eeg_data": [
+        0.9899217217020613,
+        0.6928066700878263,
+        -0.5240500192554506,
+        -1.517660214466258,
+        -0.8756814403141786
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        5.94456043570255e-17,
+        4.31897596683598e-17,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 20,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 19,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172180",
+      "sample_id": "inference_sample_000021",
+      "eeg_data": [
+        0.9295542737131233,
+        0.25924681205679334,
+        -0.5411458922612529,
+        0.7917566717756199,
+        -0.4051572878024252
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 21,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 20,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172219",
+      "sample_id": "inference_sample_000022",
+      "eeg_data": [
+        -0.18395477045188635,
+        0.805426347203533,
+        0.5203442984581208,
+        0.44923063525548745,
+        0.29525228886126786
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        72.0
+      ],
+      "position": [
+        0.30776835371752537,
+        0.223606797749979,
+        -0.12360679774997894
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 22,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 21,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172232",
+      "sample_id": "inference_sample_000023",
+      "eeg_data": [
+        -0.7978956601299418,
+        -1.938509332851185,
+        0.20463858483198846,
+        -0.7666488784345851,
+        -1.174540739767776
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        0.0,
+        72.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 23,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 22,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172249",
+      "sample_id": "inference_sample_000024",
+      "eeg_data": [
+        0.814965781059316,
+        0.34700552309453075,
+        0.13920211411137673,
+        -1.7276893210592528,
+        -0.9018100331179543
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        1.2246467991473532e-16,
+        0.0,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 24,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 23,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172264",
+      "sample_id": "inference_sample_000025",
+      "eeg_data": [
+        0.10790174580428127,
+        0.7202598770015372,
+        0.262458956954037,
+        0.25385943030681846,
+        -1.1474604948224971
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        72.0
+      ],
+      "position": [
+        0.07265425280053611,
+        0.22360679774997902,
+        -0.32360679774997897
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 25,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 24,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172293",
+      "sample_id": "inference_sample_000026",
+      "eeg_data": [
+        0.5283336984145949,
+        0.17463127463401532,
+        -1.3617723449806207,
+        -1.2855259854295067,
+        -0.5154175886212542
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        3.7843667304341506e-17,
+        1.1647083184890923e-16,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 26,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 25,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172308",
+      "sample_id": "inference_sample_000027",
+      "eeg_data": [
+        1.1602889029368568,
+        -1.8482082480980866,
+        -2.0963459021160387,
+        0.13719328922876473,
+        -1.7920292372170916
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        -0.29389262614623646,
+        0.9045084971874737,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 27,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 26,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172362",
+      "sample_id": "inference_sample_000028",
+      "eeg_data": [
+        -0.1789786015458612,
+        -0.15198485353486352,
+        1.4948381856153792,
+        0.5870971690940809,
+        0.3475032644502126
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        -0.17633557568774186,
+        0.5427050983124841,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 28,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 27,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172377",
+      "sample_id": "inference_sample_000029",
+      "eeg_data": [
+        -0.4820889343101896,
+        0.7201167934205085,
+        -1.403700792521042,
+        -0.1107122044058232,
+        0.47929511008580306
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 29,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 28,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172403",
+      "sample_id": "inference_sample_000030",
+      "eeg_data": [
+        -1.6439029278966757,
+        -0.6695859716616175,
+        0.17040792048327255,
+        -0.8165258917265937,
+        -1.1757118576607992
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        72.0
+      ],
+      "position": [
+        4.898587196589413e-17,
+        0.0,
+        -0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 30,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 29,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172419",
+      "sample_id": "inference_sample_000031",
+      "eeg_data": [
+        1.4129778212868742,
+        -3.034865316444956,
+        -0.5150518838123272,
+        0.7173968659050285,
+        1.1030322906982177
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        0.7694208842938134,
+        0.5590169943749475,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 31,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 30,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172443",
+      "sample_id": "inference_sample_000032",
+      "eeg_data": [
+        -0.43370629395114224,
+        -1.9240762068859887,
+        0.7326323409278132,
+        -0.9818191004945918,
+        0.5893368944669343
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        0.3804226065180614,
+        0.0,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 32,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 31,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172460",
+      "sample_id": "inference_sample_000033",
+      "eeg_data": [
+        -0.1378704980246028,
+        -0.1213307520310318,
+        -0.5194091385049037,
+        -1.2937564761947635,
+        1.3758769769161303
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        36.0,
+        72.0
+      ],
+      "position": [
+        -0.07265425280053607,
+        0.223606797749979,
+        0.323606797749979
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 33,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 32,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172476",
+      "sample_id": "inference_sample_000034",
+      "eeg_data": [
+        1.6628262102897213,
+        -0.055839488508015456,
+        0.80499717062806,
+        -0.6022631957839303,
+        0.30684509019695955
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        0.5706339097770922,
+        0.0,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 34,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 33,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172490",
+      "sample_id": "inference_sample_000035",
+      "eeg_data": [
+        -0.04474459447780965,
+        -0.013419869602131845,
+        -0.0802598523701365,
+        -2.763701561124718,
+        -1.7187186872842737
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        -0.760845213036123,
+        9.31766654791274e-17,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 35,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 34,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172517",
+      "sample_id": "inference_sample_000036",
+      "eeg_data": [
+        0.12823288078761302,
+        -1.347762479078756,
+        -0.3928085526551317,
+        0.5578705537149152,
+        2.186815358717441
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        0.05877852522924732,
+        0.18090169943749473,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 36,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 35,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172534",
+      "sample_id": "inference_sample_000037",
+      "eeg_data": [
+        1.1516047906520446,
+        0.21988813517854838,
+        0.2654094532660944,
+        -0.1908796516618484,
+        0.5221325744894991
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 37,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 36,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172550",
+      "sample_id": "inference_sample_000038",
+      "eeg_data": [
+        -1.4659101867725357,
+        1.4267454409574538,
+        0.2135268999800798,
+        -2.884108346407941,
+        0.9897836855305278
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        -0.4702282018339786,
+        5.758634622447975e-17,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 38,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 37,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172583",
+      "sample_id": "inference_sample_000039",
+      "eeg_data": [
+        0.0735781706734569,
+        -1.7779639468440878,
+        -0.20702642792193449,
+        0.8880824617135581,
+        -1.6449668559908663
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        -0.19021130325903074,
+        2.329416636978185e-17,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 39,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 38,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172599",
+      "sample_id": "inference_sample_000040",
+      "eeg_data": [
+        -0.22143847084155502,
+        -0.05248160249977396,
+        1.1500090507859504,
+        -0.6438240447873295,
+        -0.19842337127607895
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        -0.47552825814757677,
+        0.3454915028125264,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 40,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 39,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172614",
+      "sample_id": "inference_sample_000041",
+      "eeg_data": [
+        0.9375892720921275,
+        -0.003134606399608386,
+        -0.38613289373079673,
+        0.9967138204583084,
+        1.200033490473123
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        0.6155367074350507,
+        0.4472135954999579,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 41,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 40,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172630",
+      "sample_id": "inference_sample_000042",
+      "eeg_data": [
+        -0.9217452327074669,
+        -0.8649339256339525,
+        -0.28379650400900647,
+        0.6734790879222516,
+        0.19689844187503047
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 42,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 41,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172643",
+      "sample_id": "inference_sample_000043",
+      "eeg_data": [
+        0.3520267895242475,
+        0.002149000602529594,
+        0.682056696225198,
+        -0.6279602950278702,
+        0.3853903591853505
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 43,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 42,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172670",
+      "sample_id": "inference_sample_000044",
+      "eeg_data": [
+        -0.007196053547910114,
+        -0.2863166095666161,
+        -0.2930054379367638,
+        0.31438302135897944,
+        1.2400636100569402
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        72.0
+      ],
+      "position": [
+        -0.19021130325903074,
+        0.1381966011250106,
+        -0.32360679774997897
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 44,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 43,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172701",
+      "sample_id": "inference_sample_000045",
+      "eeg_data": [
+        0.925252287461037,
+        0.9127363053786932,
+        2.4694374753225907,
+        0.2177284241620795,
+        0.7055043557261856
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        0.19021130325903074,
+        0.0,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 45,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 44,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172718",
+      "sample_id": "inference_sample_000046",
+      "eeg_data": [
+        1.204814899566695,
+        -0.406492770639303,
+        -0.6549560408750974,
+        -0.7859351252295014,
+        1.449344276869841
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        0.5877852522924732,
+        0.0,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 46,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 45,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172732",
+      "sample_id": "inference_sample_000047",
+      "eeg_data": [
+        0.4639447216774031,
+        -0.8017841821559198,
+        -0.7208524145055595,
+        -0.8998486506036847,
+        1.1597185510527046
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        -2.4492935982947065e-17,
+        2.9995195653237156e-33,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 47,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 46,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172766",
+      "sample_id": "inference_sample_000048",
+      "eeg_data": [
+        0.7340298467062337,
+        -0.7569028978014509,
+        -0.3318546305087198,
+        -0.83789937675548,
+        0.268841772642851
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        7.568733460868301e-18,
+        2.3294166369781848e-17,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 48,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 47,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172785",
+      "sample_id": "inference_sample_000049",
+      "eeg_data": [
+        2.039424786980694,
+        -0.7063915869300993,
+        0.060729227934421606,
+        0.1832455921697818,
+        -0.26747220639203517
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 49,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 48,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172800",
+      "sample_id": "inference_sample_000050",
+      "eeg_data": [
+        -0.7578187457348144,
+        -0.709728874208277,
+        0.4237471158456546,
+        1.3542986164397937,
+        -1.1111965137676347
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        72.0
+      ],
+      "position": [
+        -1.51374669217366e-17,
+        4.65883327395637e-17,
+        -0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 50,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 49,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172814",
+      "sample_id": "inference_sample_000051",
+      "eeg_data": [
+        0.6692407678911639,
+        -3.6807931735773765,
+        -1.4773329426909427,
+        2.5250357395924965,
+        1.8974689390320385
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        36.0,
+        144.0
+      ],
+      "position": [
+        -0.4702282018339785,
+        5.758634622447974e-17,
+        0.647213595499958
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 51,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 50,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172841",
+      "sample_id": "inference_sample_000052",
+      "eeg_data": [
+        -0.9592062000061454,
+        -2.4165913425247285,
+        0.9766732279923274,
+        0.5198404701111752,
+        -0.22022698508718858
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        0.1902113032590307,
+        0.0,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 52,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 51,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172870",
+      "sample_id": "inference_sample_000053",
+      "eeg_data": [
+        0.8076823055216095,
+        -2.5004343491724508,
+        0.293318180859071,
+        0.15625415076689897,
+        -0.24081943618730767
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 53,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 52,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172886",
+      "sample_id": "inference_sample_000054",
+      "eeg_data": [
+        -0.4367963323033958,
+        -1.6701507760639294,
+        0.37938037122611634,
+        1.3749727966687664,
+        -0.07378811215560176
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        72.0
+      ],
+      "position": [
+        -3.9630402904683664e-17,
+        2.8793173112239876e-17,
+        -0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 54,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 53,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172900",
+      "sample_id": "inference_sample_000055",
+      "eeg_data": [
+        -1.716712357085418,
+        0.7390328483992976,
+        -0.23784763925394412,
+        0.40425038448122,
+        -0.22051557307674002
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 55,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 54,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172916",
+      "sample_id": "inference_sample_000056",
+      "eeg_data": [
+        1.7097740035497853,
+        1.153625506963794,
+        -0.11801389232012383,
+        -0.3821083620322957,
+        0.7264427358199523
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        -0.7694208842938133,
+        0.5590169943749476,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 56,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 55,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172937",
+      "sample_id": "inference_sample_000057",
+      "eeg_data": [
+        -1.3816946382348863,
+        -0.8736139439421601,
+        1.4225978616879689,
+        -1.3066130620101897,
+        0.4513743698147946
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        72.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 57,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 56,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172961",
+      "sample_id": "inference_sample_000058",
+      "eeg_data": [
+        -0.4016016877852088,
+        -0.09720917024696688,
+        -1.1508385257876268,
+        0.31734683122985385,
+        -0.35973950331557886
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 58,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 57,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172975",
+      "sample_id": "inference_sample_000059",
+      "eeg_data": [
+        -0.8808146499025041,
+        -0.42071739165406075,
+        2.0038140468839414,
+        1.4930312335410552,
+        0.08119579833403076
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 59,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 58,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.172990",
+      "sample_id": "inference_sample_000060",
+      "eeg_data": [
+        -0.9555658963872034,
+        -0.575287059512528,
+        0.7203042356681909,
+        -0.7625758178535829,
+        -0.511461401245714
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 60,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 59,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173006",
+      "sample_id": "inference_sample_000061",
+      "eeg_data": [
+        1.083665336702256,
+        1.9991640262080308,
+        -1.1829525161131378,
+        0.7552085408630913,
+        -0.37039338406616595
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        0.036327126400268056,
+        0.11180339887498951,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 61,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 60,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173035",
+      "sample_id": "inference_sample_000062",
+      "eeg_data": [
+        1.4936585951478558,
+        3.166096441027598,
+        -0.6177894062795942,
+        -3.6381163852010103,
+        -1.205459433454693
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        -0.6155367074350506,
+        0.44721359549995804,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 62,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 61,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173047",
+      "sample_id": "inference_sample_000063",
+      "eeg_data": [
+        0.9349188429032382,
+        -0.35423439532241274,
+        -0.8556697028043235,
+        -0.4749109626435202,
+        0.11159576253101453
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 63,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 62,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173068",
+      "sample_id": "inference_sample_000064",
+      "eeg_data": [
+        -0.5912774704655787,
+        -0.9038476536487926,
+        1.2999557347307706,
+        0.8360320660812163,
+        0.3160343367220089
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        72.0
+      ],
+      "position": [
+        -0.11755705045849461,
+        0.3618033988749896,
+        -0.12360679774997894
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 64,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 63,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173088",
+      "sample_id": "inference_sample_000065",
+      "eeg_data": [
+        -0.8599452840878206,
+        -0.8320102391197359,
+        0.2419579183349084,
+        -0.2891203664012007,
+        -0.5369455126921454
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        -0.7608452130361228,
+        9.317666547912739e-17,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 65,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 64,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173111",
+      "sample_id": "inference_sample_000066",
+      "eeg_data": [
+        1.0043856661166037,
+        -1.3896117495501328,
+        1.3173817219337212,
+        -0.32499812852201704,
+        0.556037624585176
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        72.0
+      ],
+      "position": [
+        0.1902113032590307,
+        0.13819660112501053,
+        0.323606797749979
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 66,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 65,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173123",
+      "sample_id": "inference_sample_000067",
+      "eeg_data": [
+        1.1894559367985864,
+        1.9903231913631443,
+        -0.996233325978692,
+        0.7803145854694613,
+        1.1713996964018065
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        -0.570633909777092,
+        6.988249910934554e-17,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 67,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 66,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173134",
+      "sample_id": "inference_sample_000068",
+      "eeg_data": [
+        -0.23725000218435316,
+        1.6304702575544454,
+        0.40191143487403835,
+        -0.6874811030176702,
+        -0.5653629772939349
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        0.18163563200134028,
+        0.5590169943749476,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 68,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 67,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173161",
+      "sample_id": "inference_sample_000069",
+      "eeg_data": [
+        -0.048751285132729444,
+        -1.6204914417012324,
+        1.4167826984184755,
+        -1.219112448613193,
+        -0.10879443975245981
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        -0.23511410091698923,
+        0.7236067977499792,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 69,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 68,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173183",
+      "sample_id": "inference_sample_000070",
+      "eeg_data": [
+        0.31880566478083233,
+        -0.19031702374615653,
+        -2.914058029515632,
+        -0.46686841406464996,
+        -0.3487536382465155
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        108.0,
+        72.0
+      ],
+      "position": [
+        -0.30776835371752537,
+        0.22360679774997905,
+        -0.12360679774997894
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 70,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 69,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173203",
+      "sample_id": "inference_sample_000071",
+      "eeg_data": [
+        0.2073500840903549,
+        -0.5915430447857419,
+        0.7637179145711783,
+        -1.1093296805747221,
+        1.0908662455366982
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 71,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 70,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173214",
+      "sample_id": "inference_sample_000072",
+      "eeg_data": [
+        1.0035101147392909,
+        -0.7023260062144792,
+        -0.726369487282103,
+        0.9980600873072252,
+        0.887889402415329
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        -0.18163563200134017,
+        0.5590169943749475,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 72,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 71,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173225",
+      "sample_id": "inference_sample_000073",
+      "eeg_data": [
+        0.7679819822255748,
+        -0.9640936254723322,
+        0.6470039043366715,
+        0.5106849726455792,
+        -0.8477369567866742
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        72.0
+      ],
+      "position": [
+        0.19021130325903077,
+        0.13819660112501056,
+        -0.32360679774997897
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 73,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 72,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173236",
+      "sample_id": "inference_sample_000074",
+      "eeg_data": [
+        0.450647166318735,
+        -0.07957879275169424,
+        -0.38199594459636727,
+        -0.6110695762372275,
+        -0.4180157376071052
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        -0.05877852522924729,
+        0.18090169943749476,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 74,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 73,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173255",
+      "sample_id": "inference_sample_000075",
+      "eeg_data": [
+        -0.8598214942359927,
+        -1.04265754865548,
+        -0.3689307865109248,
+        -0.9317259609578021,
+        -1.024573118018569
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        0.2351141009169893,
+        0.723606797749979,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 75,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 74,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173266",
+      "sample_id": "inference_sample_000076",
+      "eeg_data": [
+        1.0232861459788942,
+        -1.0232787386683826,
+        0.08764171274336456,
+        -0.7634227738629249,
+        -0.9122086461123218
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        9.797174393178826e-17,
+        0.0,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 76,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 75,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173277",
+      "sample_id": "inference_sample_000077",
+      "eeg_data": [
+        -0.19965320488325677,
+        -0.1926761979608201,
+        -0.6427828040001671,
+        -0.3263737611008314,
+        0.15065436056296116
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        0.10898137920080415,
+        0.3354101966249685,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 77,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 76,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173303",
+      "sample_id": "inference_sample_000078",
+      "eeg_data": [
+        2.1195822594443277,
+        0.23360107916910525,
+        0.3612176989478241,
+        0.8493949006230199,
+        -1.0363662892316117
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 78,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 77,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173315",
+      "sample_id": "inference_sample_000079",
+      "eeg_data": [
+        0.024394502612080315,
+        0.27948649834478867,
+        1.7228507128073218,
+        -0.4438274614948605,
+        -0.10399311173512424
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 79,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 78,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173326",
+      "sample_id": "inference_sample_000080",
+      "eeg_data": [
+        0.0429544985172558,
+        1.7691717076812599,
+        -1.2598752845522638,
+        -0.33303607803169255,
+        -1.8745913978119302
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        -0.23511410091698917,
+        0.723606797749979,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 80,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 79,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173337",
+      "sample_id": "inference_sample_000081",
+      "eeg_data": [
+        -0.015027009713074163,
+        3.5312125865340858,
+        0.2379337158776006,
+        1.2990762139281937,
+        2.541423761184793
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 81,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 80,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173348",
+      "sample_id": "inference_sample_000082",
+      "eeg_data": [
+        -0.48393355553245954,
+        1.0823003874969552,
+        0.11632487200256053,
+        1.0565750125132771,
+        1.1232819147580162
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        -0.5706339097770922,
+        6.988249910934555e-17,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 82,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 81,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173358",
+      "sample_id": "inference_sample_000083",
+      "eeg_data": [
+        -0.03997579717326155,
+        1.298937781435352,
+        0.5276898851798185,
+        -1.4784401190891399,
+        1.3689252658643434
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        -0.6155367074350507,
+        0.4472135954999581,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 83,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 82,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173381",
+      "sample_id": "inference_sample_000084",
+      "eeg_data": [
+        0.6648176089576519,
+        0.8440011775759273,
+        -1.2272669216867038,
+        0.8089457747025951,
+        0.12599534988197464
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        -0.05877852522924731,
+        0.1809016994374948,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 84,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 83,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173393",
+      "sample_id": "inference_sample_000085",
+      "eeg_data": [
+        0.3646692760600319,
+        -1.1293531185156704,
+        0.2751944678310241,
+        -0.8582614113683228,
+        0.24522083081459012
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        36.0,
+        144.0
+      ],
+      "position": [
+        -0.38042260651806137,
+        0.27639320225002106,
+        0.647213595499958
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 85,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 84,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173404",
+      "sample_id": "inference_sample_000086",
+      "eeg_data": [
+        0.38415186503844856,
+        1.6887775357947166,
+        0.12261189062638474,
+        0.16968722441268258,
+        0.6957240903613445
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        2.4492935982947065e-17,
+        0.0,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 86,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 85,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173423",
+      "sample_id": "inference_sample_000087",
+      "eeg_data": [
+        -0.4034993359783869,
+        -0.9501917796336943,
+        0.18961512736511396,
+        -0.4310180728443225,
+        0.13411639989825813
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        36.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 87,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 86,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173435",
+      "sample_id": "inference_sample_000088",
+      "eeg_data": [
+        1.879674779743654,
+        0.5437309359335051,
+        0.674383977370504,
+        1.144619607555659,
+        0.31891479979131454
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        7.926080580936734e-17,
+        5.758634622447974e-17,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 88,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 87,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173446",
+      "sample_id": "inference_sample_000089",
+      "eeg_data": [
+        0.18344474843595127,
+        -1.3714375274577506,
+        0.65545342526922,
+        0.5767785643374357,
+        -0.7821199758942285
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        0.29389262614623657,
+        0.9045084971874736,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 89,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 88,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173456",
+      "sample_id": "inference_sample_000090",
+      "eeg_data": [
+        1.05095682048743,
+        -0.15767020015784516,
+        -1.0202022201341259,
+        -0.4964185555609823,
+        1.847834741013809
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 90,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 89,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173475",
+      "sample_id": "inference_sample_000091",
+      "eeg_data": [
+        -1.370968850949307,
+        -0.18500927803408196,
+        0.3958947763419499,
+        0.5316796725004055,
+        -1.287199060647953
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 91,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 90,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173486",
+      "sample_id": "inference_sample_000092",
+      "eeg_data": [
+        1.5217443372163324,
+        0.9699494542806737,
+        0.16810688880742808,
+        0.6923849375102533,
+        1.1686655363687037
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 92,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 91,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173505",
+      "sample_id": "inference_sample_000093",
+      "eeg_data": [
+        1.6132496831832754,
+        -0.2540672826000449,
+        0.16183670661147181,
+        0.9039213635328415,
+        -1.0721785979524927
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        0.1763355756877419,
+        0.5427050983124841,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 93,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 92,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173529",
+      "sample_id": "inference_sample_000094",
+      "eeg_data": [
+        2.4398211283993776,
+        -0.23343059570222455,
+        -0.14121652150261818,
+        1.4406711087661557,
+        0.30106581013765105
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        -2.2706200382604895e-17,
+        6.988249910934555e-17,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 94,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 93,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173549",
+      "sample_id": "inference_sample_000095",
+      "eeg_data": [
+        0.022573763950212322,
+        -1.9353237098583471,
+        1.5593535726240149,
+        1.8396574179207827,
+        -0.079281334154054
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        0.9510565162951535,
+        0.0,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 95,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 94,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173560",
+      "sample_id": "inference_sample_000096",
+      "eeg_data": [
+        0.14393326192732037,
+        -0.43992356255554843,
+        2.007027749253878,
+        -0.3943724193800452,
+        0.7083002382663586
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 96,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 95,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173580",
+      "sample_id": "inference_sample_000097",
+      "eeg_data": [
+        0.938018921104258,
+        0.25624645569593246,
+        0.3927305643572768,
+        -2.497214425859699,
+        1.1432478781308804
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 97,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 96,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173591",
+      "sample_id": "inference_sample_000098",
+      "eeg_data": [
+        1.1798888640375784,
+        -0.21024277026271843,
+        -1.077720787908655,
+        1.4439533275734242,
+        1.4119982815712175
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 98,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 97,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173602",
+      "sample_id": "inference_sample_000099",
+      "eeg_data": [
+        -0.4735651075027434,
+        -1.0999162023605114,
+        1.1570522744440193,
+        -0.8908094282095194,
+        0.036104915364651366
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        36.0,
+        36.0
+      ],
+      "position": [
+        0.03632712640026805,
+        0.11180339887498948,
+        0.1618033988749895
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 99,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 98,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173612",
+      "sample_id": "inference_sample_000100",
+      "eeg_data": [
+        0.018890402256036387,
+        -1.664686360733338,
+        1.2812036802454896,
+        -1.1061295748126658,
+        2.211380796788284
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 100,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 99,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173623",
+      "sample_id": "inference_sample_000101",
+      "eeg_data": [
+        1.065067425653534,
+        1.2878389002902764,
+        -0.2180694823989261,
+        -0.7623315745584273,
+        0.7863563470306015
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        0.5877852522924731,
+        0.0,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 101,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 100,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173642",
+      "sample_id": "inference_sample_000102",
+      "eeg_data": [
+        -0.12780140691327416,
+        0.7291541457546595,
+        0.9004620706479606,
+        -0.09773724709853973,
+        -0.3217929953646463
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        180.0
+      ],
+      "position": [
+        0.7694208842938134,
+        0.5590169943749475,
+        -0.30901699437494734
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 102,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 101,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173654",
+      "sample_id": "inference_sample_000103",
+      "eeg_data": [
+        0.503953513821882,
+        -0.4577151026907226,
+        0.8778615908182462,
+        -0.4887581180917942,
+        -0.45720516537326233
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        1.9815201452341835e-17,
+        1.4396586556119935e-17,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 103,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 102,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173679",
+      "sample_id": "inference_sample_000104",
+      "eeg_data": [
+        -0.6867656132269389,
+        -0.15746043181952543,
+        -1.4276205346502615,
+        -1.4806405808460434,
+        -0.7506028370524841
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        0.11755705045849464,
+        0.36180339887498947,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 104,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 103,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173690",
+      "sample_id": "inference_sample_000105",
+      "eeg_data": [
+        0.6329252086004612,
+        -0.04072230013559271,
+        0.8768485697739976,
+        0.4723071537846736,
+        0.4222233625602505
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        -3.02749338434732e-17,
+        9.31766654791274e-17,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 105,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 104,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173701",
+      "sample_id": "inference_sample_000106",
+      "eeg_data": [
+        -1.2553516997891037,
+        -0.26983525609200854,
+        0.07980102928051093,
+        -0.1717022430795232,
+        0.06699226500953434
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        0.6155367074350507,
+        0.447213595499958,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 106,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 105,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173712",
+      "sample_id": "inference_sample_000107",
+      "eeg_data": [
+        0.11876238319814227,
+        0.32878557794829966,
+        -1.7146577176131863,
+        -0.26111013379920955,
+        -0.36046362087375866
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        36.0,
+        144.0
+      ],
+      "position": [
+        0.4702282018339785,
+        0.0,
+        0.647213595499958
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 107,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 106,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173722",
+      "sample_id": "inference_sample_000108",
+      "eeg_data": [
+        -0.011829156046090111,
+        -0.9042672578919416,
+        -1.3607624250587416,
+        -0.2456979823872858,
+        -0.05993379611410044
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        108.0,
+        180.0
+      ],
+      "position": [
+        0.2938926261462366,
+        0.9045084971874737,
+        -0.30901699437494734
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 108,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 107,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173733",
+      "sample_id": "inference_sample_000109",
+      "eeg_data": [
+        0.14134206943491373,
+        0.8049331758064511,
+        -0.5431610095860877,
+        0.1486434687806351,
+        -1.9674782717424026
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        72.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 109,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 108,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173752",
+      "sample_id": "inference_sample_000110",
+      "eeg_data": [
+        0.5479237989291802,
+        -0.5804473478458603,
+        0.9720473565042723,
+        0.7518635260453416,
+        -0.27350613374989075
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        36.0,
+        108.0
+      ],
+      "position": [
+        -0.1089813792008041,
+        0.33541019662496846,
+        0.4854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 110,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 109,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173782",
+      "sample_id": "inference_sample_000111",
+      "eeg_data": [
+        -0.07793367246873303,
+        0.09683252274831153,
+        -1.5543963037605402,
+        -1.0010864374377013,
+        -0.3873332151608023
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        -0.46165253057628797,
+        0.3354101966249685,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 111,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 110,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173803",
+      "sample_id": "inference_sample_000112",
+      "eeg_data": [
+        0.09332390182203802,
+        -0.4145492998891295,
+        1.0032227800533855,
+        -0.043719312004377675,
+        -1.176989239586869
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        72.0
+      ],
+      "position": [
+        3.963040290468367e-17,
+        2.879317311223987e-17,
+        -0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 112,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 111,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173814",
+      "sample_id": "inference_sample_000113",
+      "eeg_data": [
+        0.5497993520827922,
+        0.9043493742860991,
+        -0.8369815171323529,
+        -0.9732457921921515,
+        0.006307346388510146
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        -0.15388417685876266,
+        0.11180339887498951,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 113,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 112,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173825",
+      "sample_id": "inference_sample_000114",
+      "eeg_data": [
+        1.242077279167059,
+        0.3324222738174248,
+        0.6241077296267018,
+        0.03664334602666253,
+        -0.3434623674962301
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 114,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 113,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173836",
+      "sample_id": "inference_sample_000115",
+      "eeg_data": [
+        0.5446230741323669,
+        -0.778651405257394,
+        0.021426950683571908,
+        -0.7308190980426823,
+        -0.5296560519995789
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        72.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 115,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 114,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173847",
+      "sample_id": "inference_sample_000116",
+      "eeg_data": [
+        1.2343324635478576,
+        -0.8549225723966153,
+        -0.5842596334943224,
+        0.8600674146010906,
+        -0.44177910110621305
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        36.0,
+        36.0
+      ],
+      "position": [
+        -0.036327126400268035,
+        0.1118033988749895,
+        0.1618033988749895
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 116,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 115,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173866",
+      "sample_id": "inference_sample_000117",
+      "eeg_data": [
+        1.0881397375470623,
+        -0.5498420591940986,
+        0.13983442043003777,
+        0.4241732278068935,
+        -0.16576529964602046
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 117,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 116,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173877",
+      "sample_id": "inference_sample_000118",
+      "eeg_data": [
+        1.4588808885169255,
+        -0.879521003058228,
+        0.8543421382886844,
+        -0.4042853639310799,
+        -0.30859449224438623
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        7.347880794884119e-17,
+        0.0,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 118,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 117,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173896",
+      "sample_id": "inference_sample_000119",
+      "eeg_data": [
+        -0.9392411258535541,
+        -0.5990012851989416,
+        0.16792785180730224,
+        -0.5461902986480179,
+        0.28054713992610836
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        -3.7843667304341493e-17,
+        1.1647083184890926e-16,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 119,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 118,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173922",
+      "sample_id": "inference_sample_000120",
+      "eeg_data": [
+        0.3667026042125883,
+        -0.5439505342373805,
+        -0.4193495010869984,
+        0.3333524292828195,
+        -0.6198359984196776
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        -0.5877852522924731,
+        7.198293278059966e-17,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 120,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 119,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173935",
+      "sample_id": "inference_sample_000121",
+      "eeg_data": [
+        0.23307262110879315,
+        0.31314312447605724,
+        0.8889297901765087,
+        -0.035436027127585354,
+        0.6651281963932069
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 121,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 120,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173946",
+      "sample_id": "inference_sample_000122",
+      "eeg_data": [
+        -1.4826914779693916,
+        -1.205678741994086,
+        0.5265224805011165,
+        -0.4574374408231748,
+        0.34074710806422775
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        0.46165253057628797,
+        0.3354101966249684,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 122,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 121,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173965",
+      "sample_id": "inference_sample_000123",
+      "eeg_data": [
+        -0.8510900679106603,
+        -0.13384165270829437,
+        0.7459667817282528,
+        1.1098989395969907,
+        -1.3410451880191132
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        36.0,
+        36.0
+      ],
+      "position": [
+        0.11755705045849463,
+        0.0,
+        0.1618033988749895
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 123,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 122,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173976",
+      "sample_id": "inference_sample_000124",
+      "eeg_data": [
+        1.491490256351892,
+        0.18559835897398297,
+        -1.476624759691073,
+        0.42757146050460304,
+        0.2792207129669913
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        36.0,
+        108.0
+      ],
+      "position": [
+        -0.285316954888546,
+        0.20729490168751583,
+        0.4854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 124,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 123,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173987",
+      "sample_id": "inference_sample_000125",
+      "eeg_data": [
+        0.32702604120161854,
+        1.8689851504215442,
+        0.5057268164699102,
+        -0.20192169673495758,
+        -1.0094422859443624
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        -1.2246467991473532e-16,
+        1.4997597826618576e-32,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 125,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 124,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.173998",
+      "sample_id": "inference_sample_000126",
+      "eeg_data": [
+        -0.5791563770473442,
+        1.1037323333736364,
+        1.7055551733200947,
+        -0.2710514091900129,
+        0.7216034297189435
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        0.570633909777092,
+        0.0,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 126,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 125,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174015",
+      "sample_id": "inference_sample_000127",
+      "eeg_data": [
+        0.5545988861858363,
+        -0.18559988067148792,
+        -0.7333920465646954,
+        -0.5483713739122232,
+        -1.2628397328727705
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        72.0,
+        108.0
+      ],
+      "position": [
+        -0.4616525305762879,
+        0.33541019662496846,
+        0.18541019662496847
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 127,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 126,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174068",
+      "sample_id": "inference_sample_000128",
+      "eeg_data": [
+        2.5926049060346568,
+        -1.5194882936185639,
+        1.9809749989738776,
+        -1.0299913873574178,
+        0.13535222801224123
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 128,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 127,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174092",
+      "sample_id": "inference_sample_000129",
+      "eeg_data": [
+        1.0786598524120181,
+        -0.8256100830018351,
+        2.5612776536635598,
+        -0.019536575870942666,
+        1.437263944341622
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        -0.09510565162951537,
+        0.0690983005625053,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 129,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 128,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174114",
+      "sample_id": "inference_sample_000130",
+      "eeg_data": [
+        -0.13055251836591145,
+        -0.6375937681683556,
+        1.0008998376646094,
+        -1.2935377665357695,
+        -0.3866253954832833
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 130,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 129,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174125",
+      "sample_id": "inference_sample_000131",
+      "eeg_data": [
+        0.08286480309224249,
+        -2.244370189752739,
+        1.3040716458232946,
+        -0.17353148172789004,
+        -0.46498474918266564
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        -5.944560435702548e-17,
+        4.3189759668359805e-17,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 131,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 130,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174136",
+      "sample_id": "inference_sample_000132",
+      "eeg_data": [
+        0.9810945509415454,
+        0.3290921288792237,
+        -0.045752446620461976,
+        -0.8953559764231532,
+        -0.11080033548453141
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        -7.5687334608683e-18,
+        2.329416636978185e-17,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 132,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 131,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174147",
+      "sample_id": "inference_sample_000133",
+      "eeg_data": [
+        0.25770624718706714,
+        -0.9182389437166785,
+        -0.36498035893785863,
+        -0.705695974917889,
+        4.230375613309875
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 133,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 132,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174157",
+      "sample_id": "inference_sample_000134",
+      "eeg_data": [
+        -0.46659437302883944,
+        0.19104965599771404,
+        0.02065952134909607,
+        1.3509992862657738,
+        -1.050345831153886
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        144.0
+      ],
+      "position": [
+        -7.926080580936733e-17,
+        5.758634622447975e-17,
+        -0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 134,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 133,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174168",
+      "sample_id": "inference_sample_000135",
+      "eeg_data": [
+        0.5697045606772015,
+        -0.7753023874084771,
+        -0.10030711070974807,
+        0.4242039129252747,
+        -0.5026587281982117
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 135,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 134,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174189",
+      "sample_id": "inference_sample_000136",
+      "eeg_data": [
+        1.4026658908943077,
+        -2.6825376659722875,
+        -0.01971490360880808,
+        0.15179296108575413,
+        1.7082930642148324
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        0.18163563200134025,
+        0.5590169943749475,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 136,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 135,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174208",
+      "sample_id": "inference_sample_000137",
+      "eeg_data": [
+        0.1819724854129275,
+        0.935082198371275,
+        3.3095134092071885,
+        -0.15777166911464693,
+        0.4817224160439007
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        180.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 137,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 136,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174228",
+      "sample_id": "inference_sample_000138",
+      "eeg_data": [
+        0.5123297630413026,
+        0.4624619963528125,
+        -0.9497764314506808,
+        0.5874849374484238,
+        -0.6157718006082676
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        -0.15388417685876268,
+        0.11180339887498952,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 138,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 137,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174240",
+      "sample_id": "inference_sample_000139",
+      "eeg_data": [
+        -0.6885562426775351,
+        -0.7214130963151342,
+        1.1550472548697133,
+        -0.3383812150983762,
+        0.8425267029749927
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        -0.4755282581475768,
+        0.34549150281252644,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 139,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 138,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174250",
+      "sample_id": "inference_sample_000140",
+      "eeg_data": [
+        -0.9166319420606316,
+        -0.33837843375790694,
+        0.4536660366662047,
+        -0.7564530664439701,
+        0.4830343130662946
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        -0.03632712640026804,
+        0.11180339887498952,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 140,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 139,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174261",
+      "sample_id": "inference_sample_000141",
+      "eeg_data": [
+        0.660576109233894,
+        0.5285887531088872,
+        0.09800400761492684,
+        1.7256337408361917,
+        -0.5193982366889686
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        0.7608452130361228,
+        0.0,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 141,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 140,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174271",
+      "sample_id": "inference_sample_000142",
+      "eeg_data": [
+        0.7402720952257685,
+        2.073553417511129,
+        1.4132728265564507,
+        0.6715742840598211,
+        -0.9240821999609633
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        0.38042260651806153,
+        0.2763932022500211,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 142,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 141,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174290",
+      "sample_id": "inference_sample_000143",
+      "eeg_data": [
+        1.050007968498276,
+        -0.5459741295794871,
+        -0.029094791665092323,
+        1.1824227246161343,
+        -0.7824019590495425
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 143,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 142,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174308",
+      "sample_id": "inference_sample_000144",
+      "eeg_data": [
+        0.5307222112547665,
+        0.7291290128545698,
+        0.6184889887930366,
+        0.19356735774738176,
+        -0.055571193545284336
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        0.0,
+        72.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 144,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 143,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174320",
+      "sample_id": "inference_sample_000145",
+      "eeg_data": [
+        -0.49063135388387913,
+        0.7120029972276302,
+        0.27217219869401266,
+        -0.3817269712087011,
+        0.462624687974201
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        36.0,
+        144.0
+      ],
+      "position": [
+        -0.14530850560107214,
+        0.447213595499958,
+        0.647213595499958
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 145,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 144,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174338",
+      "sample_id": "inference_sample_000146",
+      "eeg_data": [
+        -0.5462968466781223,
+        -0.9162747065177819,
+        2.6878759247869732,
+        -0.4101811634613081,
+        -0.11583124828753258
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        -0.3804226065180615,
+        0.2763932022500212,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 146,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 145,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174357",
+      "sample_id": "inference_sample_000147",
+      "eeg_data": [
+        1.6413607079458767,
+        -1.2262326698901134,
+        0.383447890342202,
+        -3.1153802561712407,
+        -0.49825010022156063
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        0.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 147,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 146,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174375",
+      "sample_id": "inference_sample_000148",
+      "eeg_data": [
+        -0.49185416504578316,
+        -0.9662043002445893,
+        -0.7744959733787388,
+        -1.046509548702789,
+        1.0447950028986723
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        72.0
+      ],
+      "position": [
+        -0.3804226065180615,
+        4.65883327395637e-17,
+        -0.12360679774997894
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 148,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 147,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174394",
+      "sample_id": "inference_sample_000149",
+      "eeg_data": [
+        -0.02374149035753792,
+        -1.2715394145156453,
+        0.039876697906957165,
+        -0.7624069173709861,
+        -0.6254601129175297
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        -0.35267115137548394,
+        4.3189759668359805e-17,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 149,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 148,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174406",
+      "sample_id": "inference_sample_000150",
+      "eeg_data": [
+        0.16143718354594083,
+        -1.567477248713684,
+        0.2421585949699567,
+        1.5551261560528047,
+        -1.186434941698328
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        0.0,
+        36.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 150,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 149,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174417",
+      "sample_id": "inference_sample_000151",
+      "eeg_data": [
+        2.0648451384612008,
+        -0.4245368694119612,
+        -2.0978039665180015,
+        -0.14457384136511628,
+        -0.03260510665589008
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        0.15388417685876268,
+        0.11180339887498948,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 151,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 150,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174427",
+      "sample_id": "inference_sample_000152",
+      "eeg_data": [
+        1.7980589655108752,
+        0.05366105787743938,
+        0.413324014962156,
+        -0.9572434562214652,
+        -0.6484206275219665
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 152,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 151,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174438",
+      "sample_id": "inference_sample_000153",
+      "eeg_data": [
+        0.11726661137158999,
+        0.1807593155236984,
+        0.5376571811420154,
+        2.6115834005314094,
+        -0.27203858202847153
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        108.0
+      ],
+      "position": [
+        0.2853169548885461,
+        0.20729490168751577,
+        0.4854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 153,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 152,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174456",
+      "sample_id": "inference_sample_000154",
+      "eeg_data": [
+        -0.2955666232263656,
+        -1.4126598685371727,
+        0.6284109592229714,
+        -0.4814990435091864,
+        -1.5594656451209015
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        36.0
+      ],
+      "position": [
+        -1.9815201452341832e-17,
+        1.4396586556119938e-17,
+        -0.2
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 154,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 153,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174468",
+      "sample_id": "inference_sample_000155",
+      "eeg_data": [
+        -0.9346640814275325,
+        0.796308615916963,
+        0.5526903146326243,
+        -0.5971440251431588,
+        0.02945381041170457
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        0.30776835371752537,
+        0.22360679774997896,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 155,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 154,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174490",
+      "sample_id": "inference_sample_000156",
+      "eeg_data": [
+        0.4195545036137547,
+        -0.3602952677114692,
+        0.3272902833335626,
+        -0.2148512405505325,
+        -1.3478946258814968
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 156,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 155,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174502",
+      "sample_id": "inference_sample_000157",
+      "eeg_data": [
+        1.8352506226622003,
+        0.371252809709308,
+        -0.2861667838309898,
+        -0.4528090514495403,
+        0.4071948886176203
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        -7.347880794884119e-17,
+        8.998558695971146e-33,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 157,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 156,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174512",
+      "sample_id": "inference_sample_000158",
+      "eeg_data": [
+        -0.9647672651348577,
+        -0.2977705504947037,
+        -0.2702359181002888,
+        0.18407895856506976,
+        0.7032599285634594
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        -0.11755705045849466,
+        1.4396586556119938e-17,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 158,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 157,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174522",
+      "sample_id": "inference_sample_000159",
+      "eeg_data": [
+        0.955223195774068,
+        0.9576395137657103,
+        -0.2532485135985279,
+        0.9110978543287688,
+        0.025724016769926077
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        -0.2853169548885461,
+        0.20729490168751585,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 159,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 158,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174533",
+      "sample_id": "inference_sample_000160",
+      "eeg_data": [
+        -0.14212620902462803,
+        -1.3365540152796185,
+        1.6546682746154584,
+        -0.5001451823597752,
+        0.9560315482075569
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 160,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 159,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174544",
+      "sample_id": "inference_sample_000161",
+      "eeg_data": [
+        2.0107085484310923,
+        0.07968378975474669,
+        2.6437837197552825,
+        -0.09578517489521474,
+        -1.376975052382893
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        0.0,
+        180.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 161,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 160,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174568",
+      "sample_id": "inference_sample_000162",
+      "eeg_data": [
+        0.18446488273592415,
+        -0.7072434344727563,
+        -0.8889987333780132,
+        0.016863732412988552,
+        -0.674381289439942
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        36.0,
+        180.0
+      ],
+      "position": [
+        0.4755282581475768,
+        0.3454915028125263,
+        0.8090169943749475
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 162,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 161,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174581",
+      "sample_id": "inference_sample_000163",
+      "eeg_data": [
+        1.7757998697551336,
+        -1.2668469127314048,
+        0.607243655191797,
+        -1.31308160029134,
+        0.9934530803158254
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        144.0,
+        144.0
+      ],
+      "position": [
+        -0.14530850560107217,
+        0.4472135954999581,
+        -0.6472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 163,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 162,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174591",
+      "sample_id": "inference_sample_000164",
+      "eeg_data": [
+        0.9337570760197655,
+        -1.084999722232162,
+        -1.1400483431534467,
+        0.269592708248958,
+        -0.7313438290506404
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        180.0
+      ],
+      "position": [
+        -0.9510565162951535,
+        1.1647083184890923e-16,
+        0.30901699437494745
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 164,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 163,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174610",
+      "sample_id": "inference_sample_000165",
+      "eeg_data": [
+        0.7018495605081279,
+        0.0013898081882451063,
+        1.7850287358955828,
+        -0.36403519776946824,
+        -0.626746235832656
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        72.0,
+        144.0
+      ],
+      "position": [
+        0.23511410091698928,
+        0.7236067977499789,
+        0.24721359549995797
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 165,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 164,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174621",
+      "sample_id": "inference_sample_000166",
+      "eeg_data": [
+        -0.38801993359270937,
+        -2.040259732178644,
+        -1.0786803856441418,
+        -2.142583497760166,
+        -0.12696961351962732
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        180.0
+      ],
+      "position": [
+        -0.2938926261462365,
+        0.9045084971874738,
+        -0.30901699437494734
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 166,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 165,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174632",
+      "sample_id": "inference_sample_000167",
+      "eeg_data": [
+        0.006038021784460418,
+        0.6204379638530811,
+        0.35922238879062623,
+        0.11238963088294437,
+        -1.0900374080317645
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        36.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 167,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 166,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174642",
+      "sample_id": "inference_sample_000168",
+      "eeg_data": [
+        -0.6887070300550759,
+        -1.7479435683329194,
+        0.31476423252108465,
+        -0.579787824737489,
+        1.1300051615642002
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        108.0,
+        180.0
+      ],
+      "position": [
+        -0.9510565162951536,
+        1.1647083184890926e-16,
+        -0.30901699437494734
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 168,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 167,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174667",
+      "sample_id": "inference_sample_000169",
+      "eeg_data": [
+        -0.7319342204606151,
+        -0.9335679929647585,
+        -0.8197609159700878,
+        0.5562878291263127,
+        -1.2327887600867276
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        108.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 169,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 168,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174679",
+      "sample_id": "inference_sample_000170",
+      "eeg_data": [
+        0.24805423064058413,
+        -1.844445096432622,
+        -0.10019242257632677,
+        1.13155955638005,
+        2.0223235498497005
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        36.0
+      ],
+      "position": [
+        -0.1902113032590307,
+        2.3294166369781848e-17,
+        0.06180339887498949
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 170,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 169,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174698",
+      "sample_id": "inference_sample_000171",
+      "eeg_data": [
+        0.7372436959582861,
+        0.058488594562276564,
+        0.7622276432994098,
+        0.5246412833434732,
+        -1.0438730009857973
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        72.0
+      ],
+      "position": [
+        0.2351141009169893,
+        0.0,
+        -0.32360679774997897
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 171,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 170,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174709",
+      "sample_id": "inference_sample_000172",
+      "eeg_data": [
+        -1.009616910010932,
+        2.322647260540023,
+        1.0826637230438227,
+        -0.926725865661635,
+        0.4158170970499716
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        108.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 172,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 171,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174719",
+      "sample_id": "inference_sample_000173",
+      "eeg_data": [
+        -0.1333759827905999,
+        0.010359417758321277,
+        0.011146587052807327,
+        2.131484451467628,
+        -1.3076428937418842
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        108.0,
+        72.0
+      ],
+      "position": [
+        0.3804226065180615,
+        0.0,
+        -0.12360679774997894
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 173,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 172,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174738",
+      "sample_id": "inference_sample_000174",
+      "eeg_data": [
+        -1.6303173868531462,
+        0.8387497628418799,
+        -1.4474504836517377,
+        -2.5972804928578084,
+        -0.18205570880577246
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        -0.3804226065180614,
+        4.6588332739563696e-17,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 174,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 173,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174763",
+      "sample_id": "inference_sample_000175",
+      "eeg_data": [
+        0.2414980668476776,
+        -0.26246390011719684,
+        -1.7442064282473722,
+        -1.8242728118296005,
+        -0.238762512872443
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 175,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 174,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174775",
+      "sample_id": "inference_sample_000176",
+      "eeg_data": [
+        -0.04140175414926853,
+        0.2539478007243412,
+        0.7066669675345011,
+        0.3649688798242387,
+        0.46571161880865597
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 176,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 175,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174786",
+      "sample_id": "inference_sample_000177",
+      "eeg_data": [
+        -0.5818823021771139,
+        -0.4922491069464302,
+        -0.6269399866960095,
+        -1.1075861819943336,
+        -1.2936898979652198
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        -0.1816356320013402,
+        0.5590169943749476,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 177,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 176,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174796",
+      "sample_id": "inference_sample_000178",
+      "eeg_data": [
+        -0.11773436192127287,
+        0.08879310311585725,
+        -0.781519008623173,
+        -1.0945738209192943,
+        -2.332083138417797
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        36.0,
+        0.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 178,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 177,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174815",
+      "sample_id": "inference_sample_000179",
+      "eeg_data": [
+        0.6089045333677086,
+        -1.2458941923475366,
+        0.9613493195132853,
+        0.9508064084895309,
+        -1.5630549560775138
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        72.0,
+        72.0
+      ],
+      "position": [
+        -0.11755705045849459,
+        0.3618033988749895,
+        0.12360679774997899
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 179,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 178,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174827",
+      "sample_id": "inference_sample_000180",
+      "eeg_data": [
+        -1.6728286050142065,
+        0.46946911639449995,
+        1.0856925452579897,
+        -1.2750793463240684,
+        -0.8207045023340862
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        9.907600726170916e-17,
+        7.198293278059966e-17,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 180,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 179,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174837",
+      "sample_id": "inference_sample_000181",
+      "eeg_data": [
+        0.6194976196923928,
+        -0.7307957101458871,
+        -1.6311875097907658,
+        0.35608220828045,
+        0.4337471375342433
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        36.0
+      ],
+      "position": [
+        0.09510565162951538,
+        0.06909830056250528,
+        -0.16180339887498948
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 181,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 180,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174856",
+      "sample_id": "inference_sample_000182",
+      "eeg_data": [
+        0.2885478210568411,
+        -1.0192955137101265,
+        0.07117437723629859,
+        -0.8147401486191161,
+        -0.6557221558442948
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        72.0
+      ],
+      "position": [
+        -0.2351141009169893,
+        2.8793173112239876e-17,
+        -0.32360679774997897
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 182,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 181,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174875",
+      "sample_id": "inference_sample_000183",
+      "eeg_data": [
+        -1.2500960347719958,
+        0.8476151576902591,
+        1.8412701153739366,
+        -0.9959168399095156,
+        -1.6630458503261412
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        36.0,
+        72.0
+      ],
+      "position": [
+        0.23511410091698925,
+        0.0,
+        0.323606797749979
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 183,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 182,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174887",
+      "sample_id": "inference_sample_000184",
+      "eeg_data": [
+        -1.2272780417826932,
+        -1.4965895211511073,
+        -0.16669462267043406,
+        -0.6136295309128115,
+        -1.1749477539623767
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        144.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.8
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 184,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 183,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174898",
+      "sample_id": "inference_sample_000185",
+      "eeg_data": [
+        2.322476550378503,
+        1.0557395148457123,
+        0.6565576103857504,
+        -1.552899186406313,
+        1.104811112401501
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        0.461652530576288,
+        0.33541019662496846,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 185,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 184,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174908",
+      "sample_id": "inference_sample_000186",
+      "eeg_data": [
+        1.9495677282716575,
+        1.6793348528749883,
+        -0.3838155619886767,
+        -0.1795092014316791,
+        -0.5149256439243867
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        180.0,
+        180.0
+      ],
+      "position": [
+        -9.907600726170915e-17,
+        7.198293278059968e-17,
+        -1.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 186,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 185,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174919",
+      "sample_id": "inference_sample_000187",
+      "eeg_data": [
+        -0.035922291961358044,
+        -0.748175803759644,
+        -0.4005290827573307,
+        0.8311027698670727,
+        0.8840553912324495
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        108.0,
+        36.0
+      ],
+      "position": [
+        0.05877852522924733,
+        0.18090169943749476,
+        -0.06180339887498947
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 187,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 186,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174941",
+      "sample_id": "inference_sample_000188",
+      "eeg_data": [
+        0.5437943491877428,
+        -0.07924955644347345,
+        -0.9792721872998984,
+        -0.6835745830232386,
+        -0.3299802515014587
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 188,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 187,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174952",
+      "sample_id": "inference_sample_000189",
+      "eeg_data": [
+        -0.5249482334288362,
+        0.007237016841777466,
+        -0.03275939253133066,
+        -1.727828650967996,
+        0.8009750983926107
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        36.0,
+        108.0
+      ],
+      "position": [
+        0.10898137920080414,
+        0.33541019662496846,
+        0.4854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 189,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 188,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174963",
+      "sample_id": "inference_sample_000190",
+      "eeg_data": [
+        -0.29610782149968917,
+        0.1194132745427175,
+        -0.33323892096608315,
+        -0.37869713202283173,
+        -0.45891052789978415
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        144.0,
+        0.0,
+        108.0
+      ],
+      "position": [
+        -0.0,
+        0.0,
+        0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 190,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 189,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174973",
+      "sample_id": "inference_sample_000191",
+      "eeg_data": [
+        1.6287150482704658,
+        0.6495766377768095,
+        -0.10669063073740834,
+        -0.9032274538232256,
+        -1.2511231663746512
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 191,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 190,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.174992",
+      "sample_id": "inference_sample_000192",
+      "eeg_data": [
+        -0.9006774261504966,
+        -1.9499458304163395,
+        -0.13858648006911428,
+        0.9157631881972319,
+        0.5923364599716128
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        36.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        0.4755282581475769,
+        0.3454915028125264,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 192,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 191,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175003",
+      "sample_id": "inference_sample_000193",
+      "eeg_data": [
+        -1.4170100113940691,
+        -1.7319722893168643,
+        0.5988932526800272,
+        -0.9744678729316806,
+        1.5622720824685568
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        72.0
+      ],
+      "position": [
+        1.5137466921736602e-17,
+        4.6588332739563696e-17,
+        -0.4
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 193,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 192,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175051",
+      "sample_id": "inference_sample_000194",
+      "eeg_data": [
+        0.5965930159585707,
+        -0.8304514421594902,
+        -0.5147979131001236,
+        -0.019286277352461814,
+        -0.06129930601697669
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        180.0,
+        108.0
+      ],
+      "position": [
+        2.27062003826049e-17,
+        6.988249910934554e-17,
+        -0.6
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 194,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 193,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175089",
+      "sample_id": "inference_sample_000195",
+      "eeg_data": [
+        0.9288487779541528,
+        -0.8263253402446473,
+        1.1318496864572696,
+        -0.6039872843854863,
+        0.48920615391158107
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        180.0,
+        144.0,
+        180.0
+      ],
+      "position": [
+        -0.5877852522924732,
+        7.198293278059968e-17,
+        -0.8090169943749473
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 195,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 194,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175110",
+      "sample_id": "inference_sample_000196",
+      "eeg_data": [
+        0.40816385170001457,
+        -0.19578808162567318,
+        -0.7788917692338101,
+        1.2661543080890822,
+        0.9773436106917286
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        108.0,
+        144.0
+      ],
+      "position": [
+        0.760845213036123,
+        0.0,
+        -0.2472135954999579
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 196,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 195,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175122",
+      "sample_id": "inference_sample_000197",
+      "eeg_data": [
+        -0.8579519391196079,
+        0.7562192203388416,
+        2.1300065465331968,
+        0.3241531128993402,
+        0.8664614144924628
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        36.0,
+        0.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 197,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 196,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175132",
+      "sample_id": "inference_sample_000198",
+      "eeg_data": [
+        0.37133364759592224,
+        0.9507796665469123,
+        0.8764654897699387,
+        -0.2673037538250648,
+        0.45441727566652684
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        72.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        0.17633557568774197,
+        0.5427050983124843,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 198,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 197,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175143",
+      "sample_id": "inference_sample_000199",
+      "eeg_data": [
+        -0.6532411026451431,
+        -0.7979063200832592,
+        0.9310642271933313,
+        -0.9933351555599417,
+        0.7555815194117264
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        0.0,
+        144.0,
+        108.0
+      ],
+      "position": [
+        0.35267115137548394,
+        0.0,
+        -0.48541019662496837
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 199,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 198,
+        "sample_per_position": 1
+      }
+    },
+    {
+      "timestamp": "2025-06-30T15:35:55.175153",
+      "sample_id": "inference_sample_000200",
+      "eeg_data": [
+        -1.3066449340006194,
+        -0.8604079591368661,
+        2.535379424224677,
+        1.0251891226619163,
+        -0.15649382989000468
+      ],
+      "n_channels": 5,
+      "is_anomaly": false,
+      "servo_angles": [
+        108.0,
+        108.0,
+        108.0
+      ],
+      "position": [
+        -0.17633557568774189,
+        0.5427050983124843,
+        -0.1854101966249684
+      ],
+      "source": "MLTrainingDatasetGenerator",
+      "metadata": {
+        "baseline_mean": 0.0,
+        "baseline_std": 1.0,
+        "sample_id": 200,
+        "n_servos": 3,
+        "servo_origin": [
+          0,
+          0,
+          0
+        ],
+        "servo_ceiling": [
+          180,
+          180,
+          180
+        ],
+        "position_index": 199,
+        "sample_per_position": 1
+      }
+    }
+  ]
+}

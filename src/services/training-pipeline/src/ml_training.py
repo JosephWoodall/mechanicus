@@ -1,17 +1,5 @@
-'''
-TODO:
-label: servo_angle (transform as string and back for action phase)
-features: eeg_data features
-refactor for docker
-
-process flow:
-ingest data from ml_training_dataset_generator.py
-train model and save to pickle in src/shared/models/inference_model.pkl and save in redis 
-'''
-
 import warnings
 import pandas
-import numpy
 import os
 import json
 
@@ -32,16 +20,17 @@ from enum import Enum
 
 import logging
 
+log_dir = '/app/shared/logs'
+os.makedirs(log_dir, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    filename="mechanicus_training.log",
+    filename=f"{log_dir}/mechanicus_training.log",
     filemode="w",
 )
 logger = logging.getLogger(__name__)
 
 logger.info("Importing necessary libraries...")
-
 
 warnings.filterwarnings("ignore")
 
@@ -51,14 +40,14 @@ logging.info("...Library import complete.")
 class DataCollector:
 
     @staticmethod
-    def load_servo_eeg_data(json_filename: str = None) -> pandas.DataFrame:
+    def load_servo_eeg_data(json_filename: str = "") -> pandas.DataFrame:
         """Load servo EEG data from JSON file and convert to DataFrame.
 
         Args:
             json_filename (str): Path to the JSON file containing servo EEG data
 
         Returns:
-            pandas.DataFrame: DataFrame with servo angles, positions, and EEG data
+            pandas.DataFrame: DataFrame with servo angles as string labels and EEG features
         """
         logging.info(f"Loading servo EEG data from {json_filename}...")
 
@@ -67,14 +56,18 @@ class DataCollector:
                 data = json.load(f)
             logging.info(f"Successfully loaded data from {json_filename}.")
 
-            samples = {k: v for k, v in data.items() if k != 'metadata'}
+            samples = data.get('training_samples', [])
+
+            if not samples:
+                raise ValueError("No training_samples found in the JSON data")
 
             rows = []
-            for sample_id, sample_data in samples.items():
+            for sample in samples:
+                servo_angles_str = str(sample['servo_angles'])
+
                 row = {
-                    **{f'servo_angles_{i}': angle for i, angle in enumerate(sample_data['servo_angles'])},
-                    # **{f'position_{coord}': pos for coord, pos in zip(['x', 'y', 'z'], sample_data['position'])},
-                    **{f'eeg_{i}': eeg_val for i, eeg_val in enumerate(sample_data['eeg_data'])}
+                    **{f'eeg_{i}': eeg_val for i, eeg_val in enumerate(sample['eeg_data'])},
+                    'servo_angles_label': servo_angles_str
                 }
                 rows.append(row)
 
@@ -82,6 +75,10 @@ class DataCollector:
 
             logging.info(
                 f"Loaded {len(df)} samples with {len(df.columns)} features")
+            logging.info(
+                f"EEG features: {len([col for col in df.columns if col.startswith('eeg_')])}")
+            logging.info(
+                f"Unique servo angle combinations: {df['servo_angles_label'].nunique()}")
 
             logging.info("...Servo EEG data loaded successfully.")
 
@@ -157,7 +154,7 @@ class PreprocessData:
 
     @staticmethod
     def preprocess_data(
-        focus_data: pandas.DataFrame, response_variable: str = None, phase=Phase
+        focus_data: pandas.DataFrame, response_variable: str = "", phase=Phase
     ) -> tuple:
         logging.info("Preprocessing of the focus data for model_input")
         try:
@@ -202,8 +199,8 @@ class PreprocessData:
 class TrainModel:
     @staticmethod
     def evaluateModel(
-        x: tuple = None,
-        y: tuple = None,
+        x: tuple = (),
+        y: tuple = (),
         cv: int = 10,
         scoring_metric: str = "accuracy",
         filename: str = "mechanicusModelOutput.txt",
@@ -225,25 +222,9 @@ class TrainModel:
                             ("Random Forest Classifier", RandomForestClassifier()),
                         ]
 
-                        def generateRandomIntList(length_of_list: int = 3):
-                            random_numbers = []
-                            for _ in range(length_of_list):
-                                random_number = numpy.random.randint(0, 100)
-                                random_numbers.append(random_number)
-                            return random_numbers
-
-                        def generateRandomFloatList(length_of_list: int = 3):
-                            return numpy.random.uniform(0, 100, size=length_of_list)
-
                         param_grid = {
-
                             "Random Forest Classifier": {
-                                # 'n_estimators':generateRandomIntList()
-                                # , 'max_depth':generateRandomIntList()
-                                # , 'min_samples_split':generateRandomIntList()
                                 "max_features": ["sqrt", "log2"]
-                                # , 'max_leaf_nodes':generateRandomIntList()
-                                # , 'ccp_alpha':generateRandomFloatList()
                             },
                         }
 
@@ -327,6 +308,7 @@ class TrainModel:
                                 best_score = mean_score
                                 best_score_key = key
                                 best_hyperparameters = hyperparameters
+
                         print("\n")
                         print("-" * 25)
                         print(f"Best Model Proposed to be Used for Inference:")
@@ -341,127 +323,110 @@ class TrainModel:
                         logging.info(
                             rf"...Model population has been evaluated, results saved to: {rel_path_filename}."
                         )
-                        relative_path = "src"
-                        model_filename = r"inference_model.pkl"
+
+                        relative_path = "/app/shared/models"
+                        model_filename = "inference_model.pkl"
+                        full_model_path = f"{relative_path}/{model_filename}"
+
+                        os.makedirs(relative_path, exist_ok=True)
+
                         data_to_pickle = {
                             "model": best_model_for_inference,
                             "largest_mean_score": best_score,
                             "train_data_size": len(x),
                             "date_created": datetime.datetime.now().isoformat(),
                         }
+
                         logging.info("Executing Model Comparison...")
 
                         print("\n")
                         print("-" * 100)
                         print("Executing Model Comparison...")
                         print(
-                            rf"If no model is saved via Pickle to {relative_path}/{model_filename}, then Best Model for Inference is saved to Pickle and used for inference."
-                        )
+                            f"If no model is saved via Pickle to {full_model_path}, then Best Model for Inference is saved to Pickle and used for inference.")
                         print(
-                            rf"If existing model is saved via Pickle to {relative_path}/{model_filename}, then will compare Largest Mean Score of existing model to largest mean score of Best Model for Inference."
-                        )
+                            f"If existing model is saved via Pickle to {full_model_path}, then will compare Largest Mean Score of existing model to largest mean score of Best Model for Inference.")
                         print("-" * 100)
 
-                        if not os.path.isfile(rf"{relative_path}/{model_filename}"):
+                        if not os.path.isfile(full_model_path):
                             print("No saved model found...")
                             print("Saving Best Model for Inference via Pickle...")
                             try:
                                 logging.info(
-                                    f"Saving best performing model to {model_filename}..."
-                                )
-                                with open(rf"{model_filename}", "wb") as f:
+                                    f"Saving best performing model to {full_model_path}...")
+                                with open(full_model_path, "wb") as f:
                                     pickle.dump(data_to_pickle, f)
                                 logging.info(
-                                    rf"...Best performing model saved for inference to {model_filename}."
-                                )
+                                    f"...Best performing model saved for inference to {full_model_path}.")
                             except Exception as e:
                                 logging.error(
-                                    f"Inference model has not been saved because of the following error: {e}."
-                                )
+                                    f"Inference model has not been saved because of the following error: {e}.")
                             print("...Saved Best Model for Inference to Pickle.")
 
-                        elif os.path.isfile(rf"{filename}"):
+                        elif os.path.isfile(full_model_path):
                             print("Existing saved model found...")
-                            with open(rf"{model_filename}", "rb") as f:
+                            with open(full_model_path, "rb") as f:
                                 data_from_pickle = pickle.load(f)
                             data_from_pickle_model = data_from_pickle["model"]
-                            data_from_pickle_largest_mean_score = data_from_pickle[
-                                "largest_mean_score"
-                            ]
-                            data_from_pickle_train_data_size = data_from_pickle[
-                                "train_data_size"
-                            ]
-                            data_from_pickle_date_created = data_from_pickle[
-                                "date_created"
-                            ]
+                            data_from_pickle_largest_mean_score = data_from_pickle["largest_mean_score"]
+                            data_from_pickle_train_data_size = data_from_pickle["train_data_size"]
+                            data_from_pickle_date_created = data_from_pickle["date_created"]
+
                             print("Comparing Saved Model and Newly Trained Model...")
                             print("-" * 25)
                             print("Existing Inference Model Information")
                             print("-" * 25)
                             print(
-                                f"Existing Inference Model Type: {data_from_pickle_model}"
-                            )
+                                f"Existing Inference Model Type: {data_from_pickle_model}")
                             print(
-                                f"Existing Inference Model Largest Mean Score: {data_from_pickle_largest_mean_score}"
-                            )
+                                f"Existing Inference Model Largest Mean Score: {data_from_pickle_largest_mean_score}")
                             print(
-                                f"Existing Inference Model Train Data Size Used: {data_from_pickle_train_data_size}"
-                            )
+                                f"Existing Inference Model Train Data Size Used: {data_from_pickle_train_data_size}")
                             print(
-                                f"Existing Inference Model Date Created: {data_from_pickle_date_created}"
-                            )
+                                f"Existing Inference Model Date Created: {data_from_pickle_date_created}")
                             print("-" * 25)
                             print("Newly Trained Model Information")
                             print("-" * 25)
                             print(
-                                f"Newly Trained Model Type: {best_model_for_inference}"
-                            )
+                                f"Newly Trained Model Type: {best_model_for_inference}")
                             print(
-                                f"Newly Trained Model Largest Mean Score: {best_score}"
-                            )
+                                f"Newly Trained Model Largest Mean Score: {best_score}")
                             print(
                                 f"Newly Trained model Train Data Size Used: {len(x)}")
                             print(
-                                f"Newly Trained Model Date Created: {datetime.datetime.now().isoformat()}"
-                            )
+                                f"Newly Trained Model Date Created: {datetime.datetime.now().isoformat()}")
+
                             if best_score >= data_from_pickle_largest_mean_score:
                                 print(
-                                    "Newly Trained model better than Existing Pickled Model..."
-                                )
+                                    "Newly Trained model better than Existing Pickled Model...")
                                 print(
-                                    "Saving BEst Model for Inference to PIckle...")
-                                with open(rf"{model_filename}", "wb") as f:
-                                    pickle.dump(data_from_pickle, f)
+                                    "Saving Best Model for Inference to Pickle...")
+                                with open(full_model_path, "wb") as f:
+                                    pickle.dump(data_to_pickle, f)
                                 print("...Saved Best Model for Inference to Pickle")
                             elif best_score < data_from_pickle_largest_mean_score:
                                 print(
-                                    "Existing Pickle Model better than Newly Trained Model..."
-                                )
+                                    "Existing Pickle Model better than Newly Trained Model...")
+
                         print("-" * 100)
 
                         print("\n")
                         print("-" * 100)
                         print("Inference Model Information")
                         print("-" * 100)
-                        with open(rf"{model_filename}", "rb") as f:
+                        with open(full_model_path, "rb") as f:
                             data_from_pickle = pickle.load(f)
                         data_from_pickle_model = data_from_pickle["model"]
-                        data_from_pickle_largest_mean_score = data_from_pickle[
-                            "largest_mean_score"
-                        ]
-                        data_from_pickle_train_data_size = data_from_pickle[
-                            "train_data_size"
-                        ]
+                        data_from_pickle_largest_mean_score = data_from_pickle["largest_mean_score"]
+                        data_from_pickle_train_data_size = data_from_pickle["train_data_size"]
                         data_from_pickle_date_created = data_from_pickle["date_created"]
 
                         print(
                             f"Inference Model Type: {data_from_pickle_model}")
                         print(
-                            f"Largest Mean Score: {data_from_pickle_largest_mean_score}"
-                        )
+                            f"Largest Mean Score: {data_from_pickle_largest_mean_score}")
                         print(
-                            f"Train Data Size Used: {data_from_pickle_train_data_size}"
-                        )
+                            f"Train Data Size Used: {data_from_pickle_train_data_size}")
                         print(f"Date Created: {data_from_pickle_date_created}")
                         print("-" * 100)
 
@@ -469,15 +434,13 @@ class TrainModel:
 
                         print("\n")
                         print(
-                            f"Total time to complete evaluation: {(end_time - start_time):.2f} seconds"
-                        )
+                            f"Total time to complete evaluation: {(end_time - start_time):.2f} seconds")
 
                     except Exception as e:
                         print(f"An error occured: {e}")
         except Exception as e:
             logging.error(
-                f"An error occured when evaluating the model population and returning the best performing model: {e}"
-            )
+                f"An error occured when evaluating the model population and returning the best performing model: {e}")
 
 
 class Inference:
@@ -485,15 +448,16 @@ class Inference:
     @staticmethod
     def load_model_for_inference(filename: str) -> object:
         logging.info(f"Loading saved model {filename} for inference...")
+        loaded_model = None 
         try:
-            with open(rf"{filename}", "rb") as f:
+            with open(filename, "rb") as f:  
                 data_from_pickle = pickle.load(f)
                 loaded_model = data_from_pickle["model"]
             logging.info(f"...Loaded saved model {filename} for inference.")
         except Exception as e:
             logging.error(
-                f"An error occured when attempting to load saved model {filename} for inference: {e}"
-            )
+                f"An error occured when attempting to load saved model {filename} for inference: {e}")
+            raise  
 
         return loaded_model
 
@@ -502,87 +466,89 @@ class Inference:
         model: object, preprocessed_data: pandas.DataFrame
     ) -> pandas.DataFrame:
         logging.info("Performing inference using loaded model...")
+        predictions_dataframe = None  
         try:
             predictions = model.predict(preprocessed_data)
             predictions_dataframe = pandas.DataFrame(
-                {"predicitons": predictions})
+                {"predictions": predictions})
             logging.info("...Inference using loaded model complete.")
         except Exception as e:
             logging.error(
-                f"An error occured when performing inference using loaded model: {e}"
-            )
+                f"An error occured when performing inference using loaded model: {e}")
+            raise  
 
         return predictions_dataframe
 
 
 if __name__ == "__main__":
-    logging.info("-" * 100)
+    logging.info("=" * 100)
     logging.info("Starting Mechanicus Training Pipeline")
-    logging.info("-" * 100)
+    logging.info("=" * 100)
     CV = 5
     SCORING_METRIC = "accuracy"
     start_time = time.time()
 
-    response_variable_production = (
-        "position_hash"
-    )
+    response_variable_production = "servo_angles_label"
 
-    training_data_path = Path("training_data.json")
+    training_data_path = Path("/app/shared/data/training_data.json")
 
     if not training_data_path.exists():
         logging.info("Training data not found. Generating training data...")
-        call(["python", "src/data_collection.py"])
+        call(["python", "ml_training_dataset_generator.py"])
         logging.info("...Training data generation complete.")
     else:
         logging.info("Training data found. Proceeding with training...")
 
-    training_data = DataCollector.load_servo_eeg_data("training_data.json")
+    training_data = DataCollector.load_servo_eeg_data(
+        "/app/shared/data/training_data.json")
 
     ExploratoryDataAnalysis.get_summary_statistics(
-        training_data, filename="training_data_eda.txt"
+        training_data, filename="/app/shared/data/training_data_eda.txt"
     )
 
     preprocessed_data = PreprocessData.preprocess_data(
-        training_data, response_variable_production, Phase("training")
+        training_data, response_variable_production, Phase.TRAINING
     )
     x = preprocessed_data[0]
     y = preprocessed_data[1]
 
     TrainModel.evaluateModel(x=x, y=y, cv=CV, scoring_metric=SCORING_METRIC)
 
-    inference_data_path = Path("inference_data.json")
+    inference_data_path = Path("/app/shared/data/inference_data.json")
 
     if not inference_data_path.exists():
         logging.info("Inference data not found. Generating inference data...")
-        call(["python", "src/data_collection.py", "--inference"])
+        call(["python", "ml_training_dataset_generator.py", "--inference-only"])
         logging.info("...Inference data generation complete.")
     else:
         logging.info("Inference data found. Proceeding with inference...")
-    inference_model = Inference.load_model_for_inference(
-        filename="inference_model.pkl")
 
-    inference_data = DataCollector.load_servo_eeg_data("inference_data.json")
+    inference_model = Inference.load_model_for_inference(
+        filename="/app/shared/models/inference_model.pkl")
+
+    inference_data = DataCollector.load_servo_eeg_data(
+        "/app/shared/data/inference_data.json")
     ExploratoryDataAnalysis.get_summary_statistics(
-        inference_data, filename="inference_data_eda.txt"
+        inference_data, filename="/app/shared/data/inference_data_eda.txt"
     )
 
     preprocessed_inference_data = PreprocessData.preprocess_data(
-        inference_data, response_variable_production, Phase("inference")
+        inference_data, response_variable_production, Phase.INFERENCE
     )
     preprocessed_inference_x = preprocessed_inference_data[0]
 
     predictions = Inference.perform_inference_using_loaded_model(
         model=inference_model, preprocessed_data=preprocessed_inference_x
     )
-    predictions_results_path = "predictions_output.csv"
+    predictions_results_path = "/app/shared/data/predictions_output.csv"
     logging.info(
         f"Writing predictions results to output file: {predictions_results_path}..."
     )
     predictions.to_csv(predictions_results_path, mode="w", index=False)
 
     end_time = time.time()
-    logging.info("-" * 100)
+    logging.info("=" * 100)
     logging.info(
         f"Completed Mechanicus Training Pipeline in {end_time-start_time} seconds"
     )
-    logging.info("-" * 100)
+    logging.info("=" * 100)
