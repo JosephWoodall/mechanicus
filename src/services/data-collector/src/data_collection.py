@@ -331,7 +331,7 @@ class EEGDataPublisherService:
         """Clear all data from Redis server."""
         try:
             self.redis_client.flushall()
-            logger.info("Cleared all Redis data.")
+            #logger.info("Cleared all Redis data.")
         except Exception as e:
             logger.error(f"Failed to clear Redis data: {e}")
 

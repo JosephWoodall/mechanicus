@@ -20,7 +20,7 @@ services:
       - REDIS_URL=redis://redis:6379
     volumes:
       - ./shared/config:/app/shared/config:ro
-    command: ["python", "data_collection.py", "--config", "/app/shared/config/mechanicus_run_configuration.yaml"]
+    command: ["python", "data_collection.py", "--config", "/app/shared/config/mechanicus_run_configuration.yaml", "--quiet"]
     networks:
       - mechanicus-network
 
@@ -34,6 +34,19 @@ services:
     networks:
       - mechanicus-network
     command: ["python", "utils/preprocessing.py"]
+
+  inference-model:
+    build: ./services/eeg-processor
+    depends_on:
+      - redis
+      - eeg-processor
+    environment:
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./shared/models:/app/shared/models:ro
+    networks:
+      - mechanicus-network
+    command: ["python", "models/inference_model.py"]
 
 networks:
   mechanicus-network:

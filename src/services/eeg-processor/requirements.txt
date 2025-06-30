@@ -1,2 +1,4 @@
-redis==4.5.5
-numpy==1.24.3
+redis
+pandas
+joblib
+scikit-learn
