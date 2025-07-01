@@ -178,6 +178,8 @@ src/data
 
 #models 
 src/shared/models/inference_model.pkl
+src/shared/models/rl_agent.pkl
 
 #dump files 
 dump.rdb
+src/shared/models/rl_agent.pkl

@@ -3,3 +3,6 @@ PyYAML
 pandas
 scipy
 scikit-learn
+gym
+stable-baselines3
+torch
