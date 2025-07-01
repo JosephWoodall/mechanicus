@@ -1,4 +1,4 @@
-# mechanicus
+# Mechanicus
 
 This is my space to explore the wonderful world of brain-computer interfaces. The majority of the decision making here assumes that you have
 an EEG Headset (or EEG data) handy. Brain-waves are the main data source I am leveraging in this project.
@@ -12,10 +12,6 @@ You can also generate your own.
 I plan to expand the binary classifier to multi-class classifier for 3D movement in a cartesian plane, where the output is a hash value coorelating to spherical coordinates; exercised by a lookup algorithm.
 
 I am still brainstorming how to create the prosthetic apparatus. I might need help in this area.
-
-
-TODO:
-remove hash lookup function from offline training set generation, data_collection.py. Will transform servo_angle list to string and use it as label for ml training - no need for the hash transformation and lookup lol
 
 # Project Entry Point for Execution
 
@@ -91,7 +87,7 @@ flowchart TD
     N --> O[Create Sample Inference Data]
 
     O --> P{Parallel Training}
-    P --> Q[Train ML Model<br/>EEG → Position Hash]
+    P --> Q[Train ML Model<br/>Explanatory Features: EEG → Label: Servo Angle]
     P --> R[Train RL Agent<br/>Path Optimization]
 
     Q --> S[Save ML Model<br/>inference_model.pkl]
