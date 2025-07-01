@@ -3,15 +3,15 @@
 ```
 mechanicus-platform
 ├── services
-│   ├── eeg-processor         # Service for processing EEG data
-│   ├── servo-controller       # Service for controlling servo movements
-│   ├── data-collector         # Service for collecting and preparing data
-│   └── training-pipeline      # Service for training machine learning models
-├── shared                     # Shared resources across services
-├── docker-compose.yml         # Docker Compose configuration for local development
-├── docker-compose.prod.yml    # Docker Compose configuration for production
-├── docker-compose.test.yml     # Docker Compose configuration for testing
-└── README.md                  # Project documentation
+│   ├── eeg-processor                           # Service for processing EEG data
+│   ├── servo-controller                        # Service for controlling servo movements
+│   ├── data-collector                          # Service for collecting and preparing data
+│   └── training-pipeline                       # Service for training machine learning models
+├── shared                                      # Shared resources across services
+├── docker-compose.offline_training.yml         # Docker Compose configuration for ML/RL Training pipeline
+├── docker-compose.prod.yml                     # Docker Compose configuration for production
+├── docker-compose.test.yml                     # Docker Compose configuration for testing
+└── README.md                                   # Project documentation
 ```
 
 ## Getting Started
@@ -48,7 +48,6 @@ mechanicus-platform
 
 ### Usage
 
-- Access the user-facing chatbot interface through the designated web endpoint.
 - Monitor the logs of each service for real-time updates and debugging.
 
 ### Testing
