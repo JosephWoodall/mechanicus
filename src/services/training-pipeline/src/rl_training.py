@@ -65,27 +65,27 @@ class Path3DEnvironment(gym.Env):
         self.step_count += 1
 
         action = np.clip(action, -1.0, 1.0)
-        new_pos = self.current_pos + action * 2.0  
+        new_pos = self.current_pos + action * 2.0
 
         if not self._is_in_bounds(new_pos):
-            reward = -10.0  
+            reward = -10.0
             done = True
-            return self._get_obs(), reward, done, {}
+            return self._get_obs(), reward, done, {'distance_to_goal': np.linalg.norm(self.current_pos - self.goal_pos)}
 
         if self._check_obstacle_collision(new_pos):
-            reward = -10.0  
+            reward = -10.0
             done = True
-            return self._get_obs(), reward, done, {}
+            return self._get_obs(), reward, done, {'distance_to_goal': np.linalg.norm(self.current_pos - self.goal_pos)}
 
         self.current_pos = new_pos
 
         distance_to_goal = np.linalg.norm(self.current_pos - self.goal_pos)
-        reward = -distance_to_goal  
+        reward = -distance_to_goal
 
         done = distance_to_goal < 1.0 or self.step_count >= self.max_steps
 
         if distance_to_goal < 1.0:
-            reward += 100.0  
+            reward += 100.0
 
         return self._get_obs(), reward, done, {'distance_to_goal': distance_to_goal}
 
@@ -116,7 +116,7 @@ class PPOAgent:
             nn.Linear(256, 256),
             nn.ReLU(),
             nn.Linear(256, self.action_dim),
-            nn.Tanh()  
+            nn.Tanh()
         )
 
     def _build_critic(self):
@@ -164,9 +164,19 @@ class PPOAgent:
             critic_loss.backward()
             self.critic_optimizer.step()
 
+    def clone(self):
+        """Create a copy of this agent"""
+        new_agent = PPOAgent(self.state_dim, self.action_dim, self.lr)
+        new_agent.actor.load_state_dict(self.actor.state_dict())
+        new_agent.critic.load_state_dict(self.critic.state_dict())
+        new_agent.gamma = self.gamma
+        new_agent.clip_epsilon = self.clip_epsilon
+        new_agent.k_epochs = self.k_epochs
+        return new_agent
+
 
 class RLAgent:
-    """Main RL Agent class for 3D path planning"""
+    """Main RL Agent class for 3D path planning with Tournament Elimination"""
 
     def __init__(self, data_file=None):
         possible_paths = [
@@ -395,9 +405,44 @@ class RLAgent:
 
             if episode % 100 == 0:
                 avg_reward = np.mean(episode_rewards[-100:])
-                print(f"Episode {episode}, Average Reward: {avg_reward:.2f}")
+                print(
+                    f"    Episode {episode}, Average Reward: {avg_reward:.2f}")
 
         return agent, episode_rewards
+
+    def continue_training_agent(self, agent, start_pos, goal_pos, episodes=500):
+        """Continue training an existing agent"""
+        obstacles = self.create_sample_obstacles()
+        env = Path3DEnvironment(start_pos, goal_pos, obstacles)
+
+        episode_rewards = []
+
+        for episode in range(episodes):
+            state = env.reset()
+            episode_reward = 0
+            done = False
+
+            states, actions, rewards, next_states, dones = [], [], [], [], []
+
+            while not done:
+                action = agent.get_action(state)
+                next_state, reward, done, info = env.step(action)
+
+                states.append(state)
+                actions.append(action)
+                rewards.append(reward)
+                next_states.append(next_state)
+                dones.append(done)
+
+                state = next_state
+                episode_reward += reward
+
+            if len(states) > 0:
+                agent.update(states, actions, rewards, next_states, dones)
+
+            episode_rewards.append(episode_reward)
+
+        return episode_rewards
 
     def generate_path(self, agent, start_pos, goal_pos, max_steps=1000):
         """Generate path using trained agent"""
@@ -437,58 +482,330 @@ class RLAgent:
 
         return smooth_path
 
-    def save_agent(self, model_path='src/shared/models/rl_agent.pkl'):
-        """Save the trained RL agent to a pickle file"""
+    def evaluate_agent_on_all_pairs(self, agent, num_trials_per_pair=5):
+        """Evaluate a single agent on all training pairs"""
+        if not self.training_pairs:
+            return None
+
+        pair_performances = []
+        total_score = 0
+        total_success = 0
+        total_trials = 0
+
+        for pair_idx, pair in enumerate(self.training_pairs):
+            start_pos = np.array(pair['start'])
+            goal_pos = np.array(pair['goal'])
+
+            pair_scores = []
+            pair_successes = []
+
+            for trial in range(num_trials_per_pair):
+                obstacles = self.create_sample_obstacles()
+                env = Path3DEnvironment(start_pos, goal_pos, obstacles)
+
+                state = env.reset()
+                total_reward = 0
+                steps_taken = 0
+                done = False
+
+                while not done and steps_taken < 1000:
+                    action = agent.get_action(state)
+                    state, reward, done, info = env.step(action)
+                    total_reward += reward
+                    steps_taken += 1
+
+                final_distance = info.get('distance_to_goal', float('inf'))
+                success = final_distance < 1.0
+                efficiency_bonus = (1000 - steps_taken) * \
+                    0.1 if success else -steps_taken * 0.05
+
+                trial_score = total_reward + \
+                    (100 if success else 0) + efficiency_bonus
+                pair_scores.append(trial_score)
+                pair_successes.append(success)
+
+            avg_pair_score = np.mean(pair_scores)
+            pair_success_rate = np.mean(pair_successes)
+
+            pair_performances.append({
+                'pair_index': pair_idx,
+                'start': start_pos.tolist(),
+                'goal': goal_pos.tolist(),
+                'avg_score': avg_pair_score,
+                'success_rate': pair_success_rate,
+                'trial_scores': pair_scores
+            })
+
+            total_score += avg_pair_score
+            total_success += pair_success_rate
+            total_trials += 1
+
+        overall_performance = {
+            'average_score_across_all_pairs': total_score / total_trials if total_trials > 0 else 0,
+            'average_success_rate_across_all_pairs': total_success / total_trials if total_trials > 0 else 0,
+            'total_pairs_tested': total_trials,
+            'pair_by_pair_performance': pair_performances
+        }
+
+        return overall_performance
+
+    def tournament_elimination_training(self, round1_episodes=5, round2_episodes=10, round3_episodes=15, evaluation_trials=5, final_trials=10):
+        """Exact implementation of the 4-stage tournament outline with configurable episodes"""
+        if not self.training_pairs:
+            self.load_training_data()
+
+        if not self.training_pairs:
+            print("No training pairs available. Cannot proceed with tournament.")
+            return None
+
+        print(f"\nTOURNAMENT ELIMINATION CHAMPIONSHIP")
+        print(f"{'='*80}")
+        print(f"Initial Contestants: {len(self.training_pairs)} agents")
+        print(f"Fixed 4-Stage Tournament Structure")
+        print(
+            f"Episode Configuration: R1={round1_episodes}, R2={round2_episodes}, R3={round3_episodes}")
+        print(
+            f"Evaluation Trials: {evaluation_trials}, Final Trials: {final_trials}")
+        print(f"{'='*80}")
+
+        print(f"\nROUND 1: MODERATE TRAINING ({round1_episodes} episodes)")
+        print(f"{'='*60}")
+        current_agents = {}
+
+        for i, pair in enumerate(self.training_pairs):
+            print(f"\nTraining Contestant {i+1}/{len(self.training_pairs)}")
+            print(f"  Specializing on: {pair['start']} → {pair['goal']}")
+
+            agent, rewards = self.train_agent(
+                pair['start'], pair['goal'], episodes=round1_episodes)
+
+            current_agents[i] = {
+                'agent': agent,
+                'training_pair': pair,
+                'training_rewards': rewards,
+                'agent_id': i,
+                'tournament_round': 1,
+                'total_training_episodes': round1_episodes
+            }
+
+        print(f"\nROUND 1 EVALUATION ({evaluation_trials} trials per pair)")
+        agent_performances = {}
+        for agent_id, agent_data in current_agents.items():
+            performance = self.evaluate_agent_on_all_pairs(
+                agent_data['agent'], num_trials_per_pair=evaluation_trials)
+            agent_performances[agent_id] = {
+                'performance': performance,
+                'score': performance['average_score_across_all_pairs']
+            }
+
+        keep_count_r2 = max(2, len(current_agents) // 2)  # Top 50%
+        survivors_r2 = sorted(agent_performances.items(
+        ), key=lambda x: x[1]['score'], reverse=True)[:keep_count_r2]
+
+        print(f"\nROUND 2: INTENSIVE TRAINING ({round2_episodes} episodes)")
+        print(
+            f"Advancing {len(survivors_r2)}/{len(current_agents)} agents (Top 50%)")
+
+        enhanced_agents_r2 = {}
+        for agent_id, perf_data in survivors_r2:
+            agent_data = current_agents[agent_id]
+            print(
+                f"  Enhancing Agent {agent_id} with {round2_episodes} additional episodes...")
+
+            additional_rewards = self.continue_training_agent(
+                agent_data['agent'],
+                agent_data['training_pair']['start'],
+                agent_data['training_pair']['goal'],
+                episodes=round2_episodes
+            )
+
+            enhanced_agents_r2[agent_id] = {
+                'agent': agent_data['agent'],
+                'training_pair': agent_data['training_pair'],
+                'training_rewards': agent_data['training_rewards'] + additional_rewards,
+                'agent_id': agent_id,
+                'tournament_round': 2,
+                'total_training_episodes': round1_episodes + round2_episodes,
+                'previous_performance': perf_data['performance']
+            }
+
+        print(f"\nROUND 2 EVALUATION ({evaluation_trials} trials per pair)")
+        agent_performances_r2 = {}
+        for agent_id, agent_data in enhanced_agents_r2.items():
+            performance = self.evaluate_agent_on_all_pairs(
+                agent_data['agent'], num_trials_per_pair=evaluation_trials)
+            agent_performances_r2[agent_id] = {
+                'performance': performance,
+                'score': performance['average_score_across_all_pairs']
+            }
+
+        keep_count_r3 = max(2, len(enhanced_agents_r2) //
+                            4)
+        if keep_count_r3 > len(enhanced_agents_r2) // 2:
+            keep_count_r3 = max(2, len(enhanced_agents_r2) // 2)
+
+        survivors_r3 = sorted(agent_performances_r2.items(
+        ), key=lambda x: x[1]['score'], reverse=True)[:keep_count_r3]
+
+        print(
+            f"\nROUND 3: CHAMPIONSHIP TRAINING ({round3_episodes} episodes)")
+        print(
+            f"Advancing {len(survivors_r3)}/{len(enhanced_agents_r2)} agents (Elite Championship Level)")
+
+        enhanced_agents_r3 = {}
+        for agent_id, perf_data in survivors_r3:
+            agent_data = enhanced_agents_r2[agent_id]
+            print(
+                f"  Championship training for Agent {agent_id} with {round3_episodes} additional episodes...")
+
+            additional_rewards = self.continue_training_agent(
+                agent_data['agent'],
+                agent_data['training_pair']['start'],
+                agent_data['training_pair']['goal'],
+                episodes=round3_episodes
+            )
+
+            enhanced_agents_r3[agent_id] = {
+                'agent': agent_data['agent'],
+                'training_pair': agent_data['training_pair'],
+                'training_rewards': agent_data['training_rewards'] + additional_rewards,
+                'agent_id': agent_id,
+                'tournament_round': 3,
+                'total_training_episodes': round1_episodes + round2_episodes + round3_episodes,
+                'previous_performance': perf_data['performance']
+            }
+
+        print(
+            f"\nFINAL: ULTIMATE HEAD-TO-HEAD ({final_trials} trials per pair)")
+        print(f"{'='*60}")
+
+        final_performances = {}
+        for agent_id, agent_data in enhanced_agents_r3.items():
+            performance = self.evaluate_agent_on_all_pairs(
+                agent_data['agent'], num_trials_per_pair=final_trials)
+            final_performances[agent_id] = performance
+
+        final_2 = sorted(final_performances.items(
+        ), key=lambda x: x[1]['average_score_across_all_pairs'], reverse=True)[:2]
+
+        if len(final_2) == 2:
+            print(f"FINALISTS:")
+            for i, (agent_id, performance) in enumerate(final_2, 1):
+                agent_data = enhanced_agents_r3[agent_id]
+                print(
+                    f"  {i}. Agent {agent_id} | Score: {performance['average_score_across_all_pairs']:.2f} | Episodes: {agent_data['total_training_episodes']}")
+
+            champion_id = final_2[0][0]
+            champion_performance = final_2[0][1]
+        else:
+            champion_id = list(enhanced_agents_r3.keys())[0]
+            champion_performance = final_performances[champion_id]
+
+        champion_data = enhanced_agents_r3[champion_id]
+        champion_data['global_performance'] = champion_performance
+
+        print(f"\n{'='*80}")
+        print(f"ULTIMATE TOURNAMENT CHAMPION: Agent {champion_id}")
+        print(f"{'='*80}")
+        print(
+            f"Episode Configuration Used: R1={round1_episodes}, R2={round2_episodes}, R3={round3_episodes}")
+        print(
+            f"Total Training Episodes: {champion_data['total_training_episodes']}")
+        print(
+            f"Final Score: {champion_performance['average_score_across_all_pairs']:.2f}")
+        print(
+            f"Success Rate: {champion_performance['average_success_rate_across_all_pairs']:.2%}")
+
+        self.trained_agents = {champion_id: champion_data}
+
+        return {
+            'champion_id': champion_id,
+            'champion_data': champion_data,
+            'tournament_results': {
+                'initial_contestants': len(self.training_pairs),
+                'round_1_episodes': round1_episodes,
+                'round_2_episodes': round2_episodes,
+                'round_3_episodes': round3_episodes,
+                'evaluation_trials': evaluation_trials,
+                'final_trials': final_trials,
+                'round_1_survivors': len(survivors_r2),
+                'round_2_survivors': len(survivors_r3),
+                'final_2': len(final_2),
+                'champion_training_episodes': champion_data['total_training_episodes'],
+                'champion_global_score': champion_performance['average_score_across_all_pairs'],
+                'champion_success_rate': champion_performance['average_success_rate_across_all_pairs']
+            }
+        }
+
+    def save_tournament_champion(self, model_path='src/shared/models/rl_tournament_champion.pkl', tournament_results=None):
+        """Save the tournament champion"""
         try:
             os.makedirs(os.path.dirname(model_path), exist_ok=True)
 
+            if not self.trained_agents:
+                print("No tournament champion to save!")
+                return False
+
+            champion_id = list(self.trained_agents.keys())[0]
+            champion_data = self.trained_agents[champion_id]
+
             save_data = {
                 'training_pairs': self.training_pairs,
-                'trained_agents': {},
+                'tournament_champion_id': champion_id,
+                'tournament_champion': {
+                    'original_training_pair': champion_data['training_pair'],
+                    'training_rewards': champion_data['training_rewards'],
+                    'tournament_round': champion_data['tournament_round'],
+                    'total_training_episodes': champion_data['total_training_episodes'],
+                    'global_performance': champion_data.get('global_performance', champion_data.get('previous_performance', {})),
+                    'agent_state_dict': {
+                        'actor': champion_data['agent'].actor.state_dict(),
+                        'critic': champion_data['agent'].critic.state_dict(),
+                        'actor_optimizer': champion_data['agent'].actor_optimizer.state_dict(),
+                        'critic_optimizer': champion_data['agent'].critic_optimizer.state_dict(),
+                        'hyperparams': {
+                            'state_dim': champion_data['agent'].state_dim,
+                            'action_dim': champion_data['agent'].action_dim,
+                            'lr': champion_data['agent'].lr,
+                            'gamma': champion_data['agent'].gamma,
+                            'clip_epsilon': champion_data['agent'].clip_epsilon,
+                            'k_epochs': champion_data['agent'].k_epochs
+                        }
+                    }
+                },
                 'model_metadata': {
-                    'num_agents': len(self.trained_agents),
-                    'training_complete': True,
+                    'training_method': 'tournament_elimination',
+                    'initial_contestants': tournament_results['tournament_results']['initial_contestants'] if tournament_results else len(self.training_pairs),
+                    'elimination_rounds': tournament_results['tournament_results']['elimination_rounds'] if tournament_results else 'unknown',
+                    'total_training_episodes': champion_data['total_training_episodes'],
+                    'champion_selected': True,
                     'save_timestamp': np.datetime64('now').astype(str)
                 }
             }
 
-            for i, agent_data in self.trained_agents.items():
-                save_data['trained_agents'][i] = {
-                    'start': agent_data['start'],
-                    'goal': agent_data['goal'],
-                    'rewards': agent_data['rewards'],
-                    'agent_state_dict': {
-                        'actor': agent_data['agent'].actor.state_dict(),
-                        'critic': agent_data['agent'].critic.state_dict(),
-                        'actor_optimizer': agent_data['agent'].actor_optimizer.state_dict(),
-                        'critic_optimizer': agent_data['agent'].critic_optimizer.state_dict(),
-                        'hyperparams': {
-                            'state_dim': agent_data['agent'].state_dim,
-                            'action_dim': agent_data['agent'].action_dim,
-                            'lr': agent_data['agent'].lr,
-                            'gamma': agent_data['agent'].gamma,
-                            'clip_epsilon': agent_data['agent'].clip_epsilon,
-                            'k_epochs': agent_data['agent'].k_epochs
-                        }
-                    }
-                }
+            if tournament_results:
+                save_data['tournament_results'] = tournament_results['tournament_results']
 
             with open(model_path, 'wb') as f:
                 pickle.dump(save_data, f)
 
-            print(f"Successfully saved RL agent to: {model_path}")
-            print(f"Saved {len(self.trained_agents)} trained agents")
+            print(
+                f"\n🏆 Successfully saved TOURNAMENT CHAMPION to: {model_path}")
+            print(
+                f"Champion survived {champion_data['tournament_round']} tournament rounds")
+            print(
+                f"Total training episodes: {champion_data['total_training_episodes']}")
             return True
 
         except Exception as e:
-            print(f"Error saving RL agent: {e}")
+            print(f"Error saving tournament champion: {e}")
             return False
 
-    def load_agent(self, model_path='/app/shared/models/rl_agent.pkl'):
-        """Load a trained RL agent from a pickle file"""
+    def load_tournament_champion(self, model_path='/app/shared/models/rl_tournament_champion.pkl'):
+        """Load the tournament champion agent"""
         try:
             if not os.path.exists(model_path):
-                print(f"Model file not found: {model_path}")
+                print(f"Tournament champion model not found: {model_path}")
                 return False
 
             with open(model_path, 'rb') as f:
@@ -496,116 +813,88 @@ class RLAgent:
 
             self.training_pairs = save_data.get('training_pairs', [])
 
-            self.trained_agents = {}
-            saved_agents = save_data.get('trained_agents', {})
+            champion_data = save_data.get('tournament_champion', {})
+            champion_id = save_data.get('tournament_champion_id', 0)
 
-            for i, agent_data in saved_agents.items():
-                hyperparams = agent_data['agent_state_dict']['hyperparams']
-                agent = PPOAgent(
-                    state_dim=hyperparams['state_dim'],
-                    action_dim=hyperparams['action_dim'],
-                    lr=hyperparams['lr']
-                )
+            if not champion_data:
+                print("No tournament champion data found in model file")
+                return False
 
-                agent.gamma = hyperparams['gamma']
-                agent.clip_epsilon = hyperparams['clip_epsilon']
-                agent.k_epochs = hyperparams['k_epochs']
+            hyperparams = champion_data['agent_state_dict']['hyperparams']
+            agent = PPOAgent(
+                state_dim=hyperparams['state_dim'],
+                action_dim=hyperparams['action_dim'],
+                lr=hyperparams['lr']
+            )
 
-                agent.actor.load_state_dict(
-                    agent_data['agent_state_dict']['actor'])
-                agent.critic.load_state_dict(
-                    agent_data['agent_state_dict']['critic'])
-                agent.actor_optimizer.load_state_dict(
-                    agent_data['agent_state_dict']['actor_optimizer'])
-                agent.critic_optimizer.load_state_dict(
-                    agent_data['agent_state_dict']['critic_optimizer'])
+            agent.gamma = hyperparams['gamma']
+            agent.clip_epsilon = hyperparams['clip_epsilon']
+            agent.k_epochs = hyperparams['k_epochs']
 
-                self.trained_agents[int(i)] = {
-                    'agent': agent,
-                    'start': agent_data['start'],
-                    'goal': agent_data['goal'],
-                    'rewards': agent_data['rewards']
-                }
+            agent.actor.load_state_dict(
+                champion_data['agent_state_dict']['actor'])
+            agent.critic.load_state_dict(
+                champion_data['agent_state_dict']['critic'])
+            agent.actor_optimizer.load_state_dict(
+                champion_data['agent_state_dict']['actor_optimizer'])
+            agent.critic_optimizer.load_state_dict(
+                champion_data['agent_state_dict']['critic_optimizer'])
+
+            self.trained_agents = {champion_id: {
+                'agent': agent,
+                'training_pair': champion_data['original_training_pair'],
+                'training_rewards': champion_data['training_rewards'],
+                'tournament_round': champion_data['tournament_round'],
+                'total_training_episodes': champion_data['total_training_episodes'],
+                'global_performance': champion_data['global_performance']
+            }}
 
             metadata = save_data.get('model_metadata', {})
-            print(f"Successfully loaded RL agent from: {model_path}")
-            print(f"Loaded {len(self.trained_agents)} trained agents")
+            tournament_info = save_data.get('tournament_results', {})
+
             print(
-                f"Model saved at: {metadata.get('save_timestamp', 'unknown')}")
+                f"🏆 Successfully loaded TOURNAMENT CHAMPION from: {model_path}")
+            print(f"Champion ID: {champion_id}")
+            print(
+                f"Originally trained on: {champion_data['original_training_pair']['start']} → {champion_data['original_training_pair']['goal']}")
+            print(f"Tournament Performance:")
+            print(
+                f"  • Survived {champion_data['tournament_round']} elimination rounds")
+            print(
+                f"  • Total training episodes: {champion_data['total_training_episodes']}")
+
+            perf = champion_data['global_performance']
+            print(
+                f"  • Final Score: {perf['average_score_across_all_pairs']:.2f}")
+            print(
+                f"  • Final Success Rate: {perf['average_success_rate_across_all_pairs']:.2%}")
+            print(f"  • Tested on {perf['total_pairs_tested']} position pairs")
+            print(
+                f"Selected from {metadata.get('initial_contestants', 'unknown')} initial contestants")
+
             return True
 
         except Exception as e:
-            print(f"Error loading RL agent: {e}")
+            print(f"Error loading tournament champion: {e}")
             return False
 
-    def train_all_pairs(self, episodes_per_pair=500, save_after_training=True):
-        """Train agents for all start-goal pairs"""
-        if not self.training_pairs:
-            self.load_training_data()
-
-        if not self.training_pairs:
-            print("No training pairs available. Cannot proceed with training.")
-            return
-
-        for i, pair in enumerate(self.training_pairs):
-            print(f"\nTraining pair {i+1}/{len(self.training_pairs)}")
-            print(f"Start: {pair['start']}, Goal: {pair['goal']}")
-
-            agent, rewards = self.train_agent(
-                pair['start'],
-                pair['goal'],
-                episodes=episodes_per_pair
-            )
-
-            self.trained_agents[i] = {
-                'agent': agent,
-                'start': pair['start'],
-                'goal': pair['goal'],
-                'rewards': rewards
-            }
-
-        if save_after_training:
-            print("\nSaving trained agents...")
-            self.save_agent()
-
-    def get_model_info(self, model_path='/app/shared/models/rl_agent.pkl'):
-        """Get information about a saved model without fully loading it"""
-        try:
-            if not os.path.exists(model_path):
-                return None
-
-            with open(model_path, 'rb') as f:
-                save_data = pickle.load(f)
-
-            metadata = save_data.get('model_metadata', {})
-            training_pairs = save_data.get('training_pairs', [])
-            trained_agents = save_data.get('trained_agents', {})
-
-            return {
-                'model_path': model_path,
-                'num_training_pairs': len(training_pairs),
-                'num_trained_agents': len(trained_agents),
-                'save_timestamp': metadata.get('save_timestamp', 'unknown'),
-                'training_complete': metadata.get('training_complete', False)
-            }
-
-        except Exception as e:
-            print(f"Error reading model info: {e}")
+    def generate_smooth_path(self, agent_id, num_smooth_points=100):
+        """Generate and smooth path for the champion agent"""
+        if agent_id not in self.trained_agents:
+            print(f"No trained agent for ID {agent_id}")
             return None
 
-    def generate_smooth_path(self, pair_index, num_smooth_points=100):
-        """Generate and smooth path for a specific training pair"""
-        if pair_index not in self.trained_agents:
-            print(f"No trained agent for pair {pair_index}")
-            return None
-
-        agent_data = self.trained_agents[pair_index]
+        agent_data = self.trained_agents[agent_id]
         agent = agent_data['agent']
-        start_pos = np.array(agent_data['start'])
-        goal_pos = np.array(agent_data['goal'])
+
+        if 'start' in agent_data:
+            start_pos = np.array(agent_data['start'])
+            goal_pos = np.array(agent_data['goal'])
+        else:
+            start_pos = np.array(agent_data['training_pair']['start'])
+            goal_pos = np.array(agent_data['training_pair']['goal'])
 
         raw_path = self.generate_path(agent, start_pos, goal_pos)
-
         smooth_path = self.smooth_path(raw_path, num_smooth_points)
 
         return {
@@ -615,22 +904,52 @@ class RLAgent:
             'goal': goal_pos
         }
 
+    def get_model_info(self, model_path='/app/shared/models/rl_tournament_champion.pkl'):
+        """Get information about a saved tournament champion model"""
+        try:
+            if not os.path.exists(model_path):
+                return None
+
+            with open(model_path, 'rb') as f:
+                save_data = pickle.load(f)
+
+            metadata = save_data.get('model_metadata', {})
+            tournament_info = save_data.get('tournament_results', {})
+            champion_data = save_data.get('tournament_champion', {})
+
+            return {
+                'model_path': model_path,
+                'training_method': metadata.get('training_method', 'unknown'),
+                'initial_contestants': metadata.get('initial_contestants', 'unknown'),
+                'elimination_rounds': metadata.get('elimination_rounds', 'unknown'),
+                'total_training_episodes': metadata.get('total_training_episodes', 'unknown'),
+                'save_timestamp': metadata.get('save_timestamp', 'unknown'),
+                'champion_performance': {
+                    'global_score': champion_data.get('global_performance', {}).get('average_score_across_all_pairs', 'unknown'),
+                    'success_rate': champion_data.get('global_performance', {}).get('average_success_rate_across_all_pairs', 'unknown')
+                }
+            }
+
+        except Exception as e:
+            print(f"Error reading model info: {e}")
+            return None
+
 
 if __name__ == "__main__":
     rl_agent = RLAgent()
 
-    model_path = '/app/shared/models/rl_agent.pkl'
+    model_path = '/app/shared/models/rl_tournament_champion.pkl'
     model_info = rl_agent.get_model_info(model_path)
 
     if model_info:
-        print(f"Found existing model: {model_info}")
-        print("Loading existing model...")
-        if rl_agent.load_agent(model_path):
-            print("Successfully loaded existing model!")
+        print(f"Found existing tournament champion: {model_info}")
+        print("Loading existing champion...")
+        if rl_agent.load_tournament_champion(model_path):
+            print("Successfully loaded existing tournament champion!")
         else:
-            print("Failed to load existing model, will train new one...")
+            print("Failed to load existing champion, will run new tournament...")
     else:
-        print("No existing model found, will train new one...")
+        print("No existing tournament champion found, will run tournament elimination...")
 
     if not rl_agent.training_pairs:
         training_pairs = rl_agent.load_training_data()
@@ -639,24 +958,28 @@ if __name__ == "__main__":
 
     if training_pairs:
         print("Training data loaded successfully!")
-        print(f"First few pairs:")
-        for i, pair in enumerate(training_pairs[:3]):
-            print(f"  Pair {i}: {pair['start']} -> {pair['goal']}")
 
         if not rl_agent.trained_agents:
-            print("\nStarting training for all pairs...")
-            rl_agent.train_all_pairs(
-                episodes_per_pair=1, save_after_training=True)
-        else:
             print(
-                f"\nUsing existing {len(rl_agent.trained_agents)} trained agents")
+                f"\nStarting TOURNAMENT ELIMINATION with {len(training_pairs)} initial contestants...")
+            print("Only the strongest will survive!")
+
+            tournament_results = rl_agent.tournament_elimination_training()
+
+            if tournament_results:
+                print("\n💾 Saving the tournament champion...")
+                rl_agent.save_tournament_champion(
+                    model_path, tournament_results)
+        else:
+            print(f"\nUsing existing tournament champion")
 
         if rl_agent.trained_agents:
-            path_data = rl_agent.generate_smooth_path(0)
+            champion_id = list(rl_agent.trained_agents.keys())[0]
+            path_data = rl_agent.generate_smooth_path(champion_id)
             if path_data:
                 print(
-                    f"Generated path with {len(path_data['smooth_path'])} smooth points")
-
-                rl_agent.save_agent(model_path)
+                    f"\nGenerated sample path with {len(path_data['smooth_path'])} smooth points")
+                print(
+                    f"Path goes from {path_data['start']} to {path_data['goal']}")
     else:
         print("Could not load training data. Please check file location and format.")

@@ -48,6 +48,38 @@ services:
       - mechanicus-network
     command: ["python", "models/inference_model.py"]
 
+  rl-agent:
+    build:
+      context: ./services/servo-controller
+      dockerfile: Dockerfile
+    command: ["python", "rl_agent/agent.py"]
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - mechanicus-network
+    volumes:
+      - ./shared/models:/app/shared/models:ro
+    restart: unless-stopped
+
+  servo-driver:
+    build:
+      context: ./services/servo-controller
+      dockerfile: Dockerfile
+    command: ["python", "controllers/servo_driver.py", "-t"]
+    depends_on:
+      - redis
+      - rl-agent
+    environment:
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - mechanicus-network
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"  # Adjust based on your servo hardware
+    privileged: true  # May be needed for hardware access
+    restart: unless-stopped
+
 networks:
   mechanicus-network:
     driver: bridge

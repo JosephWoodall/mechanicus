@@ -2,14 +2,16 @@ import joblib
 import redis
 import json
 import logging
+import warnings
 import os
 import pandas
-import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+warnings.filterwarnings("ignore", category=UserWarning, module='sklearn')
 
 
 class PreprocessData:
@@ -18,19 +20,19 @@ class PreprocessData:
     def preprocess_data(
         data: dict
     ) -> pandas.DataFrame:
-        logging.info("Preprocessing of the EEG data for model_input")
+        # logging.info("Preprocessing of the EEG data for model_input")
         try:
             eeg_values = None
 
             if isinstance(data, dict):
                 if 'eeg_data' in data:
                     eeg_values = data['eeg_data']
-                    logging.info("Extracted eeg_data from top level.")
+                    # logging.info("Extracted eeg_data from top level.")
                 elif 'original_sample' in data and isinstance(data['original_sample'], dict):
                     if 'eeg_data' in data['original_sample']:
                         eeg_values = data['original_sample']['eeg_data']
-                        logging.info(
-                            f"Extracted eeg_data from original_sample: {eeg_values}")
+                        # logging.info(
+                        #    f"Extracted eeg_data from original_sample: {eeg_values}")
                 else:
                     numeric_values = [
                         v for v in data.values() if isinstance(v, (int, float))]
@@ -52,17 +54,17 @@ class PreprocessData:
             column_names = [f'eeg_channel_{i}' for i in range(len(eeg_values))]
             df = pandas.DataFrame([eeg_values], columns=column_names)
 
-            logging.info(f"Created DataFrame with shape: {df.shape}")
-            logging.info(f"DataFrame columns: {df.columns.tolist()}")
-            logging.info(f"DataFrame values: {df.iloc[0].tolist()}")
+            # logging.info(f"Created DataFrame with shape: {df.shape}")
+            # logging.info(f"DataFrame columns: {df.columns.tolist()}")
+            # logging.info(f"DataFrame values: {df.iloc[0].tolist()}")
 
             scaler = StandardScaler()
             scaled_data = scaler.fit_transform(df)
             x = pandas.DataFrame(scaled_data, columns=df.columns)
 
-            logging.info(f"Scaled EEG data: {x.iloc[0].tolist()}")
-            logging.info(
-                "...Preprocessing of the EEG data for model input complete.")
+            # logging.info(f"Scaled EEG data: {x.iloc[0].tolist()}")
+            # logging.info(
+            #    "...Preprocessing of the EEG data for model input complete.")
 
             return x
 
@@ -115,9 +117,9 @@ class EEGInferenceModel:
 
         preprocessed_array = preprocessed_dataframe.values
 
-        logger.info(
-            f"Final preprocessed data shape: {preprocessed_array.shape}")
-        logger.info(f"Final preprocessed data: {preprocessed_array[0]}")
+        # logger.info(
+        #    f"Final preprocessed data shape: {preprocessed_array.shape}")
+        # logger.info(f"Final preprocessed data: {preprocessed_array[0]}")
 
         return preprocessed_array
 
@@ -128,8 +130,8 @@ class EEGInferenceModel:
             return None
 
         try:
-            logger.info(
-                f"Making prediction with processed data shape: {processed_data.shape}")
+            # logger.info(
+            #   f"Making prediction with processed data shape: {processed_data.shape}")
 
             prediction = self.model.predict(processed_data)
 
@@ -138,10 +140,10 @@ class EEGInferenceModel:
             else:
                 servo_angles = prediction
 
-            logger.info(f"Predicted servo angles: {servo_angles}")
+            # logger.info(f"Predicted servo angles: {servo_angles}")
             return servo_angles
         except Exception as e:
-            logger.error(f"Error making servo angle prediction: {e}")
+            # logger.error(f"Error making servo angle prediction: {e}")
             return None
 
     def publish_servo_angles(self, servo_angles, original_data):
@@ -156,8 +158,8 @@ class EEGInferenceModel:
             try:
                 self.redis_client.publish(
                     'predicted_servo_angles', json.dumps(result))
-                logger.info(
-                    f"Published servo angles to predicted_servo_angles channel: {result['servo_angles']}")
+                # logger.info(
+                #     f"Published servo angles to predicted_servo_angles channel: {result['servo_angles']}")
             except Exception as e:
                 logger.error(f"Failed to publish servo angles: {e}")
 
@@ -173,14 +175,14 @@ class EEGInferenceModel:
                 if message['type'] == 'message':
                     try:
                         data = json.loads(message['data'])
-                        logger.info(f"Received EEG data from Redis")
-
+                        # logger.info(f"Received EEG data from Redis")
+    
                         if self.model is not None:
                             processed_data = self.preprocess_data(data)
 
                             if processed_data is not None:
-                                logger.info(
-                                    f"Preprocessed data shape: {processed_data.shape}")
+                                # logger.info(
+                                #    f"Preprocessed data shape: {processed_data.shape}")
 
                                 servo_angles = self.predict_servo_angles(
                                     processed_data)

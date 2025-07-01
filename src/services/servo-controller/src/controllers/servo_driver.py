@@ -1,199 +1,222 @@
 import redis
 import json
-import logging
 import time
-import sys
-from datetime import datetime
-from pathlib import Path
+import logging
+from typing import Optional, List, Dict, Any
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    filename="servo_driver.log",
-    filemode="w",
-)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-if "--test" not in sys.argv and '-t' not in sys.argv:
-    try:
-        import pyfirmata2
-    except ImportError:
-        logging.warning(
-            "pyfirmata2 not available - hardware mode may not work")
 
 
 class ServoDriver:
-    """ServoDriver class that receives predicted servo angles from Redis and moves servos accordingly"""
+    def __init__(self, redis_host: str = "redis", redis_port: int = 6379):
+        """
+        Initialize servo driver
 
-    def __init__(self, redis_url="redis://localhost:6379", test_mode=False):
-        """Initialize ServoDriver with Redis connection and servo setup"""
-        self.redis_client = redis.Redis.from_url(
-            redis_url, decode_responses=True)
-        self.test_mode = test_mode
-        self.board = None
-        self.servos = []
-        self.current_positions = [0, 0, 0]
-        self.input_channel = "predicted_servo_angles"
-
-        if not self.initialize_servos():
-            raise Exception("Failed to initialize servos")
-
-    def initialize_servos(self):
-        """Initialize servo connections and move to starting positions"""
+        Args:
+            redis_host: Redis server host
+            redis_port: Redis server port
+        """
         try:
-            if self.test_mode:
-                logging.info("TEST MODE: Simulating servo initialization")
-                self.servos = ["simulated_servo_1",
-                               "simulated_servo_2", "simulated_servo_3"]
-                logging.info(
-                    f"TEST MODE: Servos initialized to starting positions: {self.current_positions}")
-                return True
-            else:
-                port = pyfirmata2.Arduino.AUTODETECT
-                self.board = pyfirmata2.Arduino(port)
-
-                time.sleep(2)
-
-                servo_pins = ["d:9:s", "d:10:s", "d:11:s"]
-                for pin in servo_pins:
-                    servo = self.board.get_pin(pin)
-                    self.servos.append(servo)
-
-                self.move_to_positions([0, 0, 0])
-                logging.info(
-                    f"Servos initialized to starting positions: {self.current_positions}")
-                return True
+            self.redis_client = redis.Redis(
+                host=redis_host,
+                port=redis_port,
+                decode_responses=True,
+                socket_timeout=5,
+                socket_connect_timeout=5
+            )
+            # Test connection
+            self.redis_client.ping()
+            logger.info("ServoDriver initialized and connected to Redis")
+        except redis.ConnectionError as e:
+            logger.error(f"Failed to connect to Redis: {e}")
+            raise
         except Exception as e:
-            logging.error(f"Failed to initialize servos: {e}")
+            logger.error(f"Error initializing ServoDriver: {e}")
+            raise
+
+    def get_servo_commands(self) -> Optional[Dict[str, Any]]:
+        """Get servo commands from Redis"""
+        try:
+            data = self.redis_client.get("servo_commands")
+            if not data:
+                return None
+
+            # Parse JSON data
+            try:
+                command_data = json.loads(data)
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse JSON data: {e}")
+                logger.error(f"Raw data: {data}")
+                return None
+
+            # Validate data structure
+            if not isinstance(command_data, dict):
+                logger.error(f"Expected dict, got {type(command_data)}")
+                return None
+
+            if "servo_commands" not in command_data:
+                logger.error("Missing 'servo_commands' key in data")
+                return None
+
+            return command_data
+
+        except redis.ConnectionError as e:
+            logger.error(f"Redis connection error: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Error reading servo commands: {e}")
+            return None
+
+    def validate_servo_commands(self, commands: Any) -> Optional[List[float]]:
+        """
+        Validate and normalize servo commands
+
+        Args:
+            commands: Raw servo commands from Redis
+
+        Returns:
+            List of validated servo commands or None if invalid
+        """
+        try:
+            # Handle different input types
+            if commands is None:
+                logger.warning("Received None servo commands")
+                return None
+
+            # Convert to list if needed
+            if isinstance(commands, (int, float)):
+                commands = [commands]
+            elif isinstance(commands, str):
+                logger.error(f"Received string servo commands: {commands}")
+                return None
+            elif not isinstance(commands, (list, tuple)):
+                logger.error(f"Invalid servo commands type: {type(commands)}")
+                return None
+
+            # Convert to float and validate
+            validated_commands = []
+            for i, cmd in enumerate(commands):
+                try:
+                    float_cmd = float(cmd)
+                    # Add bounds checking if needed
+                    # if not (-180 <= float_cmd <= 180):  # Example bounds
+                    #     logger.warning(f"Servo command {i} out of bounds: {float_cmd}")
+                    validated_commands.append(float_cmd)
+                except (ValueError, TypeError) as e:
+                    logger.error(
+                        f"Invalid servo command at index {i}: {cmd}, error: {e}")
+                    return None
+
+            if not validated_commands:
+                logger.warning("No valid servo commands found")
+                return None
+
+            return validated_commands
+
+        except Exception as e:
+            logger.error(f"Error validating servo commands: {e}")
+            return None
+
+    def execute_servo_commands(self, commands: List[float]):
+        """
+        Execute servo commands
+
+        Args:
+            commands: List of validated servo positions/commands
+        """
+        try:
+            # TODO: Implement actual servo control here
+            # This is where you'd interface with your servo hardware
+            logger.info(
+                f"Executing {len(commands)} servo commands: {commands}")
+
+            # Placeholder for actual servo control
+            # Example implementations:
+            # self.servo_controller.move_servos(commands)
+            # for i, cmd in enumerate(commands):
+            #     self.servo_controller.set_servo_position(i, cmd)
+
+            # Simulate execution time
+            time.sleep(0.01)  # Small delay to simulate servo movement
+
+        except Exception as e:
+            logger.error(f"Error executing servo commands: {e}")
+
+    def check_command_freshness(self, timestamp: float, max_age: float = 1.0) -> bool:
+        """
+        Check if command timestamp is recent enough
+
+        Args:
+            timestamp: Command timestamp
+            max_age: Maximum age in seconds
+
+        Returns:
+            True if command is fresh enough
+        """
+        try:
+            current_time = time.time()
+            age = current_time - timestamp
+
+            if age > max_age:
+                logger.warning(f"Command too old: {age:.2f}s > {max_age}s")
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Error checking command freshness: {e}")
             return False
 
-    def move_to_positions(self, positions):
-        """Move servos to specific positions"""
-        if self.test_mode:
-            logging.info(
-                f"TEST MODE: Simulating servo movement to positions: {positions}")
-            for i, position in enumerate(positions):
-                if i < len(self.current_positions):
-                    self.current_positions[i] = position
-            logging.debug(
-                f"TEST MODE: Current positions updated to: {self.current_positions}")
-            return
+    def run(self, loop_delay: float = 0.1):
+        """
+        Main execution loop
 
-        if len(self.servos) >= len(positions):
-            for i, position in enumerate(positions):
-                if i < len(self.servos):
-                    self.servos[i].write(position)
-                    self.current_positions[i] = position
-            logging.debug(
-                f"Servos moved to positions: {self.current_positions}")
+        Args:
+            loop_delay: Delay between iterations in seconds
+        """
+        logger.info("Starting servo driver...")
 
-    def get_current_position(self):
-        """Get current servo positions"""
-        return self.current_positions
-
-    def reset_to_origin(self):
-        """Reset all servos to position 0"""
-        if self.test_mode:
-            logging.info("TEST MODE: Simulating reset to origin positions")
-            self.current_positions = [0, 0, 0]
-            logging.debug(
-                f"TEST MODE: Current positions reset to: {self.current_positions}")
-            return
-
-        self.move_to_positions([0, 0, 0])
-        logging.info(
-            f"Servos reset to origin positions: {self.current_positions}")
-
-    def handle_servo_command(self, message):
-        """Process servo angle command from Redis channel"""
-        try:
-            data = json.loads(message['data'])
-
-            servo_angles = data.get('servo_angles', data.get('servo_path', []))
-
-            if not servo_angles:
-                logging.warning("No servo angles found in message")
-                return
-
-            if isinstance(servo_angles[0], list):
-                logging.info(
-                    f"Executing servo path with {len(servo_angles)} positions")
-                for i, angles in enumerate(servo_angles):
-                    logging.info(
-                        f"Moving to position {i+1}/{len(servo_angles)}: {angles}")
-                    self.move_to_positions(angles)
-                    time.sleep(0.5)  
-            else:
-                logging.info(f"Moving servos to position: {servo_angles}")
-                self.move_to_positions(servo_angles)
-
-            timestamp = data.get('timestamp', datetime.now().isoformat())
-            target_hash = data.get('target_hash', 'unknown')
-            source = data.get('source', 'unknown')
-
-            logging.info(
-                f"Servo movement completed - Timestamp: {timestamp}, Hash: {target_hash}, Source: {source}")
-
-        except json.JSONDecodeError as e:
-            logging.error(f"Failed to decode JSON message: {e}")
-        except Exception as e:
-            logging.error(f"Error processing servo command: {e}")
-
-    def run_servo_listener(self):
-        """Main loop to listen for servo commands from Redis"""
-        logging.info(
-            f"Starting servo driver listener on channel: {self.input_channel}")
-        logging.info(
-            f"Running in {'TEST' if self.test_mode else 'HARDWARE'} mode")
-
-        pubsub = self.redis_client.pubsub()
-        pubsub.subscribe(self.input_channel)
-
-        try:
-            for message in pubsub.listen():
-                if message['type'] == 'message':
-                    logging.debug(
-                        f"Received message from {self.input_channel}: {message['data']}")
-                    self.handle_servo_command(message)
-
-        except KeyboardInterrupt:
-            logging.info("Servo driver interrupted by user")
-        except Exception as e:
-            logging.error(f"Error in servo listener: {e}")
-        finally:
-            pubsub.unsubscribe(self.input_channel)
-            pubsub.close()
-            self.cleanup()
-
-    def cleanup(self):
-        """Clean up board connection"""
-        if self.board and not self.test_mode:
+        while True:
             try:
-                self.board.exit()
-                logging.info("Board connection cleaned up successfully.")
+                # Get servo commands from Redis
+                command_data = self.get_servo_commands()
+
+                if command_data:
+                    # Extract servo commands
+                    raw_commands = command_data.get("servo_commands")
+                    timestamp = command_data.get("timestamp")
+
+                    # Check command freshness if timestamp provided
+                    if timestamp and not self.check_command_freshness(timestamp):
+                        logger.warning("Ignoring stale command")
+                        continue
+
+                    # Validate servo commands
+                    servo_commands = self.validate_servo_commands(raw_commands)
+
+                    if servo_commands:
+                        self.execute_servo_commands(servo_commands)
+                    else:
+                        logger.warning("No valid servo commands to execute")
+
+                time.sleep(loop_delay)
+
+            except KeyboardInterrupt:
+                logger.info("Shutting down servo driver...")
+                break
             except Exception as e:
-                logging.error(f"Error cleaning up board connection: {e}")
+                logger.error(f"Error in servo driver loop: {e}")
+                time.sleep(loop_delay)
 
 
 def main():
-    """Main function to run the servo driver service"""
-    test_mode = "--test" in sys.argv or '-t' in sys.argv
-
-    logging.info("-" * 100)
-    if test_mode:
-        logging.info("Starting Servo Driver Service (TEST MODE)")
-        print("Running in TEST MODE: Simulating servo movements without hardware.")
-    else:
-        logging.info("Starting Servo Driver Service")
-        print("Running in HARDWARE MODE: Interacting with physical servos.")
-    logging.info("-" * 100)
-
+    """Main entry point"""
     try:
-        servo_driver = ServoDriver(test_mode=test_mode)
-        servo_driver.run_servo_listener()
+        driver = ServoDriver()
+        driver.run()
     except Exception as e:
-        logging.error(f"Failed to start servo driver: {e}")
-        print(f"Error: {e}")
+        logger.error(f"Failed to start servo driver: {e}")
 
 
 if __name__ == "__main__":

@@ -290,3 +290,25 @@ This uses docker (so ensure it's started lol) so please see the project entry po
 
 poc_archive contains all old code, which will be only used as reference
 src contains all of the active production code.
+
+# RL Training Strategies and Alternatives
+1. Current Strategy: Specialization + Global Competition
+Each agent specializes on one start-goal pair
+All agents tested globally on all pairs
+Winner selected based on average performance
+2. Cross-Training Strategy
+Each agent trains on primary pair + additional training on other pairs
+Better generalization through exposure to multiple scenarios
+More training time per agent
+3. Evolutionary Training
+Population-based approach with mutation and selection
+Agents "reproduce" through weight copying + additional training
+Natural selection over multiple generations
+4. Curriculum Learning
+Progressive difficulty training from easy to hard pairs
+Each agent learns through structured progression
+Better learning stability and final performance
+5. Ensemble Training
+Multiple agents trained per pair with slight variations
+Best performer from each ensemble selected
+Reduces training variance and improves reliability
