@@ -16,10 +16,11 @@ class EEGMonitorService:
         self.input_channel = input_channel
         self.output_channel = output_channel
         self.pubsub = self.redis_client.pubsub()
-
+        logger.info("=" * 50)
         logger.info(f"EEGMonitorService Initialized:")
         logger.info(f"    Input Channel: {self.input_channel}")
         logger.info(f"    Output Channel: {self.output_channel}")
+        logger.info("=" * 50)
 
     def detect_anomaly(self, eeg_data):
         """Anomaly detection logic"""

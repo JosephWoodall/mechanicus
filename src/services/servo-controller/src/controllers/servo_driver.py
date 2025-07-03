@@ -25,7 +25,6 @@ class ServoDriver:
                 socket_timeout=5,
                 socket_connect_timeout=5
             )
-            # Test connection
             self.redis_client.ping()
             logger.info("ServoDriver initialized and connected to Redis")
         except redis.ConnectionError as e:
@@ -42,7 +41,6 @@ class ServoDriver:
             if not data:
                 return None
 
-            # Parse JSON data
             try:
                 command_data = json.loads(data)
             except json.JSONDecodeError as e:
@@ -50,7 +48,6 @@ class ServoDriver:
                 logger.error(f"Raw data: {data}")
                 return None
 
-            # Validate data structure
             if not isinstance(command_data, dict):
                 logger.error(f"Expected dict, got {type(command_data)}")
                 return None
@@ -79,12 +76,10 @@ class ServoDriver:
             List of validated servo commands or None if invalid
         """
         try:
-            # Handle different input types
             if commands is None:
                 logger.warning("Received None servo commands")
                 return None
 
-            # Convert to list if needed
             if isinstance(commands, (int, float)):
                 commands = [commands]
             elif isinstance(commands, str):
@@ -94,13 +89,14 @@ class ServoDriver:
                 logger.error(f"Invalid servo commands type: {type(commands)}")
                 return None
 
-            # Convert to float and validate
             validated_commands = []
             for i, cmd in enumerate(commands):
                 try:
                     float_cmd = float(cmd)
-                    # Add bounds checking if needed
-                    # if not (-180 <= float_cmd <= 180):  # Example bounds
+                    '''
+                    TODO: add bounds checking if needed
+                    For example, if servos have a range of -180 to 180 degrees,
+                    '''
                     #     logger.warning(f"Servo command {i} out of bounds: {float_cmd}")
                     validated_commands.append(float_cmd)
                 except (ValueError, TypeError) as e:
@@ -126,18 +122,13 @@ class ServoDriver:
             commands: List of validated servo positions/commands
         """
         try:
-            # TODO: Implement actual servo control here
-            # This is where you'd interface with your servo hardware
+            '''
+            TODO: Implement actual servo control here
+            This is where the interface with your servo hardware
+            '''
             logger.info(
                 f"Executing {len(commands)} servo commands: {commands}")
 
-            # Placeholder for actual servo control
-            # Example implementations:
-            # self.servo_controller.move_servos(commands)
-            # for i, cmd in enumerate(commands):
-            #     self.servo_controller.set_servo_position(i, cmd)
-
-            # Simulate execution time
             time.sleep(0.01)  # Small delay to simulate servo movement
 
         except Exception as e:
@@ -159,7 +150,7 @@ class ServoDriver:
             age = current_time - timestamp
 
             if age > max_age:
-                logger.warning(f"Command too old: {age:.2f}s > {max_age}s")
+                # logger.warning(f"Command too old: {age:.2f}s > {max_age}s")
                 return False
 
             return True
@@ -179,20 +170,16 @@ class ServoDriver:
 
         while True:
             try:
-                # Get servo commands from Redis
                 command_data = self.get_servo_commands()
 
                 if command_data:
-                    # Extract servo commands
                     raw_commands = command_data.get("servo_commands")
                     timestamp = command_data.get("timestamp")
 
-                    # Check command freshness if timestamp provided
                     if timestamp and not self.check_command_freshness(timestamp):
-                        logger.warning("Ignoring stale command")
+                        # logger.warning("Ignoring stale command")
                         continue
 
-                    # Validate servo commands
                     servo_commands = self.validate_servo_commands(raw_commands)
 
                     if servo_commands:

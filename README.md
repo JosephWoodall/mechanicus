@@ -18,7 +18,7 @@ I am still brainstorming how to create the prosthetic apparatus. I might need he
 The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
 
 ```bash
-docker compose -f docker-compose.test.yml up --builkd
+docker compose -f docker-compose.test.yml up --build
 ```
 
 The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
@@ -33,15 +33,14 @@ The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Prod
 docker compose -f docker-compose.prod.yml up --build
 ```
 
-# External Requirements
+# Current Architecture Overview
 
-This project utilzes pyfirmata2, which requires the upload of StandardFirmata to the Arduino board. Please follow the tutorial in the URL below in order to get started before running any of this code:
-https://github.com/berndporr/pyFirmata2?tab=readme-ov-file
+Your system has evolved from the POC to a microservice architecture:
 
-Docker
-
-# POC Logical Flow
-
+**POC Approach** (deprecated):
+- Single `main.py` entry point
+- Hash-based servo lookup
+- Monolithic structure
 ```mermaid
 flowchart TD
     A[main.py] --> B[Load YAML Config]
@@ -63,62 +62,96 @@ flowchart TD
     style I fill:#e8f5e8
 ```
 
-# Desired End Result Logical Flow
+**Current Implementation**:
+- Microservice architecture with Docker Compose
+- Redis pub/sub communication
+- Real-time RL path smoothing
+- Containerized services
 
 ```mermaid
 flowchart TD
-    %% End User Runtime Flow (Production)
-    A[Device Powers On] --> B[Initialize Hardware & Load Models]
-    B --> C[Monitor EEG Sensors]
-    C --> D{EEG Anomaly Spike Detected?}
-    D -->|No| C
-    D -->|Yes| E[Collect EEG Data Burst]
-    E --> F[Pass to On-board ML Model]
-    F --> G[Model Predicts Target Position Hash]
-    G --> H[Load Current Servo Positions]
-    H --> I[RL Agent Plans Optimal Path]
-    I --> J[Execute Servo Movement Sequence]
-    J --> K[Update Current Position State]
-    K --> C
+    %% End User Runtime Flow (Production) - Current Implementation
+    A[Docker Compose Starts Services] --> B[Redis Server Initialization]
+    B --> C[Data Collector Service Starts]
+    C --> D[EEG Processor Service Starts]
+    D --> E[ML Inference Model Loads]
+    E --> F[RL Agent Service Starts]
+    F --> G[Servo Driver Service Starts]
+    
+    %% Real-time Data Pipeline
+    H[EEG Data Collector] --> I[Redis Channel: eeg_data]
+    I --> J[EEG Processor Service]
+    J --> K[Redis Channel: eeg_data_processed]
+    K --> L[ML Inference Model]
+    L --> M[Redis Channel: predicted_servo_angles]
+    M --> N[RL Agent - Path Smoothing]
+    N --> O[Redis Key: servo_commands]
+    O --> P[Servo Driver Service]
+    P --> Q[Arduino Hardware Servos]
+    
+    %% Parallel RL Training
+    N --> R[Real-time DDPG Training]
+    R --> S[Experience Replay Buffer]
+    S --> T[Model Updates: rl_agent_sb3.zip]
+    
+    %% Data Flow Detail
+    U[Synthetic EEG Data] --> V[64-channel EEG Array]
+    V --> W[StandardScaler Preprocessing]
+    W --> X[ML Model Prediction]
+    X --> Y["Servo Angles: 144.0, 36.0, 144.0"]
+    Y --> Z[RL Path Smoothing]
+    Z --> AA[Smooth Servo Commands]
+    AA --> BB[Hardware Execution]
 
     %% Offline Training Pipeline (Lower Environments)
-    L[START: Offline Training Phase] --> M[Acquire Training Data]
-    M --> N[Generate EEG-Position Datasets]
-    N --> O[Create Sample Inference Data]
+    CC[START: Offline Training Phase] --> DD[data_collection.py]
+    DD --> EE[Generate EEG-Servo Datasets]
+    EE --> FF[training_data.json + inference_data.json]
+    
+    FF --> GG{Parallel Training}
+    GG --> HH[Train ML Model<br/>sklearn/TensorFlow<br/>EEG → Servo Angles]
+    GG --> II[Train RL Agent<br/>DDPG Algorithm<br/>Path Smoothing]
+    
+    HH --> JJ[Save ML Model<br/>inference_model.pkl]
+    II --> KK[Save RL Model<br/>rl_agent_sb3.zip]
+    
+    JJ --> LL[Model Validation & Testing]
+    KK --> LL
+    LL --> MM[Deploy Models to Shared Volume]
 
-    O --> P{Parallel Training}
-    P --> Q[Train ML Model<br/>Explanatory Features: EEG → Label: Servo Angle]
-    P --> R[Train RL Agent<br/>Path Optimization]
+    %% Current Service Architecture
+    NN[Docker Compose Services] --> OO[data-collector]
+    NN --> PP[eeg-processor] 
+    NN --> QQ[rl-agent]
+    NN --> RR[servo-driver]
+    
+    SS[Shared Volume: /app/shared/] --> TT[models/]
+    SS --> UU[data/]
+    SS --> VV[tb_logs/]
 
-    Q --> S[Save ML Model<br/>inference_model.pkl]
-    R --> T[Save RL Agent<br/>rl_agent.pkl]
-
-    S --> U[Model Validation & Testing]
-    T --> U
-    U --> V[Deploy Models to Device]
-
-    %% Version Deployment Pipeline (Lower Environments Deployment to Production)
-    W[START: Version Deployment] --> X[Create Test Environment]
-    X --> Y[Deploy New Models in Test Mode]
-    Y --> Z[Run Mechanicus Test Pipeline]
-    Z --> AA{All Tests Pass?}
-    AA -->|No| AB[Debug & Fix Issues]
-    AB --> Y
-    AA -->|Yes| AC[Deploy to Production]
-    AC --> AD[Update Device Models]
-    AD --> AE[Restart Device with New Models]
-    AE --> A
+    %% Version Deployment Pipeline (Future Implementation)
+    WW[START: Version Deployment] --> XX[Create Test Environment]
+    XX --> YY[Deploy New Models in Test Mode]
+    YY --> ZZ[Run Integration Tests]
+    ZZ --> AAA{All Tests Pass?}
+    AAA -->|No| BBB[Debug & Fix Issues]
+    BBB --> YY
+    AAA -->|Yes| CCC[Deploy to Production]
+    CCC --> DDD[Update Device Models]
+    DDD --> EEE[Restart Services with New Models]
+    EEE --> A
 
     %% Styling
     style A fill:#e1f5fe
-    style L fill:#f3e5f5
-    style W fill:#fff3e0
-    style D fill:#ffebee
-    style P fill:#e8f5e8
-    style AA fill:#ffebee
+    style CC fill:#f3e5f5
+    style WW fill:#fff3e0
+    style N fill:#ffebee
+    style GG fill:#e8f5e8
+    style AAA fill:#ffebee
+    style NN fill:#f0f4c3
 
     %% Subgraph groupings
-    subgraph "End User Runtime"
+    subgraph "Current Production Runtime"
         A
         B
         C
@@ -130,9 +163,6 @@ flowchart TD
         I
         J
         K
-    end
-
-    subgraph "Offline Training Pipeline"
         L
         M
         N
@@ -142,173 +172,172 @@ flowchart TD
         R
         S
         T
-        U
-        V
     end
 
-    subgraph "Deployment Pipeline"
+    subgraph "Data Processing Pipeline"
+        U
+        V
         W
         X
         Y
         Z
         AA
-        AB
-        AC
-        AD
-        AE
+        BB
+    end
+
+    subgraph "Microservice Architecture"
+        NN
+        OO
+        PP
+        QQ
+        RR
+        SS
+        TT
+        UU
+        VV
+    end
+
+    subgraph "Offline Training Pipeline"
+        CC
+        DD
+        EE
+        FF
+        GG
+        HH
+        II
+        JJ
+        KK
+        LL
+        MM
+    end
+
+    subgraph "Future Deployment Pipeline"
+        WW
+        XX
+        YY
+        ZZ
+        AAA
+        BBB
+        CCC
+        DDD
+        EEE
     end
 ```
-
 ### Detailed Implementation Flow of Above
 
 #### End User Runtime Flow (Production)
 
-1. Device Powers On:
 
-   - Load mechanicus_run_configuration.yaml
-   - Initialize servo controllers
-   - Load inference_model.pkl & rl_agent.pkl
-   - Calibrate EEG sensors
+1. **Service Initialization**:
+   - Redis server starts
+   - Data Collector service initializes EEG data generation
+   - EEG Processor service loads and starts monitoring
+   - ML Inference Model loads `inference_model.pkl`
+   - RL Agent loads `rl_agent_sb3.zip` model
+   - Servo Driver initializes hardware connections
 
-2. EEG Monitoring Loop:
+2. **Real-time Data Pipeline**:
+   - EEG Data Collector → Redis Channel: `eeg_data`
+   - EEG Processor consumes `eeg_data` → Redis Channel: `eeg_data_processed`  
+   - ML Inference Model consumes `eeg_data_processed` → Redis Channel: `predicted_servo_angles`
+   - RL Agent consumes `predicted_servo_angles` → Redis Key: `servo_commands`
+   - Servo Driver executes commands from `servo_commands`
 
-   - Continuous sensor monitoring
-   - Anomaly detection algorithms
-   - Trigger on significant spikes
+3. **Continuous Learning**:
+   - RL Agent trains in real-time for path smoothing
+   - Models auto-save periodically (when filesystem allows)
+   - Each service logs performance metrics
 
-3. Action Execution:
-   - EEG → ML Model → Position Hash
-   - Current Position + Target Position → RL Agent
-   - RL Agent → Optimal movement sequence
-   - Execute servo movements
+## Offline Training Pipeline (Future Implementation)
 
-#### Offline Training Pipeline (Lower Environments)
+1. **Data Generation**:
+   - `data_collection.py` generates synthetic EEG datasets
+   - Configurable servo position mappings
+   - Training/validation data splits
 
-1. Training Data Acquisition:
+2. **ML Model Training**:
+   - Input: 64-channel EEG data (preprocessed)
+   - Output: 3D servo angle predictions  
+   - Algorithm: scikit-learn models or neural network
+   - Save: `inference_model.pkl`
 
-   - generate_hash_lookup.py → hash_to_servo_lookup.json
-   - data_collection.py → training_data.json + inference_data.json
-   - Real EEG data collection (optional)
+3. **Integration Testing**:
+   - End-to-end pipeline validation
+   - Redis communication testing
+   - Hardware simulation
 
-2. Parallel Training:
-   ML Model Training:
+# Technology Stack
 
-   - Input: EEG data features
-   - Output: Position hash predictions
-   - Algorithm: Random Forest/Neural Network
-   - Save: inference_model.pkl
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Containers | Docker & docker-compose | Service orchestration |
+| ML Framework | scikit-learn, TensorFlow | EEG classification and servo prediction |
+| RL Framework | Stable Baselines3, Gymnasium | Path smoothing and movement optimization |
+| Communication | Redis Pub/Sub | Inter-service messaging |
+| Data Processing | pandas, numpy, StandardScaler | EEG signal processing |
+| Hardware Interface | pyfirmata2, Arduino | Servo motor control |
+| Model Storage | Shared Docker Volumes | Model persistence |
+| Production | Kubernetes (K8s) - *Future* | Production orchestration |
+| CI/CD | GitHub Actions - *Future* | Automated deployment |
+| Monitoring | Container logs - *Future: Prometheus* | System monitoring |
 
-   RL Agent Training:
-
-   - State: Current servo positions
-   - Action: Servo angle adjustments
-   - Reward: Smooth movement + target achievement
-   - Algorithm: Q-Learning/PPO
-   - Save: rl_agent.pkl
-
-3. Validation:
-   - Cross-validation on test datasets
-   - Performance metrics collection
-   - Integration testing
-
-#### Version Deployment Pipeline (Lower Environments Deployment to Production)
-
-1. Test Environment:
-
-   - test_mode: true in configuration
-   - Simulated hardware interactions
-   - Controlled test scenarios
-
-2. Test Pipeline:
-
-   - Unit tests for each component
-   - Integration tests for full pipeline
-   - Performance benchmarking
-   - Safety validation
-
-3. Production Deployment:
-   - Model versioning and rollback capability
-   - Gradual rollout strategy
-   - Monitoring and logging
-   - Remote update capability
-
-# Key Components Still Needed for Implementation
-
-# 1. EEG Anomaly Detection
-
-src/eeg_monitor.py: - Real-time EEG data collection - Anomaly spike detection - Data preprocessing for ML model
-
-# 2. Reinforcement Learning Agent
-
-src/rl_agent.py: - Path planning from current to target position - Servo movement optimization - Training environment simulation
-
-# 3. Device Runtime Controller
-
-src/device_runtime.py: - Main runtime loop - EEG monitoring integration - Model coordination - Hardware control
-
-# 4. Training Orchestrator
-
-src/train_rl.py: - RL agent training pipeline - Environment simulation - Reward function definition
-
-# 5. Deployment Manager
-
-src/deployment.py: - Model versioning - Test pipeline execution - Production deployment
-
-# OPS
-
-This project will follow a containerized, orchestrated microservice architecture. Summary below
-
-| Component                | Technology                        |
-| ------------------------ | --------------------------------- |
-| Containers               | Docker                            |
-| Local Orchestration      | docker-compose                    |
-| Production               | Kubernetes (K8s)                  |
-| Communication            | REST/gRPC/Message Broker          |
-| Configuration Management | YAML + Environment Variables      |
-| Model Storage            | Cloud/NFS/Object Store, Versioned |
-| CI/CD                    | GitHub Actions/GitLab CI + Docker |
-| Monitoring               | Prometheus, Grafana, ELK          |
-| Updates                  | OTA Agent or Custom Poller        |
-
-# Redis Server
+# Redis Server Setup
 
 ```bash
 sudo apt update
 sudo apt install redis-server
 ```
 
-To start: sudo systemctl start redis OR redis-server
-To stop: sudo systemctl stop redis OR Ctl + C
+**To start**: `sudo systemctl start redis` OR `redis-server`  
+**To stop**: `sudo systemctl stop redis` OR `Ctrl + C`
 
-If the redis server is running before script execution, then the docker compose up command will not execute, so run sudo lsof -i :6379 to ensure redis is not running.
+**Important**: If Redis server is running before script execution, then docker compose up command will not execute properly. Run `sudo lsof -i :6379` to ensure Redis is not running before starting containers.
 
-# Orchestration and Containers
+# Troubleshooting
 
-This uses docker (so ensure it's started lol) so please see the project entry points for execution section below on how to run these files.
+## Common Issues
 
-# Repo to Use
+### Redis Connection Issues
+```bash
+# Check if Redis is running
+sudo lsof -i :6379
 
-poc_archive contains all old code, which will be only used as reference
-src contains all of the active production code.
+# Start Redis if needed
+sudo systemctl start redis
+```
 
-# RL Training Strategies and Alternatives
-1. Current Strategy: Specialization + Global Competition
-Each agent specializes on one start-goal pair
-All agents tested globally on all pairs
-Winner selected based on average performance
-2. Cross-Training Strategy
-Each agent trains on primary pair + additional training on other pairs
-Better generalization through exposure to multiple scenarios
-More training time per agent
-3. Evolutionary Training
-Population-based approach with mutation and selection
-Agents "reproduce" through weight copying + additional training
-Natural selection over multiple generations
-4. Curriculum Learning
-Progressive difficulty training from easy to hard pairs
-Each agent learns through structured progression
-Better learning stability and final performance
-5. Ensemble Training
-Multiple agents trained per pair with slight variations
-Best performer from each ensemble selected
-Reduces training variance and improves reliability
+### Model Loading Issues
+- Ensure model files exist in `/app/shared/models/`
+- Check file permissions for shared volumes
+- Models are created automatically if not found
+
+### Container Volume Issues
+```bash
+# Create shared directory if it doesn't exist
+mkdir -p ./shared/models
+mkdir -p ./shared/data
+mkdir -p ./shared/tb_logs
+```
+
+## Service Debugging
+
+Enable debug logging by setting environment variable:
+```bash
+PYTHONPATH=/app LOG_LEVEL=DEBUG docker compose -f src/docker-compose.yml up
+```
+
+# RL Training Strategies
+
+## Current Strategy: Real-time Path Smoothing
+- RL Agent specializes in smooth movement generation
+- DDPG algorithm with experience replay
+- Online learning from servo movement data
+- Reward based on distance to target + movement smoothness
+
+## Future Training Alternatives
+1. **Cross-Training Strategy**: Train on multiple movement patterns
+2. **Evolutionary Training**: Population-based approach with selection
+3. **Curriculum Learning**: Progressive difficulty training
+4. **Ensemble Training**: Multiple agents with performance selection
+
+This reduces training variance and improves movement reliability.

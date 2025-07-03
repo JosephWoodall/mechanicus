@@ -97,6 +97,7 @@ class EEGDataPublisherService:
 
         self._generate_servo_positions()
 
+        logger.info("=" * 50)
         logger.info(f"EEGDataPublisherService Initialized:")
         logger.info(f"  Redis URL: {redis_url}")
         logger.info(f"  Channel: {self.channel}")
@@ -107,6 +108,7 @@ class EEGDataPublisherService:
         logger.info(f"  Total Positions: {len(self.servo_combinations)}")
         logger.info(
             f"  EEG Mean/Std: {self.baseline_mean:.2f}/{self.baseline_std:.2f}")
+        logger.info("=" * 50)
 
     def _load_config(self, config_file: str) -> Optional[Dict]:
         """Load configuration from YAML file.
@@ -331,7 +333,7 @@ class EEGDataPublisherService:
         """Clear all data from Redis server."""
         try:
             self.redis_client.flushall()
-            #logger.info("Cleared all Redis data.")
+            # logger.info("Cleared all Redis data.")
         except Exception as e:
             logger.error(f"Failed to clear Redis data: {e}")
 
@@ -543,6 +545,8 @@ def main():
         publisher_kwargs['servo_ceiling'] = args.servo_ceiling
 
     publisher = EEGDataPublisherService(**publisher_kwargs)
+
+
 
     try:
         publisher.redis_client.ping()

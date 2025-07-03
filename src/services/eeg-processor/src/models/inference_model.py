@@ -85,6 +85,13 @@ class EEGInferenceModel:
         self.redis_client = redis.Redis(
             host=redis_host, port=6379, decode_responses=True)
 
+        logger.info("=" * 50)
+        logger.info(f"EEGInferenceModel Initialized:")
+        logger.info(f"  Model Path: {self.model_path}")
+        logger.info(f"  Input Channel: eeg_data_processed")
+        logger.info(f"  Output Channel: predicted_servo_angles")
+        logger.info("=" * 50)
+
     def load_model(self):
         """Load the model from the specified path"""
         if os.path.exists(self.model_path):
@@ -176,7 +183,7 @@ class EEGInferenceModel:
                     try:
                         data = json.loads(message['data'])
                         # logger.info(f"Received EEG data from Redis")
-    
+
                         if self.model is not None:
                             processed_data = self.preprocess_data(data)
 

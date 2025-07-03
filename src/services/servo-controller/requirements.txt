@@ -1,3 +1,7 @@
 redis
 joblib
 numpy
+scipy
+scikit-learn
+gym
+stable-baselines3
