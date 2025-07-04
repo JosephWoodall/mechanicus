@@ -1,0 +1,110 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Mechanicus Redis Channel Monitor",
+    "tags": ["mechanicus", "redis", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Records by Channel",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mechanicus_redis_channel_records_total",
+            "legendFormat": "{{channel}}",
+            "refId": "A"
+          }
+        ],
+        "xAxis": {
+          "show": true
+        },
+        "yAxes": [
+          {
+            "label": "Record Count",
+            "show": true
+          }
+        ],
+        "legend": {
+          "show": true
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Active Channels Being Monitored",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "mechanicus_redis_active_channels",
+            "legendFormat": "Active Channels",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "green",
+                  "value": 4
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Records Rate by Channel",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(mechanicus_redis_channel_records_total[5m])",
+            "legendFormat": "{{channel}} rate",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Records per second",
+            "show": true
+          }
+        ],
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 9
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}

@@ -1,0 +1,85 @@
+{
+    "annotations": {
+      "title": "Machine Learning Metrics",
+      "tags": ["ML", "Metrics"],
+      "timepicker": {
+        "time_options": ["Last 5 minutes", "Last 1 hour", "Last 24 hours"]
+      }
+    },
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Model Accuracy",
+        "targets": [
+          {
+            "target": "model_accuracy",
+            "refId": "A"
+          }
+        ],
+        "xaxis": {
+          "mode": "time",
+          "name": "Time",
+          "show": true
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Accuracy",
+            "show": true
+          },
+          {
+            "format": "short",
+            "show": true
+          }
+        ]
+      },
+      {
+        "type": "graph",
+        "title": "Loss Over Time",
+        "targets": [
+          {
+            "target": "model_loss",
+            "refId": "B"
+          }
+        ],
+        "xaxis": {
+          "mode": "time",
+          "name": "Time",
+          "show": true
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Loss",
+            "show": true
+          },
+          {
+            "format": "short",
+            "show": true
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Model Performance Metrics",
+        "targets": [
+          {
+            "target": "model_performance",
+            "refId": "C"
+          }
+        ],
+        "columns": [
+          {
+            "text": "Metric",
+            "value": "metric_name"
+          },
+          {
+            "text": "Value",
+            "value": "metric_value"
+          }
+        ]
+      }
+    ],
+    "schemaVersion": 16,
+    "version": 1
+  }

@@ -15,22 +15,22 @@ I am still brainstorming how to create the prosthetic apparatus. I might need he
 
 # Project Entry Point for Execution
 
-The src/docker-compose.yml file is the main entry point for development and testing. Run this file with the command:
+The src/docker-compose.monitoring.yml file will handle the Monitoring and Observability Stack (Prometheus + Grafana) for system metrics and visualization.
 
 ```bash
-docker compose -f docker-compose.test.yml up --build
+docker compose -f docker-compose.monitoring.yml -p mechanicus-monitoring up --build
 ```
 
 The src/docker-compose.offline_training.yml file will handle the orchestration for the Offline Training Pipeline (Lower Environments) Flow.
 
 ```bash
-docker compose -f docker-compose.offline_training.yml up --build
+docker compose -f docker-compose.offline_training.yml -p mechanicus-offline_training up --build
 ```
 
 The src/docker-compose.prod.yml file will handle the End User Runtime Flow (Production) Flow.
 
 ```bash
-docker compose -f docker-compose.prod.yml up --build
+docker compose -f docker-compose.prod.yml -p mechanicus-prod up --build
 ```
 
 # Current Architecture Overview

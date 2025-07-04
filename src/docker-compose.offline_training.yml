@@ -37,22 +37,6 @@ services:
     networks:
       - mechanicus-network
 
-  rl-training:
-    build:
-      context: ./services/training-pipeline
-    volumes:
-      - ./shared/config:/app/shared/config:ro
-      - ./shared/data:/app/shared/data:rw
-      - ./shared/models:/app/shared/models:rw
-    environment:
-      - PYTHONUNBUFFERED=1
-    working_dir: /app
-    command: ["python", "rl_training.py"]
-    depends_on:
-      - dataset-generator
-    networks:
-      - mechanicus-network
-
 networks:
   mechanicus-network:
     driver: bridge

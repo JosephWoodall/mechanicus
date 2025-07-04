@@ -1,0 +1,40 @@
+groups:
+  - name: "EEG Data Alerts"
+    rules:
+      - alert: "HighEEGActivity"
+        expr: "avg_over_time(eeg_activity[5m]) > 0.8"
+        for: "5m"
+        labels:
+          severity: "warning"
+        annotations:
+          summary: "High EEG activity detected"
+          description: "The average EEG activity has exceeded 0.8 for the last 5 minutes."
+
+      - alert: "LowEEGActivity"
+        expr: "avg_over_time(eeg_activity[5m]) < 0.2"
+        for: "5m"
+        labels:
+          severity: "warning"
+        annotations:
+          summary: "Low EEG activity detected"
+          description: "The average EEG activity has dropped below 0.2 for the last 5 minutes."
+
+  - name: "Model Performance Alerts"
+    rules:
+      - alert: "ModelAccuracyDrop"
+        expr: "avg_over_time(model_accuracy[5m]) < 0.7"
+        for: "10m"
+        labels:
+          severity: "critical"
+        annotations:
+          summary: "Model accuracy has dropped"
+          description: "The average model accuracy has fallen below 0.7 for the last 10 minutes."
+
+      - alert: "ModelLatencyHigh"
+        expr: "avg_over_time(model_latency[5m]) > 200"
+        for: "5m"
+        labels:
+          severity: "warning"
+        annotations:
+          summary: "High model latency detected"
+          description: "The average model latency has exceeded 200ms for the last 5 minutes."
