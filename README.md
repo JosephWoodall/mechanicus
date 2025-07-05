@@ -412,3 +412,9 @@ Electrode Placement for Minimal EEG Setups. This section outlines recommended el
    - ML Inference Model consumes `eeg_data_processed` → Redis Channel: `predicted_servo_angles`
    - RL Agent consumes `predicted_servo_angles` → Redis Key: `servo_commands`
    - Servo Driver executes commands from `servo_commands`
+
+2. **ML Model Training**:
+- Input: 64-channel EEG data (preprocessed) **(need to implement feature engineering to feed model more features for prediction)**
+- Output: 3D servo angle predictions  
+- Algorithm: scikit-learn models or neural network
+- Save: `inference_model.pkl`
