@@ -1,67 +1,135 @@
 name: mechanicus-prod
 
 services:
+  # Redis Database
   redis:
     image: redis:7-alpine
+    container_name: mechanicus-redis
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     networks:
       - mechanicus-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
 
+  # Monitoring Stack
+  redis-channel-monitor:
+    build:
+      context: ./services/monitoring
+      dockerfile: Dockerfile
+    container_name: redis-channel-monitor
+    ports:
+      - "8082:8082"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PROMETHEUS_PORT=8082
+      - MODEL_PERFORMANCE_THRESHOLD=0.8
+      - MIN_SAMPLES_FOR_EVALUATION=50
+      - RETRAINING_COOLDOWN_MINUTES=60
+      - VALIDATION_INTERVAL_MINUTES=30
+      - PREDICTION_TIMEOUT_SECONDS=10
+      - MAX_ACCEPTABLE_ERROR_DEGREES=30.0
+      - RETRAINING_ENABLED=true
+      - TRAINING_COMPOSE_FILE=/app/docker-compose.offline_training.yml
+    depends_on:
+      - redis
+    networks:
+      - mechanicus-network
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker-compose.offline_training.yml:/app/docker-compose.offline_training.yml:ro
+      - ./shared/models:/app/shared/models:rw
+      - ./shared/config:/app/shared/config:ro
+    group_add:
+      - docker
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./services/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro  # Fixed path
+      - prometheus_data:/prometheus
+    networks:
+      - mechanicus-network
+    restart: unless-stopped
+    depends_on:
+      - redis-channel-monitor
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=mechanicus123
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./services/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - mechanicus-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # Production Services
   data-collector:
     build: 
       context: ./services/data-collector
-    depends_on:
-      - redis
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Use the redis service name
     volumes:
       - ./shared/config:/app/shared/config:ro
     command: ["python", "data_collection.py", "--config", "/app/shared/config/mechanicus_run_configuration.yaml", "--quiet"]
     networks:
       - mechanicus-network
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - redis-channel-monitor
 
   eeg-processor:
     build: ./services/eeg-processor
     depends_on:
-      - redis
       - data-collector
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Use the redis service name
     networks:
       - mechanicus-network
     command: ["python", "utils/preprocessing.py"]
+    restart: unless-stopped
 
   inference-model:
     build: ./services/eeg-processor
     depends_on:
-      - redis
       - eeg-processor
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Use the redis service name
     volumes:
       - ./shared/models:/app/shared/models:ro
     networks:
       - mechanicus-network
     command: ["python", "models/inference_model.py"]
+    restart: unless-stopped
 
   rl-agent:
     build:
       context: ./services/servo-controller
       dockerfile: Dockerfile
     command: ["python", "rl_agent/agent.py"]
-    depends_on:
-      - redis
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Use the redis service name
     networks:
       - mechanicus-network
     volumes:
       - ./shared/models:/app/shared/models:ro
     restart: unless-stopped
+    depends_on:
+      - redis
 
   servo-driver:
     build:
@@ -69,15 +137,14 @@ services:
       dockerfile: Dockerfile
     command: ["python", "controllers/servo_driver.py", "-t"]
     depends_on:
-      - redis
       - rl-agent
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Use the redis service name
     networks:
       - mechanicus-network
     devices:
-      - "/dev/ttyUSB0:/dev/ttyUSB0"  # Adjust based on your servo hardware
-    privileged: true  # May be needed for hardware access
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    privileged: true
     restart: unless-stopped
 
 networks:
@@ -86,3 +153,5 @@ networks:
 
 volumes:
   redis_data:
+  prometheus_data:
+  grafana_data:

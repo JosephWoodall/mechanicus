@@ -379,7 +379,7 @@ Electrode Placement for Minimal EEG Setups. This section outlines recommended el
 ---
 
 # TODO
-2. **Real-time Data Pipeline**:
+1. **Real-time Data Pipeline**:
    - EEG Data Collector → Redis Channel: `eeg_data` **(need to implement feature engineering to feed model more features for prediction)**
    - EEG Processor consumes `eeg_data` → Redis Channel: `eeg_data_processed`  
    - ML Inference Model consumes `eeg_data_processed` → Redis Channel: `predicted_servo_angles`
@@ -391,3 +391,6 @@ Electrode Placement for Minimal EEG Setups. This section outlines recommended el
 - Output: 3D servo angle predictions  
 - Algorithm: scikit-learn models or neural network
 - Save: `inference_model.pkl`
+
+3. **Retraining Loop for ML Model**
+- Monitoring container will also detect if the inference_model.pkl file's metrics are below a certain threshold, then will restart the mechanicus-offline_training container

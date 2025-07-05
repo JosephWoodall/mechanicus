@@ -126,8 +126,8 @@ class ServoDriver:
             TODO: Implement actual servo control here
             This is where the interface with your servo hardware
             '''
-            logger.info(
-                f"Executing {len(commands)} servo commands: {commands}")
+            #logger.info(
+            #    f"Executing {len(commands)} servo commands: {commands}")
 
             time.sleep(0.01)  # Small delay to simulate servo movement
 

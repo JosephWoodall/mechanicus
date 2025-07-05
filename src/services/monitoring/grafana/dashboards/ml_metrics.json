@@ -1,85 +1,51 @@
 {
-    "annotations": {
-      "title": "Machine Learning Metrics",
-      "tags": ["ML", "Metrics"],
-      "timepicker": {
-        "time_options": ["Last 5 minutes", "Last 1 hour", "Last 24 hours"]
-      }
-    },
+  "dashboard": {
     "panels": [
       {
+        "id": 4,
+        "title": "Model Performance",
         "type": "graph",
-        "title": "Model Accuracy",
         "targets": [
           {
-            "target": "model_accuracy",
-            "refId": "A"
+            "expr": "mechanicus_model_accuracy",
+            "legendFormat": "Current Accuracy",
+            "refId": "D"
           }
         ],
-        "xaxis": {
-          "mode": "time",
-          "name": "Time",
-          "show": true
-        },
-        "yaxes": [
+        "yAxes": [
           {
-            "format": "percent",
             "label": "Accuracy",
-            "show": true
-          },
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "thresholds": [
           {
-            "format": "short",
-            "show": true
+            "value": 0.8,
+            "colorMode": "critical",
+            "op": "lt"
           }
         ]
       },
       {
-        "type": "graph",
-        "title": "Loss Over Time",
+        "id": 5,
+        "title": "Retraining Status",
+        "type": "stat",
         "targets": [
           {
-            "target": "model_loss",
-            "refId": "B"
+            "expr": "mechanicus_retraining_status",
+            "legendFormat": "Status",
+            "refId": "E"
           }
         ],
-        "xaxis": {
-          "mode": "time",
-          "name": "Time",
-          "show": true
-        },
-        "yaxes": [
-          {
-            "format": "short",
-            "label": "Loss",
-            "show": true
-          },
-          {
-            "format": "short",
-            "show": true
-          }
-        ]
-      },
-      {
-        "type": "table",
-        "title": "Model Performance Metrics",
-        "targets": [
-          {
-            "target": "model_performance",
-            "refId": "C"
-          }
-        ],
-        "columns": [
-          {
-            "text": "Metric",
-            "value": "metric_name"
-          },
-          {
-            "text": "Value",
-            "value": "metric_value"
-          }
-        ]
+        "fieldConfig": {
+          "mappings": [
+            {"options": {"0": {"text": "Idle", "color": "green"}}},
+            {"options": {"1": {"text": "Running", "color": "yellow"}}},
+            {"options": {"2": {"text": "Failed", "color": "red"}}}
+          ]
+        }
       }
-    ],
-    "schemaVersion": 16,
-    "version": 1
+    ]
   }
+}

@@ -172,8 +172,8 @@ def main():
                                 numpy.array(target_positions)
                             )
 
-                            logger.info(
-                                f"Smooth servo path: {new_positions} (target: {target_positions}, distance: {distance_to_target:.1f}°)")
+                            #logger.info(
+                            #    f"Smooth servo path: {new_positions} (target: {target_positions}, distance: {distance_to_target:.1f}°)")
 
                             if last_state is not None and rl_agent.num_timesteps > rl_agent.learning_starts:
                                 try:
