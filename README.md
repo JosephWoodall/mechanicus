@@ -341,3 +341,68 @@ PYTHONPATH=/app LOG_LEVEL=DEBUG docker compose -f src/docker-compose.yml up
 4. **Ensemble Training**: Multiple agents with performance selection
 
 This reduces training variance and improves movement reliability.
+
+# EEG Data Collection
+Electrode Placement for Minimal EEG Setups. This section outlines recommended electrode placements for minimal EEG recording, focusing on the Cz-only and Cz/C3/C4 configurations. These setups are suitable for monitoring general brain activity and movement-related potentials with minimal hardware.
+
+### 1. Cz-Only Placement
+
+- **Active Electrode:** Cz (top center of the scalp, intersection of midline and ear-to-ear line, according to the 10-20 system)
+- **Reference Electrode:** Earlobe (A1 or A2) or mastoid (behind the ear)
+- **Ground Electrode:** Opposite earlobe or mastoid
+
+**Use Case:**  
+- General brain rhythm monitoring (alpha, beta, etc.)
+- Movement-related brain signals (both limbs, general body movement)
+- Minimal hardware required (single EEG channel)
+
+**Limitations:**  
+- Cannot distinguish left versus right limb movement as clearly as lateral placements (C3/C4)
+
+### 2. Cz/C3/C4 Placement
+
+- **Active Electrodes:**
+  - Cz (midline, top center)
+  - C3 (left motor cortex, halfway between Cz and left ear)
+  - C4 (right motor cortex, halfway between Cz and right ear)
+- **Reference Electrode:** Common reference (A1 or A2, earlobe or mastoid)
+- **Ground Electrode:** Opposite earlobe or mastoid
+
+**Use Case:**  
+- Enhanced detection of movement-related potentials
+- Can distinguish activity related to left (C4) or right (C3) limb movement
+- Suitable for basic brain-computer interface (BCI) applications
+
+**Diagram – 10-20 System (Top View):**
+```
+      Fp1       Fpz        Fp2
+        |         |          |
+  F7----|----F3---|---Fz----|----F4----F8
+        |         |          |
+      T3|   C3----|---Cz----|----C4|  T4
+        |         |          |
+  T5----|----P3---|---Pz----|----P4----T6
+        |         |          |
+       O1        Oz         O2
+```
+**Cz:** top center  
+**C3:** left of Cz  
+**C4:** right of Cz
+
+### 3. Minimum Hardware Recommendations
+
+- **Electrodes:** Ag/AgCl cup or snap electrodes (dry or gel-based)
+- **Headband or EEG cap:** For stable placement according to the 10-20 system
+- **EEG amplifier:** At least 1 channel for Cz-only; 3+ channels for Cz/C3/C4
+- **Reference and ground electrodes:** Typically earlobe or mastoid
+- **Electrode gel/paste:** For improved signal quality (unless dry electrodes are used)
+- **Cables/connectors:** Compatible with chosen amplifier
+
+### 4. Key Points
+
+- Cz-only: Best for general and bilateral movement signals with minimal setup.
+- Cz/C3/C4: Adds ability to distinguish left/right limb activity.
+- Always use a reliable reference/ground to reduce noise.
+- Electrode placement accuracy is critical for reproducible results.
+
+---
