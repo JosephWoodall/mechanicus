@@ -4,12 +4,10 @@ This is my space to explore the wonderful world of brain-computer interfaces. Th
 an EEG Headset (or EEG data) handy. Brain-waves are the main data source I am leveraging in this project.
 
 So, essentially, the flow is:
-EEG Headset captures brain waves -> ML Model interprets them -> software executes hardware movement based on ML model's interpretation
+EEG Headset captures EEG data -> ML Model interprets them -> software executes hardware movement based on ML model's interpretation
 
 Initial PoC Data offered for free here: https://www.physionet.org/content/eegmmidb/1.0.0/S001/#files-panel
 You can also generate your own.
-
-I plan to expand the binary classifier to multi-class classifier for 3D movement in a cartesian plane, where the output is a hash value coorelating to spherical coordinates; exercised by a lookup algorithm.
 
 I am still brainstorming how to create the prosthetic apparatus. I might need help in this area.
 
@@ -406,3 +404,11 @@ Electrode Placement for Minimal EEG Setups. This section outlines recommended el
 - Electrode placement accuracy is critical for reproducible results.
 
 ---
+
+# TODO
+2. **Real-time Data Pipeline**:
+   - EEG Data Collector → Redis Channel: `eeg_data` **(need to implement feature engineering to feed model more features for prediction)**
+   - EEG Processor consumes `eeg_data` → Redis Channel: `eeg_data_processed`  
+   - ML Inference Model consumes `eeg_data_processed` → Redis Channel: `predicted_servo_angles`
+   - RL Agent consumes `predicted_servo_angles` → Redis Key: `servo_commands`
+   - Servo Driver executes commands from `servo_commands`
