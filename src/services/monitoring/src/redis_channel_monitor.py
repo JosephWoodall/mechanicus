@@ -561,56 +561,62 @@ class MechanicusRedisChannelMonitor:
         try:
             logger.info("Starting Docker Compose training pipeline...")
 
-            # Path to the training compose file
             compose_file = os.getenv(
                 'TRAINING_COMPOSE_FILE', '/app/docker-compose.offline_training.yml')
 
             if not os.path.exists(compose_file):
-                logger.error(
-                    f"Training compose file not found: {compose_file}")
+                logger.error(f"Training compose file not found: {compose_file}")
+                logger.info("Available files in /app:")
+                try:
+                    files = os.listdir('/app')
+                    for f in files:
+                        logger.info(f"  - {f}")
+                except:
+                    pass
                 self.retraining_status.set(2)
                 return
 
-            # Stop any existing training containers
             self._cleanup_existing_training_containers()
 
-            # Run the training pipeline
             cmd = [
                 "docker-compose",
                 "-f", compose_file,
+                "-p", "mechanicus-offline-training",  # Set project name
                 "up",
                 "--build",
-                "--remove-orphans"
+                "--remove-orphans",
+                "--exit-code-from", "training-pipeline"  # Exit when training completes
             ]
 
             logger.info(f"Running command: {' '.join(cmd)}")
 
-            # Run training in background
             process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                cwd="/app"  # Working directory inside container
             )
 
-            # Wait for completion with timeout
             try:
                 stdout, stderr = process.communicate(
                     timeout=3600)  # 1 hour timeout
 
+                logger.info(f"Training stdout: {stdout}")
+                if stderr:
+                    logger.warning(f"Training stderr: {stderr}")
+
                 if process.returncode == 0:
                     logger.info("Retraining completed successfully")
-                    self.retraining_status.set(0)  # Set to idle
-                    # Clear performance window to start fresh
+                    self.retraining_status.set(0)
                     self.model_performance_window.clear()
                 else:
                     logger.error(
                         f"Retraining failed with return code {process.returncode}")
-                    logger.error(f"stderr: {stderr}")
-                    self.retraining_status.set(2)  # Set to failed
+                    self.retraining_status.set(2)
 
             except subprocess.TimeoutExpired:
-                logger.error("Retraining timed out")
+                logger.error("Retraining timed out after 1 hour")
                 process.kill()
                 self.retraining_status.set(2)
 
