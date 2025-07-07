@@ -2,3 +2,4 @@ redis
 pandas
 joblib
 scikit-learn
+docker

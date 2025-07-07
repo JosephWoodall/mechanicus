@@ -5,6 +5,7 @@ import logging
 import warnings
 import os
 import pandas
+import time
 from sklearn.preprocessing import StandardScaler
 
 logging.basicConfig(level=logging.INFO,
@@ -78,8 +79,9 @@ class EEGInferenceModel:
     def __init__(self, model_path):
         self.model = None
         self.model_path = model_path
-
-        self.load_model()
+        self.model_loaded = False
+        self.last_model_check = 0
+        self.model_check_interval = 30
 
         redis_host = 'redis' if os.getenv('REDIS_URL') else 'localhost'
         self.redis_client = redis.Redis(
@@ -92,27 +94,50 @@ class EEGInferenceModel:
         logger.info(f"  Output Channel: predicted_servo_angles")
         logger.info("=" * 50)
 
-    def load_model(self):
-        """Load the model from the specified path"""
+        self.try_load_model()
+
+    def try_load_model(self):
+        """Try to load the model, return True if successful"""
         if os.path.exists(self.model_path):
             try:
                 self.model = joblib.load(self.model_path)['model']
                 logger.info(
-                    f"✓ Successfully loaded model from {self.model_path}")
+                    f"Successfully loaded model from {self.model_path}")
                 logger.info(f"Model type: {type(self.model)}")
+                self.model_loaded = True
                 return True
             except Exception as e:
                 logger.error(
-                    f"✗ Failed to load model from {self.model_path}: {e}")
+                    f"Failed to load model from {self.model_path}: {e}")
                 self.model = None
+                self.model_loaded = False
                 return False
         else:
-            logger.warning(f"✗ Model file not found at {self.model_path}")
-            logger.info(f"Current working directory: {os.getcwd()}")
-            logger.info(
-                f"Files in /app/shared/models/: {os.listdir('/app/shared/models/') if os.path.exists('/app/shared/models/') else 'Directory does not exist'}")
+            if not self.model_loaded:
+                logging.warning("=" * 50)
+                logger.warning(f"Model file not found at {self.model_path}")
+                logger.warning(f"Current working directory: {os.getcwd()}")
+                logger.warning(
+                    f"Files in /app/shared/models/: {os.listdir('/app/shared/models/') if os.path.exists('/app/shared/models/') else 'Directory does not exist'}")
+                logger.warning("Waiting for model to become available...")
+                logger.warning(
+                    "---------> To create a model, run: docker-compose -f docker-compose.offline_training.yml up --build in a separate terminal.\nThis will train a model and save it to /app/shared/models/inference_model.pkl\nThis inference script will automatically load the model when it appears, and simply pass until you do so.\nNo servo executions will be taken until inference model is found!")
+                logging.warning("=" * 50)
             self.model = None
+            self.model_loaded = False
             return False
+
+    def check_for_model_periodically(self):
+        """Periodically check if model has become available"""
+        current_time = time.time()
+        if current_time - self.last_model_check > self.model_check_interval:
+            self.last_model_check = current_time
+            if not self.model_loaded:
+                if self.try_load_model():
+                    logger.info(
+                        "Model is now available! Starting predictions...")
+                else:
+                    logger.info("Still waiting for model file to appear...")
 
     def preprocess_data(self, eeg_data):
         """Preprocess EEG data for model prediction"""
@@ -133,7 +158,6 @@ class EEGInferenceModel:
     def predict_servo_angles(self, processed_data):
         """Make prediction on preprocessed EEG data and return servo angles"""
         if self.model is None:
-            logger.warning("No model loaded, cannot make predictions.")
             return None
 
         try:
@@ -180,6 +204,8 @@ class EEGInferenceModel:
         try:
             for message in pubsub.listen():
                 if message['type'] == 'message':
+                    self.check_for_model_periodically()
+
                     try:
                         data = json.loads(message['data'])
                         # logger.info(f"Received EEG data from Redis")
@@ -200,11 +226,10 @@ class EEGInferenceModel:
                             else:
                                 logger.error("Failed to preprocess data")
                         else:
-                            logger.info(
-                                "No model available for servo angle prediction")
+                            pass
 
                     except json.JSONDecodeError:
-                        logger.info(f"Raw data (non-JSON): {message['data']}")
+                        # logger.info(f"Raw data (non-JSON): {message['data']}")
                         if self.model is not None:
                             try:
                                 raw_data = message['data'].strip()
@@ -241,7 +266,7 @@ if __name__ == "__main__":
     logger.info(
         f"Contents of /app/shared: {os.listdir('/app/shared') if os.path.exists('/app/shared') else 'Does not exist'}")
     logger.info(
-        f"Contents of /app/shared/models: {os.listdir('/app/shared/models') if os.path.exists('/app/shared/models') else 'Does not exist'}")
+        f"Contents of /app/shared/models: {os.listdir('/app/shared/models') if os.path.exists('/app/shared/models') else 'Directory does not exist'}")
 
     model_path = '/app/shared/models/inference_model.pkl'
     logger.info(f"Trying to load model from: {model_path}")
