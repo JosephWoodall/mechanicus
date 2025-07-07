@@ -10,7 +10,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'mechanicus-redis-channels'
+  - job_name: 'redis-channel-monitor'
     static_configs:
       - targets: ['redis-channel-monitor:8082']
     scrape_interval: 5s

@@ -1,110 +1,238 @@
 {
-  "dashboard": {
-    "id": null,
-    "title": "Mechanicus Redis Channel Monitor",
-    "tags": ["mechanicus", "redis", "monitoring"],
-    "timezone": "browser",
-    "panels": [
-      {
-        "id": 1,
-        "title": "Total Records by Channel",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "mechanicus_redis_channel_records_total",
-            "legendFormat": "{{channel}}",
-            "refId": "A"
-          }
-        ],
-        "xAxis": {
-          "show": true
-        },
-        "yAxes": [
-          {
-            "label": "Record Count",
-            "show": true
-          }
-        ],
-        "legend": {
-          "show": true
-        },
-        "gridPos": {
-          "h": 9,
-          "w": 12,
-          "x": 0,
-          "y": 0
+  "id": null,
+  "uid": "mechanicus-overview",
+  "title": "Mechanicus Overview Dashboard",
+  "tags": ["mechanicus", "redis", "monitoring"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Redis Channel Monitor Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "up{job=\"redis-channel-monitor\"}",
+          "refId": "A",
+          "legendFormat": "Monitor Status"
         }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
       },
-      {
-        "id": 2,
-        "title": "Active Channels Being Monitored",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "mechanicus_redis_active_channels",
-            "legendFormat": "Active Channels",
-            "refId": "B"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "thresholds": {
-              "steps": [
-                {
-                  "color": "red",
-                  "value": 0
-                },
-                {
-                  "color": "yellow",
-                  "value": 1
-                },
-                {
-                  "color": "green",
-                  "value": 4
-                }
-              ]
-            }
-          }
-        },
-        "gridPos": {
-          "h": 9,
-          "w": 12,
-          "x": 12,
-          "y": 0
-        }
-      },
-      {
-        "id": 3,
-        "title": "Records Rate by Channel",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "rate(mechanicus_redis_channel_records_total[5m])",
-            "legendFormat": "{{channel}} rate",
-            "refId": "C"
-          }
-        ],
-        "yAxes": [
-          {
-            "label": "Records per second",
-            "show": true
-          }
-        ],
-        "gridPos": {
-          "h": 9,
-          "w": 24,
-          "x": 0,
-          "y": 9
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {"color": "red", "value": 0},
+              {"color": "green", "value": 1}
+            ]
+          },
+          "mappings": [
+            {"options": {"0": {"text": "DOWN"}}, "type": "value"},
+            {"options": {"1": {"text": "UP"}}, "type": "value"}
+          ]
         }
       }
-    ],
-    "time": {
-      "from": "now-1h",
-      "to": "now"
     },
-    "refresh": "5s"
-  }
+    {
+      "id": 2,
+      "title": "Total Records by Channel",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "mechanicus_redis_channel_records_total",
+          "refId": "B",
+          "legendFormat": "{{channel}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 0
+      },
+      "yAxes": [
+        {
+          "label": "Records",
+          "show": true
+        },
+        {
+          "show": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Active Channels",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "count(mechanicus_redis_channel_records_total)",
+          "refId": "C",
+          "legendFormat": "Channels"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Model Performance",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "model_accuracy",
+          "refId": "D",
+          "legendFormat": "Accuracy"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {"color": "red", "value": 0},
+              {"color": "yellow", "value": 0.7},
+              {"color": "green", "value": 0.85}
+            ]
+          },
+          "min": 0,
+          "max": 1,
+          "unit": "percentunit"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Redis Connection Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "redis_connected_clients",
+          "refId": "E",
+          "legendFormat": "Connected Clients"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "System Resource Usage",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes",
+          "refId": "F",
+          "legendFormat": "Memory Usage"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 8
+      },
+      "yAxes": [
+        {
+          "label": "Bytes",
+          "show": true
+        },
+        {
+          "show": true
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Recent Predictions",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "mechanicus_predictions_total",
+          "refId": "G",
+          "legendFormat": "{{channel}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      }
+    },
+    {
+      "id": 8,
+      "title": "Error Rate",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "rate(mechanicus_prediction_errors_total[5m])",
+          "refId": "H",
+          "legendFormat": "Error Rate"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "yAxes": [
+        {
+          "label": "Errors/sec",
+          "show": true
+        },
+        {
+          "show": true
+        }
+      ]
+    }
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "refresh": "5s",
+  "version": 1,
+  "schemaVersion": 30
 }

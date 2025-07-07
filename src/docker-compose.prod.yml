@@ -1,7 +1,6 @@
 name: mechanicus-prod
 
 services:
-  # Redis Database
   redis:
     image: redis:7-alpine
     container_name: mechanicus-redis
@@ -14,7 +13,6 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
 
-  # Monitoring Stack
   redis-channel-monitor:
     build:
       context: ./services/monitoring
@@ -52,7 +50,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./services/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro  # Fixed path
+      - ./services/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro 
       - prometheus_data:/prometheus
     networks:
       - mechanicus-network
@@ -66,22 +64,23 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=mechanicus123
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana_data:/var/lib/grafana
+      #- grafana_data:/var/lib/grafana
       - ./services/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./services/monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
     networks:
       - mechanicus-network
     restart: unless-stopped
     depends_on:
       - prometheus
 
-  # Production Services
   data-collector:
     build: 
       context: ./services/data-collector
     environment:
-      - REDIS_URL=redis://redis:6379  # Use the redis service name
+      - REDIS_URL=redis://redis:6379  
     volumes:
       - ./shared/config:/app/shared/config:ro
     command: ["python", "data_collection.py", "--config", "/app/shared/config/mechanicus_run_configuration.yaml", "--quiet"]
@@ -97,7 +96,7 @@ services:
     depends_on:
       - data-collector
     environment:
-      - REDIS_URL=redis://redis:6379  # Use the redis service name
+      - REDIS_URL=redis://redis:6379  
     networks:
       - mechanicus-network
     command: ["python", "utils/preprocessing.py"]
@@ -108,7 +107,7 @@ services:
     depends_on:
       - eeg-processor
     environment:
-      - REDIS_URL=redis://redis:6379  # Use the redis service name
+      - REDIS_URL=redis://redis:6379  
     volumes:
       - ./shared/models:/app/shared/models:ro
     networks:
@@ -122,7 +121,7 @@ services:
       dockerfile: Dockerfile
     command: ["python", "rl_agent/agent.py"]
     environment:
-      - REDIS_URL=redis://redis:6379  # Use the redis service name
+      - REDIS_URL=redis://redis:6379  
     networks:
       - mechanicus-network
     volumes:
@@ -139,7 +138,7 @@ services:
     depends_on:
       - rl-agent
     environment:
-      - REDIS_URL=redis://redis:6379  # Use the redis service name
+      - REDIS_URL=redis://redis:6379  
     networks:
       - mechanicus-network
     devices:
